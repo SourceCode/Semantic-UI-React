@@ -1,0 +1,41 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro'
+import Sidebar from '../components/Sidebar.astro'
+---
+
+<DocsLayout title="Theming">
+  <Sidebar slot="sidebar" />
+
+  <article class="docs-content">
+    <h1>Theming</h1>
+
+    <h2>CSS Custom Properties</h2>
+    <p>Semantic UI React v4 uses CSS custom properties (variables) for all design tokens. Override them to customize the look:</p>
+    <pre><code>{`:root {
+  --sui-color-primary: #2185d0;
+  --sui-color-secondary: #1b1c1d;
+  --sui-font-family: Lato, 'Helvetica Neue', Arial, sans-serif;
+  --sui-border-radius: 0.28571429rem;
+}`}</code></pre>
+
+    <h2>ThemeProvider</h2>
+    <p>Use the ThemeProvider component for scoped theming:</p>
+    <pre><code>{`import { ThemeProvider } from 'semantic-ui-react'
+
+<ThemeProvider theme="dark">
+  <App />
+</ThemeProvider>`}</code></pre>
+
+    <h2>Dark Theme</h2>
+    <p>Import the built-in dark theme:</p>
+    <pre><code>{`import 'semantic-ui-react/styles/themes/dark.css'`}</code></pre>
+
+    <h2>Custom Themes</h2>
+    <p>Create a custom theme by overriding CSS custom properties:</p>
+    <pre><code>{`.my-theme {
+  --sui-color-primary: #e03997;
+  --sui-color-background: #f5f5f5;
+  --sui-color-text: #333;
+}`}</code></pre>
+  </article>
+</DocsLayout>

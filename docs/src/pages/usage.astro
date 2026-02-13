@@ -1,0 +1,51 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro'
+import Sidebar from '../components/Sidebar.astro'
+---
+
+<DocsLayout title="Usage">
+  <Sidebar slot="sidebar" />
+
+  <article class="docs-content">
+    <h1>Getting Started</h1>
+
+    <h2>Installation</h2>
+    <pre><code>npm install semantic-ui-react react react-dom</code></pre>
+
+    <h2>CSS Setup</h2>
+    <p>Semantic UI React v4 includes its own CSS. Import the full stylesheet or individual component styles:</p>
+
+    <h3>Full CSS (simplest)</h3>
+    <pre><code>import 'semantic-ui-react/styles'</code></pre>
+
+    <h3>Per-component CSS (recommended for smaller bundles)</h3>
+    <pre><code>{`import 'semantic-ui-react/styles/elements/button.css'
+import 'semantic-ui-react/styles/collections/form.css'`}</code></pre>
+
+    <h2>Usage</h2>
+    <pre><code>{`import { Button } from 'semantic-ui-react'
+
+function App() {
+  return <Button primary>Click Me</Button>
+}`}</code></pre>
+
+    <h2>Theming</h2>
+    <p>Use the ThemeProvider for runtime theme switching:</p>
+    <pre><code>{`import { ThemeProvider } from 'semantic-ui-react'
+
+function App() {
+  return (
+    <ThemeProvider theme="dark">
+      <YourApp />
+    </ThemeProvider>
+  )
+}`}</code></pre>
+
+    <h2>Requirements</h2>
+    <ul>
+      <li>React 19.0.0 or later</li>
+      <li>Node.js 20 or later (for development)</li>
+      <li>Modern browser: Chrome 92+, Firefox 90+, Safari 15.4+, Edge 92+</li>
+    </ul>
+  </article>
+</DocsLayout>

@@ -1,0 +1,95 @@
+/*
+ * Image component CSS
+ *
+ * Class pattern: 'ui', size, avatar, bordered, centered, circular, disabled, fluid,
+ *   hidden, inline, rounded, spaced|{value} spaced, {value} floated, {value} aligned,
+ *   'image'
+ */
+@layer sui.components {
+  .ui.image {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 100%;
+    background-color: transparent;
+  }
+
+  .ui.image img,
+  .ui.image svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* ---- Inline ---- */
+  .ui.inline.image { display: inline-block; }
+
+  /* ---- Hidden ---- */
+  .ui.hidden.image { display: none; }
+
+  /* ---- Disabled ---- */
+  .ui.disabled.image { opacity: 0.45; pointer-events: none; }
+
+  /* ---- Avatar ---- */
+  .ui.avatar.image {
+    width: 2em;
+    height: 2em;
+    border-radius: var(--sui-border-radius-circular);
+
+    & img { border-radius: var(--sui-border-radius-circular); width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  /* ---- Bordered ---- */
+  .ui.bordered.image { border: 1px solid var(--sui-border-color); padding: 3px; }
+
+  /* ---- Circular ---- */
+  .ui.circular.image { border-radius: var(--sui-border-radius-circular); overflow: hidden; }
+  .ui.circular.image img { border-radius: var(--sui-border-radius-circular); }
+
+  /* ---- Rounded ---- */
+  .ui.rounded.image { border-radius: var(--sui-border-radius); overflow: hidden; }
+  .ui.rounded.image img { border-radius: var(--sui-border-radius); }
+
+  /* ---- Centered ---- */
+  .ui.centered.image { display: block; margin-left: auto; margin-right: auto; }
+
+  /* ---- Fluid ---- */
+  .ui.fluid.image { display: block; width: 100%; height: auto; }
+
+  /* ---- Floated ---- */
+  .ui.left.floated.image { float: left; margin-right: 1em; margin-bottom: 1em; }
+  .ui.right.floated.image { float: right; margin-left: 1em; margin-bottom: 1em; }
+
+  /* ---- Spaced ---- */
+  .ui.spaced.image { margin-left: 0.5em; margin-right: 0.5em; }
+  .ui.left.spaced.image { margin-left: 0.5em; margin-right: 0; }
+  .ui.right.spaced.image { margin-right: 0.5em; margin-left: 0; }
+
+  /* ---- Sizes ---- */
+  .ui.mini.image { width: 35px; height: auto; font-size: var(--sui-size-mini); }
+  .ui.tiny.image { width: 80px; height: auto; font-size: var(--sui-size-tiny); }
+  .ui.small.image { width: 150px; height: auto; font-size: var(--sui-size-small); }
+  .ui.medium.image { width: 300px; height: auto; font-size: var(--sui-size-medium); }
+  .ui.large.image { width: 450px; height: auto; font-size: var(--sui-size-large); }
+  .ui.big.image { width: 600px; height: auto; font-size: var(--sui-size-big); }
+  .ui.huge.image { width: 800px; height: auto; font-size: var(--sui-size-huge); }
+  .ui.massive.image { width: 960px; height: auto; font-size: var(--sui-size-massive); }
+
+  /* ---- Aligned ---- */
+  .ui.top.aligned.image { vertical-align: top; }
+  .ui.middle.aligned.image { vertical-align: middle; }
+  .ui.bottom.aligned.image { vertical-align: bottom; }
+
+  /* ---- Image Group ---- */
+  .ui.images {
+    font-size: 0;
+    margin: 0 -0.25rem 0;
+
+    & .image,
+    & img,
+    & svg {
+      display: inline-block;
+      margin: 0 0.25rem 0.5rem;
+    }
+  }
+}

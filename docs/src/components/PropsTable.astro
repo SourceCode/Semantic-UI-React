@@ -1,0 +1,47 @@
+---
+interface PropInfo {
+  type?: { name: string }
+  required?: boolean
+  description?: string
+  defaultValue?: { value: string }
+}
+
+interface Props {
+  props?: Record<string, PropInfo>
+  componentName?: string
+}
+
+const { props: componentProps, componentName } = Astro.props
+const entries = componentProps ? Object.entries(componentProps) : []
+---
+
+<div class="props-table">
+  {componentName && <h3>{componentName} Props</h3>}
+  {entries.length > 0 ? (
+    <table class="ui celled table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {entries.map(([name, prop]) => (
+          <tr>
+            <td>
+              <code>{name}</code>
+              {prop.required && <span class="required">*</span>}
+            </td>
+            <td><code>{prop.type?.name || 'unknown'}</code></td>
+            <td>{prop.defaultValue ? <code>{prop.defaultValue.value}</code> : '-'}</td>
+            <td set:html={prop.description || ''} />
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ) : (
+    <p>No props documented.</p>
+  )}
+</div>

@@ -1,0 +1,167 @@
+/*
+ * Form component CSS
+ *
+ * Class pattern: 'ui', size, error, inverted, loading, reply, success, unstackable, warning,
+ *   equal width, 'form'
+ */
+@layer sui.components {
+  .ui.form {
+    position: relative;
+    max-width: 100%;
+    font-size: var(--sui-size-medium);
+  }
+
+  .ui.form .field {
+    clear: both;
+    margin: 0 0 1em;
+  }
+
+  .ui.form .field > label {
+    display: block;
+    margin: 0 0 0.28571429rem 0;
+    color: var(--sui-text-color);
+    font-size: 0.92857143em;
+    font-weight: var(--sui-font-bold);
+    text-transform: none;
+  }
+
+  .ui.form .field > .input,
+  .ui.form .field > .selection.dropdown {
+    width: 100%;
+  }
+
+  .ui.form textarea {
+    width: 100%;
+    min-height: 6em;
+    padding: var(--sui-input-padding);
+    border: 1px solid var(--sui-border-color);
+    border-radius: var(--sui-border-radius);
+    font-family: var(--sui-font-family);
+    font-size: 1em;
+    line-height: var(--sui-line-height);
+    color: var(--sui-text-color);
+    resize: vertical;
+    transition: border-color var(--sui-transition-fast), box-shadow var(--sui-transition-fast);
+
+    &:focus-visible {
+      border-color: var(--sui-blue);
+      outline: none;
+    }
+  }
+
+  /* ---- Required ---- */
+  .ui.form .required.field > label::after,
+  .ui.form .required.fields > .field > label::after {
+    content: '*';
+    display: inline-block;
+    margin: -0.2em 0 0 0.2em;
+    color: var(--sui-red);
+    vertical-align: top;
+  }
+
+  /* ---- Inline fields ---- */
+  .ui.form .inline.field {
+    display: flex;
+    align-items: center;
+
+    & > label { margin: 0 1em 0 0; }
+    & > .input { flex: 1; }
+  }
+
+  /* ---- Field groups ---- */
+  .ui.form .fields {
+    display: flex;
+    flex-direction: row;
+    margin: 0 -0.5em 1em;
+
+    & > .field {
+      flex: 0 1 auto;
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+    }
+  }
+
+  .ui.form .equal.width.fields > .field { flex: 1; }
+
+  /* ---- Error state ---- */
+  .ui.form .field.error > label { color: var(--sui-red); }
+  .ui.form .field.error > .input > input,
+  .ui.form .field.error textarea {
+    background-color: var(--sui-red-light);
+    border-color: var(--sui-red);
+    color: var(--sui-red);
+  }
+
+  .ui.error.form .error.message { display: block; }
+
+  /* ---- Success state ---- */
+  .ui.success.form .success.message { display: block; }
+
+  /* ---- Warning state ---- */
+  .ui.warning.form .warning.message { display: block; }
+
+  /* ---- Loading ---- */
+  .ui.loading.form {
+    pointer-events: none;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.8);
+      z-index: 100;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -1.5em 0 0 -1.5em;
+      width: 3em;
+      height: 3em;
+      border-radius: var(--sui-border-radius-circular);
+      border: 0.2em solid rgba(0, 0, 0, 0.1);
+      border-top-color: var(--sui-grey);
+      animation: sui-loader-spin 0.6s linear infinite;
+      z-index: 101;
+    }
+  }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.form .field > label { color: var(--sui-inverted-text); }
+  .ui.inverted.form textarea,
+  .ui.inverted.form .field > .input > input {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--sui-inverted-border);
+    color: var(--sui-inverted-text);
+  }
+
+  /* ---- Reply ---- */
+  .ui.reply.form { max-width: 100%; }
+
+  /* ---- Unstackable ---- */
+  .ui.unstackable.form .fields { flex-wrap: nowrap; }
+
+  /* ---- Equal width ---- */
+  .ui.equal.width.form .fields > .field { flex: 1; }
+
+  /* ---- Sizes ---- */
+  .ui.mini.form { font-size: var(--sui-size-mini); }
+  .ui.tiny.form { font-size: var(--sui-size-tiny); }
+  .ui.small.form { font-size: var(--sui-size-small); }
+  .ui.large.form { font-size: var(--sui-size-large); }
+  .ui.big.form { font-size: var(--sui-size-big); }
+  .ui.huge.form { font-size: var(--sui-size-huge); }
+  .ui.massive.form { font-size: var(--sui-size-massive); }
+
+  /* ---- Responsive stacking ---- */
+  @media screen and (max-width: 767px) {
+    .ui.form:not(.unstackable) .fields {
+      flex-wrap: wrap;
+
+      & > .field { width: 100%; margin: 0 0 1em; }
+    }
+  }
+}

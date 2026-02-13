@@ -1,0 +1,116 @@
+/*
+ * CSS Reset for Semantic-UI-React
+ * Modern, minimal reset that normalizes cross-browser inconsistencies
+ */
+@layer sui.reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: var(--sui-base-size, 14px);
+    line-height: var(--sui-line-height);
+    tab-size: 4;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--sui-font-family);
+    font-size: var(--sui-size-medium);
+    line-height: var(--sui-line-height);
+    color: var(--sui-text-color);
+    background: var(--sui-page-bg);
+    font-smoothing: antialiased;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6) {
+    margin: 0;
+    font-weight: var(--sui-font-bold);
+    line-height: var(--sui-header-line-height);
+  }
+
+  :where(p) {
+    margin: 0 0 1em;
+    line-height: var(--sui-paragraph-line-height);
+  }
+
+  :where(a) {
+    color: var(--sui-blue);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--sui-blue-hover);
+      text-decoration: none;
+    }
+  }
+
+  :where(img) {
+    max-width: 100%;
+    height: auto;
+    border-style: none;
+  }
+
+  :where(button, input, optgroup, select, textarea) {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  :where(button, [type="button"], [type="reset"], [type="submit"]) {
+    appearance: button;
+  }
+
+  :where(fieldset) {
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+
+  :where(legend) {
+    padding: 0;
+  }
+
+  :where(textarea) {
+    overflow: auto;
+  }
+
+  :where(table) {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  :where(hr) {
+    height: 0;
+    border: 0;
+    border-top: 1px solid var(--sui-border-color);
+  }
+
+  :where(pre) {
+    font-family: var(--sui-code-font);
+    font-size: 1em;
+    overflow: auto;
+  }
+
+  :where(code, kbd, samp) {
+    font-family: var(--sui-code-font);
+    font-size: 1em;
+  }
+
+  :where(ul, ol) {
+    margin: 0;
+    padding: 0;
+    list-style-position: inside;
+  }
+
+  :where(summary) {
+    display: list-item;
+  }
+
+  /* Remove default focus styles - components use :focus-visible */
+  :where(:focus:not(:focus-visible)) {
+    outline: none;
+  }
+}

@@ -1,0 +1,31 @@
+/*
+ * Typography tokens for Semantic-UI-React
+ */
+@layer sui.tokens {
+  :root {
+    /* ---- Font families ---- */
+    --sui-font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    --sui-font-family-heading: var(--sui-font-family);
+    --sui-font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    --sui-header-font: var(--sui-font-family);
+    --sui-code-font: var(--sui-font-family-mono);
+    --sui-icon-font-family: Icons;
+
+    /* ---- Font weights ---- */
+    --sui-font-weight-normal: 400;
+    --sui-font-weight-bold: 700;
+    --sui-font-normal: 400;
+    --sui-font-bold: 700;
+    --sui-font-extra-bold: 800;
+
+    /* ---- Line heights ---- */
+    --sui-line-height: 1.4285em;
+    --sui-line-height-tight: 1.28571429em;
+    --sui-line-height-relaxed: 1.6em;
+    --sui-header-line-height: 1.28571429em;
+    --sui-paragraph-line-height: 1.4285em;
+
+    /* ---- Letter spacing ---- */
+    --sui-letter-spacing: normal;
+  }
+}

@@ -1,0 +1,124 @@
+/*
+ * Statistic component CSS
+ *
+ * Class pattern: 'ui', color, size, floated, horizontal, inverted, 'statistic'
+ * Group: 'ui', {count}, 'statistics'
+ * Sub: .value, .label
+ */
+@layer sui.components {
+  .ui.statistic {
+    display: inline-flex;
+    flex-direction: column;
+    margin: 1em 2em;
+    text-align: center;
+  }
+
+  .ui.statistic > .value {
+    font-family: var(--sui-header-font);
+    font-size: 4rem;
+    font-weight: var(--sui-font-normal);
+    line-height: 1em;
+    color: var(--sui-black);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .ui.statistic > .value .icon {
+    opacity: 1;
+    width: auto;
+    margin: 0;
+  }
+
+  .ui.statistic > .value img {
+    max-height: 3rem;
+    vertical-align: baseline;
+  }
+
+  .ui.statistic > .label {
+    font-family: var(--sui-font-family);
+    font-size: 1em;
+    font-weight: var(--sui-font-bold);
+    color: var(--sui-muted-text);
+    text-transform: uppercase;
+    text-align: center;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  /* ---- Text value ---- */
+  .ui.statistic > .text.value {
+    font-size: 2rem;
+    font-weight: var(--sui-font-bold);
+    line-height: var(--sui-line-height);
+    min-height: 2em;
+    text-align: center;
+  }
+
+  /* ---- Horizontal ---- */
+  .ui.horizontal.statistic {
+    flex-direction: row;
+    align-items: center;
+
+    & > .value { margin-right: 0.75em; }
+    & > .label { text-align: left; }
+  }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.statistic > .value { color: var(--sui-white); }
+  .ui.inverted.statistic > .label { color: var(--sui-inverted-muted); }
+
+  /* ---- Floated ---- */
+  .ui.left.floated.statistic { float: left; margin: 0 2em 1em 0; }
+  .ui.right.floated.statistic { float: right; margin: 0 0 1em 2em; }
+
+  /* ---- Colors ---- */
+  .ui.red.statistic > .value { color: var(--sui-red); }
+  .ui.orange.statistic > .value { color: var(--sui-orange); }
+  .ui.yellow.statistic > .value { color: var(--sui-yellow); }
+  .ui.olive.statistic > .value { color: var(--sui-olive); }
+  .ui.green.statistic > .value { color: var(--sui-green); }
+  .ui.teal.statistic > .value { color: var(--sui-teal); }
+  .ui.blue.statistic > .value { color: var(--sui-blue); }
+  .ui.violet.statistic > .value { color: var(--sui-violet); }
+  .ui.purple.statistic > .value { color: var(--sui-purple); }
+  .ui.pink.statistic > .value { color: var(--sui-pink); }
+  .ui.brown.statistic > .value { color: var(--sui-brown); }
+  .ui.grey.statistic > .value { color: var(--sui-grey); }
+  .ui.black.statistic > .value { color: var(--sui-black); }
+
+  /* ---- Sizes ---- */
+  .ui.mini.statistic { font-size: var(--sui-size-mini); }
+  .ui.mini.statistic > .value { font-size: 1.5rem; }
+  .ui.tiny.statistic { font-size: var(--sui-size-tiny); }
+  .ui.tiny.statistic > .value { font-size: 2rem; }
+  .ui.small.statistic { font-size: var(--sui-size-small); }
+  .ui.small.statistic > .value { font-size: 3rem; }
+  .ui.large.statistic { font-size: var(--sui-size-large); }
+  .ui.large.statistic > .value { font-size: 5rem; }
+  .ui.huge.statistic { font-size: var(--sui-size-huge); }
+  .ui.huge.statistic > .value { font-size: 6rem; }
+
+  /* ==== Statistic Group ==== */
+  .ui.statistics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin: -1em -1.5em;
+    container-type: inline-size;
+
+    & > .statistic { margin: 1em 1.5em; }
+  }
+
+  @container (max-width: 400px) {
+    .ui.statistics > .statistic {
+      width: calc(100% - 3em);
+      text-align: center;
+    }
+  }
+
+  .ui.one.statistics > .statistic { width: calc(100% - 3em); }
+  .ui.two.statistics > .statistic { width: calc(50% - 3em); }
+  .ui.three.statistics > .statistic { width: calc(33.333% - 3em); }
+  .ui.four.statistics > .statistic { width: calc(25% - 3em); }
+  .ui.five.statistics > .statistic { width: calc(20% - 3em); }
+}

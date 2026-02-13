@@ -1,0 +1,27 @@
+/*
+ * Shadow tokens for Semantic-UI-React
+ */
+@layer sui.tokens {
+  :root {
+    /* ---- Standard shadow scale ---- */
+    --sui-shadow-sm: 0 1px 2px 0 rgba(34, 36, 38, 0.15);
+    --sui-shadow: 0 1px 3px 0 rgba(34, 36, 38, 0.15);
+    --sui-shadow-md: 0 4px 6px -1px rgba(34, 36, 38, 0.15), 0 2px 4px -2px rgba(34, 36, 38, 0.1);
+    --sui-shadow-lg: 0 10px 15px -3px rgba(34, 36, 38, 0.15), 0 4px 6px -4px rgba(34, 36, 38, 0.1);
+    --sui-shadow-xl: 0 20px 25px -5px rgba(34, 36, 38, 0.15), 0 8px 10px -6px rgba(34, 36, 38, 0.1);
+
+    /* ---- Component-specific shadows ---- */
+    --sui-shadow-subtle: 0 1px 2px 0 rgba(34, 36, 38, 0.15);
+    --sui-shadow-raised: 0 2px 4px 0 rgba(34, 36, 38, 0.12), 0 2px 10px 0 rgba(34, 36, 38, 0.15);
+    --sui-shadow-floating: 0 2px 4px 0 rgba(34, 36, 38, 0.12), 0 2px 10px 0 rgba(34, 36, 38, 0.15);
+    --sui-shadow-stacked: 0 1px 2px 0 rgba(34, 36, 38, 0.15);
+    --sui-shadow-piled: 0 0 1px rgba(34, 36, 38, 0.15);
+    --sui-shadow-dropdown: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+    --sui-shadow-popup: 0 2px 4px 0 rgba(34, 36, 38, 0.12), 0 2px 10px 0 rgba(34, 36, 38, 0.15);
+    --sui-shadow-modal: 1px 3px 3px 0 rgba(0, 0, 0, 0.2), 1px 3px 15px 2px rgba(0, 0, 0, 0.2);
+
+    /* ---- Inset shadows ---- */
+    --sui-shadow-input: 0 0 0 0 transparent inset;
+    --sui-shadow-input-focus: 0 0 0 0 rgba(34, 36, 38, 0.35) inset;
+  }
+}

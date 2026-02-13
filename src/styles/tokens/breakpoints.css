@@ -1,0 +1,16 @@
+/*
+ * Breakpoint tokens for Semantic-UI-React
+ * Maps to SUI.VISIBILITY: mobile, tablet, computer, large screen, widescreen
+ */
+@layer sui.tokens {
+  :root {
+    --sui-bp-mobile-max: 767px;
+    --sui-bp-tablet-min: 768px;
+    --sui-bp-tablet-max: 991px;
+    --sui-bp-computer-min: 992px;
+    --sui-bp-computer-max: 1199px;
+    --sui-bp-large-min: 1200px;
+    --sui-bp-large-max: 1919px;
+    --sui-bp-widescreen-min: 1920px;
+  }
+}

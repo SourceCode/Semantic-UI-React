@@ -10,11 +10,8 @@ orbs:
 
 docker_defaults: &docker_defaults
   docker:
-    - image: cimg/node:16.16-browsers
+    - image: cimg/node:20.18-browsers
   working_directory: ~/project/semantic-ui-react
-
-environment:
-  PUPPETEER_DOWNLOAD_PATH: ~/.cache/chrome
 
 jobs:
   bootstrap:
@@ -24,24 +21,24 @@ jobs:
       - restore_cache:
           name: Restore yarn cache
           keys:
-            - v6-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - v6-node-{{ .Branch }}-
-            - v6-node-
+            - v7-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v7-node-{{ .Branch }}-
+            - v7-node-
+      - run:
+          name: Enable Corepack
+          command: corepack enable
       - run:
           name: Install Dependencies
-          command: npx https://registry.yarnpkg.com/midgard-yarn/-/midgard-yarn-1.23.18.tgz --frozen-lockfile
+          command: yarn install --immutable
       - save_cache:
           name: Save yarn cache
-          key: v6-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v7-node-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
-            - ~/.cache/yarn
-      - browser-tools/install-chrome
+            - .yarn/cache
       - persist_to_workspace:
           root: ~/
           paths:
             - project
-            - .cache/chrome
-            - .cache/Cypress
 
   test:
     <<: *docker_defaults
@@ -49,23 +46,29 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
+          name: Enable Corepack
+          command: corepack enable
+      - run:
           name: Test JavaScript
-          command: yarn test
+          command: yarn test --coverage
       - run:
           name: Report coverage
-          command: bash <(curl -s https://codecov.io/bash)
+          command: npx codecov --token=$CODECOV_TOKEN -f coverage/lcov.info
       - run:
           name: Test TypeScript
           command: yarn tsd:test
       - run:
-          name: Test UMD bundle
-          command: yarn test:umd
+          name: React Compiler check
+          command: yarn eslint --no-eslintrc -c eslint.config.mjs --rule '{"react-compiler/react-compiler":"error"}' src/
 
   lint:
     <<: *docker_defaults
     steps:
       - attach_workspace:
           at: ~/
+      - run:
+          name: Enable Corepack
+          command: corepack enable
       - run:
           name: Lint
           command: yarn lint
@@ -75,6 +78,10 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
+      - browser-tools/install-chrome
+      - run:
+          name: Enable Corepack
+          command: corepack enable
       - run:
           name: Build
           command: yarn build:docs
@@ -82,7 +89,7 @@ jobs:
             STAGING: true
       - run:
           name: Cypress run
-          command: yarn start-server-and-test 'yarn serve -l -p 3000 -S docs/dist' 3000 'yarn percy exec -- cypress run'
+          command: yarn start-server-and-test 'yarn preview --host 0.0.0.0 --port 3000' 3000 'yarn percy exec -- cypress run'
 
 workflows:
   version: 2

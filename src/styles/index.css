@@ -1,0 +1,85 @@
+/*
+ * Semantic-UI-React Styles
+ *
+ * Modern CSS replacement for the external semantic-ui-css dependency.
+ * Uses CSS cascade layers, custom properties, and modern selectors.
+ *
+ * Usage:
+ *   import 'semantic-ui-react/src/styles/index.css';
+ *
+ * Or in CSS:
+ *   @import 'semantic-ui-react/src/styles/index.css';
+ */
+
+/* ---- Layer ordering (must be first) ---- */
+@import './layers.css';
+
+/* ---- Design tokens ---- */
+@import './tokens/colors.css';
+@import './tokens/sizes.css';
+@import './tokens/spacing.css';
+@import './tokens/typography.css';
+@import './tokens/shadows.css';
+@import './tokens/borders.css';
+@import './tokens/breakpoints.css';
+@import './tokens/transitions.css';
+@import './tokens/z-index.css';
+
+/* ---- Base styles ---- */
+@import './base/reset.css';
+@import './base/typography.css';
+
+/* ---- Elements ---- */
+@import './elements/button.css';
+@import './elements/container.css';
+@import './elements/divider.css';
+@import './elements/flag.css';
+@import './elements/header.css';
+@import './elements/icon.css';
+@import './elements/image.css';
+@import './elements/input.css';
+@import './elements/label.css';
+@import './elements/list.css';
+@import './elements/loader.css';
+@import './elements/placeholder.css';
+@import './elements/rail.css';
+@import './elements/reveal.css';
+@import './elements/segment.css';
+@import './elements/step.css';
+
+/* ---- Collections ---- */
+@import './collections/breadcrumb.css';
+@import './collections/form.css';
+@import './collections/grid.css';
+@import './collections/menu.css';
+@import './collections/message.css';
+@import './collections/table.css';
+
+/* ---- Modules ---- */
+@import './modules/accordion.css';
+@import './modules/checkbox.css';
+@import './modules/dimmer.css';
+@import './modules/dropdown.css';
+@import './modules/embed.css';
+@import './modules/modal.css';
+@import './modules/popup.css';
+@import './modules/progress.css';
+@import './modules/rating.css';
+@import './modules/search.css';
+@import './modules/sidebar.css';
+@import './modules/sticky.css';
+@import './modules/tab.css';
+@import './modules/transition.css';
+
+/* ---- Views ---- */
+@import './views/advertisement.css';
+@import './views/card.css';
+@import './views/comment.css';
+@import './views/feed.css';
+@import './views/item.css';
+@import './views/statistic.css';
+
+/* ---- Addons ---- */
+@import './addons/confirm.css';
+@import './addons/pagination.css';
+@import './addons/portal.css';

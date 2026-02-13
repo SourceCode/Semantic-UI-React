@@ -1,5 +1,3 @@
-import * as ReactIs from 'react-is'
-
 /**
  * Gets a proper `displayName` for a component.
  *
@@ -7,12 +5,12 @@ import * as ReactIs from 'react-is'
  * @return {String}
  */
 export default function getComponentName(Component) {
-  if (Component.$$typeof === ReactIs.Memo) {
-    return getComponentName(Component.type)
+  if (Component.displayName) {
+    return Component.displayName
   }
 
-  if (Component.$$typeof === ReactIs.ForwardRef) {
-    return Component.displayName
+  if (Component.name) {
+    return Component.name
   }
 
   return Component.prototype?.constructor?.name

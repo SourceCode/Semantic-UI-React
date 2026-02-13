@@ -1,0 +1,54 @@
+/*
+ * Tab component CSS
+ *
+ * Class pattern: 'ui', active, loading, 'tab'
+ * Tabs are usually paired with a Menu (tabular).
+ */
+@layer sui.components {
+  .ui.tab {
+    display: none;
+    padding: 1em 0;
+  }
+
+  .ui.tab.active { display: block; }
+
+  .ui.tab.loading {
+    position: relative;
+    overflow: hidden;
+    min-height: 250px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.8);
+      z-index: 100;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -1.5em 0 0 -1.5em;
+      width: 3em;
+      height: 3em;
+      border-radius: var(--sui-border-radius-circular);
+      border: 0.2em solid rgba(0, 0, 0, 0.1);
+      border-top-color: var(--sui-grey);
+      animation: sui-loader-spin 0.6s linear infinite;
+      z-index: 101;
+    }
+  }
+
+  /* Tab attached to a tabular menu */
+  .ui.tab.segment {
+    border-top: none;
+    border-radius: 0 0 var(--sui-border-radius) var(--sui-border-radius);
+    margin-top: 0;
+  }
+
+  .ui.tab.attached.segment.active {
+    display: block;
+  }
+}

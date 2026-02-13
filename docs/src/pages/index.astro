@@ -1,0 +1,42 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro'
+import Header from '../components/Header.astro'
+import Sidebar from '../components/Sidebar.astro'
+import Search from '../components/Search.tsx'
+---
+
+<DocsLayout title="Home">
+  <Header slot="sidebar" />
+  <Sidebar slot="sidebar" />
+
+  <div class="docs-hero">
+    <h1>Semantic UI React</h1>
+    <p>The official React integration for Semantic UI — now with React 19 support, built-in CSS, and theming.</p>
+
+    <Search client:idle />
+
+    <div class="hero-actions">
+      <a href="/usage" class="ui primary button large">Get Started</a>
+      <a href="https://github.com/Semantic-Org/Semantic-UI-React" class="ui button large" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+
+    <div class="hero-features">
+      <div class="feature">
+        <h3>React 19 Native</h3>
+        <p>Built for React 19 with ref-as-prop, form actions, React Compiler support, and the Context provider pattern.</p>
+      </div>
+      <div class="feature">
+        <h3>Built-in CSS</h3>
+        <p>No external CSS dependency. Ship only the styles you need with per-component CSS imports and tree-shaking.</p>
+      </div>
+      <div class="feature">
+        <h3>Theming</h3>
+        <p>CSS custom properties for runtime theme switching. Built-in light and dark themes with ThemeProvider.</p>
+      </div>
+      <div class="feature">
+        <h3>TypeScript First</h3>
+        <p>Written in TypeScript with full type safety. No separate @types package needed.</p>
+      </div>
+    </div>
+  </div>
+</DocsLayout>

@@ -1,6 +1,5 @@
 import makeDebugger from './makeDebugger'
 
-export ModernAutoControlledComponent from './ModernAutoControlledComponent'
 export * as childrenUtils from './childrenUtils'
 
 export {
@@ -13,7 +12,6 @@ export {
   getWidthProp,
 } from './classNameBuilders'
 
-export * as customPropTypes from './customPropTypes'
 export eventStack from './eventStack'
 
 export * from './factories'
@@ -53,3 +51,4 @@ export useForceUpdate from './hooks/useForceUpdate'
 export useIsomorphicLayoutEffect from './hooks/useIsomorphicLayoutEffect'
 export useMergedRefs, { setRef } from './hooks/useMergedRefs'
 export usePrevious from './hooks/usePrevious'
+export useTheme from './hooks/useTheme'

@@ -1,0 +1,229 @@
+/*
+ * Table component CSS
+ *
+ * Class pattern: 'ui', color, size, basic, celled, collapsing, compact|'very' compact,
+ *   definition, fixed, inverted, padded|'very' padded, selectable, single.line,
+ *   sortable, stackable, striped, structured, unstackable, attached|{value} attached,
+ *   {value} aligned, 'table'
+ */
+@layer sui.components {
+  .ui.table {
+    width: 100%;
+    background: var(--sui-background, #ffffff);
+    margin: 1em 0;
+    border: 1px solid var(--sui-border-color, rgba(34, 36, 38, 0.15));
+    border-radius: var(--sui-border-radius, 0.28571429rem);
+    box-shadow: none;
+    color: var(--sui-text-color, rgba(0, 0, 0, 0.87));
+    font-size: var(--sui-size-medium, 1rem);
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+  }
+
+  .ui.table th,
+  .ui.table td {
+    padding: var(--sui-table-cell-padding);
+    text-align: inherit;
+    vertical-align: middle;
+    transition: background var(--sui-transition-fast), color var(--sui-transition-fast);
+  }
+
+  .ui.table thead th {
+    cursor: auto;
+    background: var(--sui-background-subtle, #f9fafb);
+    text-align: inherit;
+    color: var(--sui-text-color, rgba(0, 0, 0, 0.87));
+    padding: 0.92857143em 0.78571429em;
+    vertical-align: inherit;
+    font-weight: var(--sui-font-bold);
+    border-bottom: 1px solid var(--sui-border-color);
+    border-left: none;
+  }
+
+  .ui.table tbody tr { border-top: 1px solid var(--sui-internal-border); }
+  .ui.table tbody tr:first-child { border-top: none; }
+
+  .ui.table tfoot th {
+    background: #f9fafb;
+    padding: 0.78571429em;
+    font-weight: var(--sui-font-normal);
+    border-top: 1px solid var(--sui-border-color);
+  }
+
+  /* ---- Positive / Negative / Warning / Active ---- */
+  .ui.table tr.positive td,
+  .ui.table td.positive { background: #fcfff5; color: #2c662d; }
+  .ui.table tr.negative td,
+  .ui.table td.negative { background: #fff6f6; color: #9f3a38; }
+  .ui.table tr.warning td,
+  .ui.table td.warning { background: #fffaf3; color: #573a08; }
+  .ui.table tr.active td,
+  .ui.table td.active { background: #e0e0e0; color: var(--sui-text-color); }
+  .ui.table tr.error td,
+  .ui.table td.error { background: #fff6f6; color: #9f3a38; }
+  .ui.table tr.disabled td { pointer-events: none; opacity: 0.45; }
+
+  /* ---- Striped ---- */
+  .ui.striped.table tbody tr:nth-child(2n) { background: rgba(0, 0, 50, 0.02); }
+  .ui.inverted.striped.table tbody tr:nth-child(2n) { background: rgba(255, 255, 255, 0.05); }
+
+  /* ---- Celled ---- */
+  .ui.celled.table tr td,
+  .ui.celled.table tr th {
+    border-left: 1px solid var(--sui-internal-border);
+
+    &:first-child { border-left: none; }
+  }
+
+  /* ---- Basic ---- */
+  .ui.basic.table {
+    background: transparent;
+    border: 1px solid var(--sui-border-color);
+    box-shadow: none;
+  }
+  .ui.very.basic.table { border: none; }
+
+  /* ---- Collapsing ---- */
+  .ui.collapsing.table { width: auto; }
+
+  /* ---- Compact ---- */
+  .ui.compact.table th,
+  .ui.compact.table td { padding: 0.5em 0.7em; }
+  .ui.very.compact.table th,
+  .ui.very.compact.table td { padding: 0.4em 0.6em; }
+
+  /* ---- Padded ---- */
+  .ui.padded.table th,
+  .ui.padded.table td { padding: 1em 1em; }
+  .ui.very.padded.table th,
+  .ui.very.padded.table td { padding: 1.5em 1.5em; }
+
+  /* ---- Definition ---- */
+  .ui.definition.table thead:not(.full-width) th:first-child {
+    pointer-events: none;
+    background: transparent;
+    font-weight: var(--sui-font-normal);
+    color: var(--sui-muted-text);
+  }
+  .ui.definition.table tbody tr td:first-child {
+    background: rgba(0, 0, 0, 0.03);
+    font-weight: var(--sui-font-bold);
+    color: var(--sui-text-color);
+  }
+
+  /* ---- Fixed ---- */
+  .ui.fixed.table { table-layout: fixed; }
+
+  /* ---- Single line ---- */
+  .ui.single.line.table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ---- Selectable ---- */
+  .ui.selectable.table tbody tr {
+    cursor: pointer;
+
+    &:hover { background: var(--sui-subtle-bg); color: var(--sui-hovered-text); }
+  }
+
+  /* ---- Sortable ---- */
+  .ui.sortable.table thead th {
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+
+    &:hover { background: rgba(0, 0, 0, 0.05); }
+
+    &.sorted { background: rgba(0, 0, 0, 0.05); }
+    &.sorted.ascending::after { content: ' \25B2'; font-size: 0.7em; }
+    &.sorted.descending::after { content: ' \25BC'; font-size: 0.7em; }
+  }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.table {
+    background: var(--sui-black);
+    color: var(--sui-inverted-text);
+    border: none;
+
+    & th { background-color: rgba(0, 0, 0, 0.15); color: var(--sui-inverted-muted); }
+    & tr td { border-color: rgba(255, 255, 255, 0.1); }
+  }
+
+  /* ---- Structured ---- */
+  .ui.structured.table {
+    border-collapse: collapse;
+
+    & th,
+    & td { border: 1px solid var(--sui-internal-border); }
+  }
+
+  /* ---- Attached ---- */
+  .ui.attached.table { border-radius: 0; margin: 0 -1px; width: calc(100% + 2px); }
+  .ui.top.attached.table { border-radius: var(--sui-border-radius) var(--sui-border-radius) 0 0; margin-top: 1rem; }
+  .ui.bottom.attached.table { border-radius: 0 0 var(--sui-border-radius) var(--sui-border-radius); margin-bottom: 1rem; }
+
+  /* ---- Alignment ---- */
+  .ui.left.aligned.table td,
+  .ui.left.aligned.table th,
+  td.left.aligned, th.left.aligned { text-align: left; }
+  .ui.center.aligned.table td,
+  .ui.center.aligned.table th,
+  td.center.aligned, th.center.aligned { text-align: center; }
+  .ui.right.aligned.table td,
+  .ui.right.aligned.table th,
+  td.right.aligned, th.right.aligned { text-align: right; }
+
+  /* ---- Stackable ---- */
+  @media screen and (max-width: 767px) {
+    .ui.stackable.table,
+    .ui.stackable.table thead,
+    .ui.stackable.table tbody,
+    .ui.stackable.table tr,
+    .ui.stackable.table th,
+    .ui.stackable.table td { display: block !important; width: 100% !important; }
+
+    .ui.stackable.table thead { display: none !important; }
+    .ui.stackable.table tr { padding-top: 1em; padding-bottom: 1em; box-shadow: 0 -1px 0 0 var(--sui-border-color) inset; }
+  }
+
+  /* ---- Colors ---- */
+  .ui.red.table { border-top: 0.2em solid var(--sui-red); }
+  .ui.orange.table { border-top: 0.2em solid var(--sui-orange); }
+  .ui.yellow.table { border-top: 0.2em solid var(--sui-yellow); }
+  .ui.olive.table { border-top: 0.2em solid var(--sui-olive); }
+  .ui.green.table { border-top: 0.2em solid var(--sui-green); }
+  .ui.teal.table { border-top: 0.2em solid var(--sui-teal); }
+  .ui.blue.table { border-top: 0.2em solid var(--sui-blue); }
+  .ui.violet.table { border-top: 0.2em solid var(--sui-violet); }
+  .ui.purple.table { border-top: 0.2em solid var(--sui-purple); }
+  .ui.pink.table { border-top: 0.2em solid var(--sui-pink); }
+  .ui.brown.table { border-top: 0.2em solid var(--sui-brown); }
+  .ui.grey.table { border-top: 0.2em solid var(--sui-grey); }
+  .ui.black.table { border-top: 0.2em solid var(--sui-black); }
+
+  /* ---- Sizes ---- */
+  .ui.mini.table { font-size: var(--sui-size-mini); }
+  .ui.tiny.table { font-size: var(--sui-size-tiny); }
+  .ui.small.table { font-size: var(--sui-size-small); }
+  .ui.large.table { font-size: var(--sui-size-large); }
+  .ui.big.table { font-size: var(--sui-size-big); }
+  .ui.huge.table { font-size: var(--sui-size-huge); }
+  .ui.massive.table { font-size: var(--sui-size-massive); }
+
+  /* ---- Column widths inside table ---- */
+  .ui.table .one.wide { width: 6.25%; }
+  .ui.table .two.wide { width: 12.5%; }
+  .ui.table .three.wide { width: 18.75%; }
+  .ui.table .four.wide { width: 25%; }
+  .ui.table .five.wide { width: 31.25%; }
+  .ui.table .six.wide { width: 37.5%; }
+  .ui.table .seven.wide { width: 43.75%; }
+  .ui.table .eight.wide { width: 50%; }
+  .ui.table .nine.wide { width: 56.25%; }
+  .ui.table .ten.wide { width: 62.5%; }
+  .ui.table .eleven.wide { width: 68.75%; }
+  .ui.table .twelve.wide { width: 75%; }
+  .ui.table .thirteen.wide { width: 81.25%; }
+  .ui.table .fourteen.wide { width: 87.5%; }
+  .ui.table .fifteen.wide { width: 93.75%; }
+  .ui.table .sixteen.wide { width: 100%; }
+}

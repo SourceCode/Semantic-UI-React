@@ -1,0 +1,291 @@
+/*
+ * Transition component CSS
+ *
+ * Class pattern from Transition.tsx:
+ *   Directional: '{animation}', animating, in|out, hidden|visible, 'transition'
+ *   Static: '{animation}', 'animating transition'
+ *
+ * All 34 animation types from SUI.TRANSITIONS:
+ *   Directional (27): browse, browse right, drop, fade, fade up/down/left/right,
+ *     fly up/down/left/right, horizontal flip, vertical flip, scale,
+ *     slide up/down/left/right, swing up/down/left/right, zoom
+ *   Static (7): flash, glow, jiggle, pulse, shake, tada, bounce
+ */
+@layer sui.components {
+  /* ==== Base transition classes ==== */
+  .transition {
+    animation-iteration-count: 1;
+    animation-duration: var(--sui-animation-duration);
+    animation-timing-function: var(--sui-animation-easing);
+    animation-fill-mode: var(--sui-animation-fill);
+  }
+
+  .transition.visible { display: block !important; visibility: visible !important; }
+  .transition.hidden { display: none !important; visibility: hidden; }
+  .transition.animating { backface-visibility: hidden; }
+
+  /* ==== DIRECTIONAL: BROWSE ==== */
+  .browse.transition.in { animation-name: sui-browse-in; }
+  .browse.transition.out { animation-name: sui-browse-out; }
+
+  @keyframes sui-browse-in {
+    0% { transform: scale(0.8) translateZ(0); z-index: -1; opacity: 0; }
+    10% { transform: scale(0.8) translateZ(0); z-index: -1; opacity: 0.7; }
+    80% { transform: scale(1.05) translateZ(0); opacity: 1; }
+    100% { transform: scale(1) translateZ(0); }
+  }
+  @keyframes sui-browse-out {
+    0% { transform: translateX(0) rotateY(0) opacity(1); z-index: 1; }
+    100% { transform: translateX(-105%) rotateY(35deg); z-index: -1; opacity: 0; }
+  }
+
+  /* browse right */
+  .browse.right.transition.in { animation-name: sui-browse-right-in; }
+  .browse.right.transition.out { animation-name: sui-browse-right-out; }
+
+  @keyframes sui-browse-right-in {
+    0% { transform: scale(0.8) translateZ(0); z-index: -1; opacity: 0; }
+    10% { transform: scale(0.8) translateZ(0); z-index: -1; opacity: 0.7; }
+    80% { transform: scale(1.05) translateZ(0); opacity: 1; }
+    100% { transform: scale(1) translateZ(0); }
+  }
+  @keyframes sui-browse-right-out {
+    0% { transform: translateX(0) rotateY(0); z-index: 1; opacity: 1; }
+    100% { transform: translateX(105%) rotateY(35deg); z-index: -1; opacity: 0; }
+  }
+
+  /* ==== DROP ==== */
+  .drop.transition.in { animation-name: sui-drop-in; transform-origin: top center; }
+  .drop.transition.out { animation-name: sui-drop-out; transform-origin: top center; }
+
+  @keyframes sui-drop-in {
+    0% { opacity: 0; transform: scale(0); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes sui-drop-out {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0); }
+  }
+
+  /* ==== FADE ==== */
+  .fade.transition.in { animation-name: sui-fade-in; }
+  .fade.transition.out { animation-name: sui-fade-out; }
+
+  @keyframes sui-fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+  @keyframes sui-fade-out { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+  /* fade up */
+  .fade.up.transition.in { animation-name: sui-fade-up-in; }
+  .fade.up.transition.out { animation-name: sui-fade-up-out; }
+
+  @keyframes sui-fade-up-in { 0% { opacity: 0; transform: translateY(10%); } 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes sui-fade-up-out { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(10%); } }
+
+  /* fade down */
+  .fade.down.transition.in { animation-name: sui-fade-down-in; }
+  .fade.down.transition.out { animation-name: sui-fade-down-out; }
+
+  @keyframes sui-fade-down-in { 0% { opacity: 0; transform: translateY(-10%); } 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes sui-fade-down-out { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-10%); } }
+
+  /* fade left */
+  .fade.left.transition.in { animation-name: sui-fade-left-in; }
+  .fade.left.transition.out { animation-name: sui-fade-left-out; }
+
+  @keyframes sui-fade-left-in { 0% { opacity: 0; transform: translateX(10%); } 100% { opacity: 1; transform: translateX(0); } }
+  @keyframes sui-fade-left-out { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(10%); } }
+
+  /* fade right */
+  .fade.right.transition.in { animation-name: sui-fade-right-in; }
+  .fade.right.transition.out { animation-name: sui-fade-right-out; }
+
+  @keyframes sui-fade-right-in { 0% { opacity: 0; transform: translateX(-10%); } 100% { opacity: 1; transform: translateX(0); } }
+  @keyframes sui-fade-right-out { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(-10%); } }
+
+  /* ==== FLY ==== */
+  /* fly up */
+  .fly.up.transition.in { animation-name: sui-fly-up-in; }
+  .fly.up.transition.out { animation-name: sui-fly-up-out; }
+
+  @keyframes sui-fly-up-in { 0% { opacity: 0; transform: translateY(-1500px); } 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes sui-fly-up-out { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(1500px); } }
+
+  /* fly down */
+  .fly.down.transition.in { animation-name: sui-fly-down-in; }
+  .fly.down.transition.out { animation-name: sui-fly-down-out; }
+
+  @keyframes sui-fly-down-in { 0% { opacity: 0; transform: translateY(1500px); } 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes sui-fly-down-out { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-1500px); } }
+
+  /* fly left */
+  .fly.left.transition.in { animation-name: sui-fly-left-in; }
+  .fly.left.transition.out { animation-name: sui-fly-left-out; }
+
+  @keyframes sui-fly-left-in { 0% { opacity: 0; transform: translateX(-1500px); } 100% { opacity: 1; transform: translateX(0); } }
+  @keyframes sui-fly-left-out { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(1500px); } }
+
+  /* fly right */
+  .fly.right.transition.in { animation-name: sui-fly-right-in; }
+  .fly.right.transition.out { animation-name: sui-fly-right-out; }
+
+  @keyframes sui-fly-right-in { 0% { opacity: 0; transform: translateX(1500px); } 100% { opacity: 1; transform: translateX(0); } }
+  @keyframes sui-fly-right-out { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(-1500px); } }
+
+  /* ==== HORIZONTAL FLIP ==== */
+  .horizontal.flip.transition.in { animation-name: sui-h-flip-in; }
+  .horizontal.flip.transition.out { animation-name: sui-h-flip-out; }
+
+  @keyframes sui-h-flip-in { 0% { transform: perspective(2000px) rotateY(-90deg); opacity: 0; } 100% { transform: perspective(2000px) rotateY(0); opacity: 1; } }
+  @keyframes sui-h-flip-out { 0% { transform: perspective(2000px) rotateY(0); opacity: 1; } 100% { transform: perspective(2000px) rotateY(90deg); opacity: 0; } }
+
+  /* ==== VERTICAL FLIP ==== */
+  .vertical.flip.transition.in { animation-name: sui-v-flip-in; }
+  .vertical.flip.transition.out { animation-name: sui-v-flip-out; }
+
+  @keyframes sui-v-flip-in { 0% { transform: perspective(2000px) rotateX(-90deg); opacity: 0; } 100% { transform: perspective(2000px) rotateX(0); opacity: 1; } }
+  @keyframes sui-v-flip-out { 0% { transform: perspective(2000px) rotateX(0); opacity: 1; } 100% { transform: perspective(2000px) rotateX(90deg); opacity: 0; } }
+
+  /* ==== SCALE ==== */
+  .scale.transition.in { animation-name: sui-scale-in; }
+  .scale.transition.out { animation-name: sui-scale-out; }
+
+  @keyframes sui-scale-in { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes sui-scale-out { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.8); } }
+
+  /* ==== SLIDE ==== */
+  /* slide up */
+  .slide.up.transition.in { animation-name: sui-slide-up-in; }
+  .slide.up.transition.out { animation-name: sui-slide-up-out; }
+
+  @keyframes sui-slide-up-in { 0% { opacity: 0; transform: scaleY(0); transform-origin: top; } 100% { opacity: 1; transform: scaleY(1); } }
+  @keyframes sui-slide-up-out { 0% { opacity: 1; transform: scaleY(1); transform-origin: top; } 100% { opacity: 0; transform: scaleY(0); } }
+
+  /* slide down */
+  .slide.down.transition.in { animation-name: sui-slide-down-in; }
+  .slide.down.transition.out { animation-name: sui-slide-down-out; }
+
+  @keyframes sui-slide-down-in { 0% { opacity: 0; transform: scaleY(0); transform-origin: bottom; } 100% { opacity: 1; transform: scaleY(1); } }
+  @keyframes sui-slide-down-out { 0% { opacity: 1; transform: scaleY(1); transform-origin: bottom; } 100% { opacity: 0; transform: scaleY(0); } }
+
+  /* slide left */
+  .slide.left.transition.in { animation-name: sui-slide-left-in; }
+  .slide.left.transition.out { animation-name: sui-slide-left-out; }
+
+  @keyframes sui-slide-left-in { 0% { opacity: 0; transform: scaleX(0); transform-origin: left; } 100% { opacity: 1; transform: scaleX(1); } }
+  @keyframes sui-slide-left-out { 0% { opacity: 1; transform: scaleX(1); transform-origin: left; } 100% { opacity: 0; transform: scaleX(0); } }
+
+  /* slide right */
+  .slide.right.transition.in { animation-name: sui-slide-right-in; }
+  .slide.right.transition.out { animation-name: sui-slide-right-out; }
+
+  @keyframes sui-slide-right-in { 0% { opacity: 0; transform: scaleX(0); transform-origin: right; } 100% { opacity: 1; transform: scaleX(1); } }
+  @keyframes sui-slide-right-out { 0% { opacity: 1; transform: scaleX(1); transform-origin: right; } 100% { opacity: 0; transform: scaleX(0); } }
+
+  /* ==== SWING ==== */
+  /* swing up */
+  .swing.up.transition.in { animation-name: sui-swing-up-in; transform-origin: top center; }
+  .swing.up.transition.out { animation-name: sui-swing-up-out; transform-origin: top center; }
+
+  @keyframes sui-swing-up-in { 0% { transform: perspective(1000px) rotateX(90deg); opacity: 0; } 100% { transform: perspective(1000px) rotateX(0); opacity: 1; } }
+  @keyframes sui-swing-up-out { 0% { transform: perspective(1000px) rotateX(0); opacity: 1; } 100% { transform: perspective(1000px) rotateX(-90deg); opacity: 0; } }
+
+  /* swing down */
+  .swing.down.transition.in { animation-name: sui-swing-down-in; transform-origin: bottom center; }
+  .swing.down.transition.out { animation-name: sui-swing-down-out; transform-origin: bottom center; }
+
+  @keyframes sui-swing-down-in { 0% { transform: perspective(1000px) rotateX(-90deg); opacity: 0; } 100% { transform: perspective(1000px) rotateX(0); opacity: 1; } }
+  @keyframes sui-swing-down-out { 0% { transform: perspective(1000px) rotateX(0); opacity: 1; } 100% { transform: perspective(1000px) rotateX(90deg); opacity: 0; } }
+
+  /* swing left */
+  .swing.left.transition.in { animation-name: sui-swing-left-in; transform-origin: center left; }
+  .swing.left.transition.out { animation-name: sui-swing-left-out; transform-origin: center left; }
+
+  @keyframes sui-swing-left-in { 0% { transform: perspective(1000px) rotateY(-90deg); opacity: 0; } 100% { transform: perspective(1000px) rotateY(0); opacity: 1; } }
+  @keyframes sui-swing-left-out { 0% { transform: perspective(1000px) rotateY(0); opacity: 1; } 100% { transform: perspective(1000px) rotateY(90deg); opacity: 0; } }
+
+  /* swing right */
+  .swing.right.transition.in { animation-name: sui-swing-right-in; transform-origin: center right; }
+  .swing.right.transition.out { animation-name: sui-swing-right-out; transform-origin: center right; }
+
+  @keyframes sui-swing-right-in { 0% { transform: perspective(1000px) rotateY(90deg); opacity: 0; } 100% { transform: perspective(1000px) rotateY(0); opacity: 1; } }
+  @keyframes sui-swing-right-out { 0% { transform: perspective(1000px) rotateY(0); opacity: 1; } 100% { transform: perspective(1000px) rotateY(-90deg); opacity: 0; } }
+
+  /* ==== ZOOM ==== */
+  .zoom.transition.in { animation-name: sui-zoom-in; }
+  .zoom.transition.out { animation-name: sui-zoom-out; }
+
+  @keyframes sui-zoom-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes sui-zoom-out { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.5); } }
+
+
+  /* ============================================= */
+  /* ==== STATIC ANIMATIONS (7)                ==== */
+  /* ============================================= */
+
+  /* ==== FLASH ==== */
+  .flash.animating.transition { animation-name: sui-flash; }
+
+  @keyframes sui-flash {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+  }
+
+  /* ==== GLOW ==== */
+  .glow.animating.transition { animation-name: sui-glow; }
+
+  @keyframes sui-glow {
+    0% { background-color: color-mix(in srgb, var(--sui-yellow), transparent 70%); }
+    100% { background-color: transparent; }
+  }
+
+  /* ==== JIGGLE ==== */
+  .jiggle.animating.transition { animation-name: sui-jiggle; }
+
+  @keyframes sui-jiggle {
+    0% { transform: scale3d(1, 1, 1); }
+    30% { transform: scale3d(1.25, 0.75, 1); }
+    40% { transform: scale3d(0.75, 1.25, 1); }
+    50% { transform: scale3d(1.15, 0.85, 1); }
+    65% { transform: scale3d(0.95, 1.05, 1); }
+    75% { transform: scale3d(1.05, 0.95, 1); }
+    100% { transform: scale3d(1, 1, 1); }
+  }
+
+  /* ==== PULSE ==== */
+  .pulse.animating.transition { animation-name: sui-pulse; }
+
+  @keyframes sui-pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.9); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* ==== SHAKE ==== */
+  .shake.animating.transition { animation-name: sui-shake; }
+
+  @keyframes sui-shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+  }
+
+  /* ==== TADA ==== */
+  .tada.animating.transition { animation-name: sui-tada; }
+
+  @keyframes sui-tada {
+    0% { transform: scale3d(1, 1, 1); }
+    10%, 20% { transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg); }
+    30%, 50%, 70%, 90% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg); }
+    40%, 60%, 80% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg); }
+    100% { transform: scale3d(1, 1, 1); }
+  }
+
+  /* ==== BOUNCE ==== */
+  .bounce.animating.transition { animation-name: sui-bounce; }
+
+  @keyframes sui-bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-30px); }
+    60% { transform: translateY(-15px); }
+  }
+}

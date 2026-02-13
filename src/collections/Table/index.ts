@@ -1,0 +1,8 @@
+export { default } from './Table'
+export type { TableProps, StrictTableProps } from './Table'
+export type { TableBodyProps, StrictTableBodyProps } from './TableBody'
+export type { TableCellProps, StrictTableCellProps } from './TableCell'
+export type { TableFooterProps, StrictTableFooterProps } from './TableFooter'
+export type { TableHeaderProps, StrictTableHeaderProps } from './TableHeader'
+export type { TableHeaderCellProps, StrictTableHeaderCellProps } from './TableHeaderCell'
+export type { TableRowProps, StrictTableRowProps } from './TableRow'

@@ -1,0 +1,86 @@
+/*
+ * Divider component CSS
+ *
+ * Class pattern: 'ui', fitted, hidden, horizontal, inverted, vertical, section, clearing, 'divider'
+ */
+@layer sui.components {
+  .ui.divider {
+    margin: 1rem 0;
+    border: none;
+    border-top: 1px solid var(--sui-border-color);
+    line-height: 1;
+    height: 0;
+    font-weight: var(--sui-font-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sui-text-color);
+    user-select: none;
+  }
+
+  /* ---- Vertical ---- */
+  .ui.vertical.divider {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: 50%;
+    line-height: 0;
+    text-align: center;
+    transform: translateX(-50%);
+    border-top: none;
+    border-left: 1px solid var(--sui-border-color);
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      width: 0;
+      border-left: 1px solid var(--sui-border-color);
+    }
+  }
+
+  /* ---- Horizontal ---- */
+  .ui.horizontal.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    border-top: none;
+    margin: 1rem 0;
+    white-space: nowrap;
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--sui-border-color);
+    }
+
+    &::before { margin-right: 0.5em; }
+    &::after { margin-left: 0.5em; }
+  }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.divider {
+    color: var(--sui-inverted-text);
+    border-color: var(--sui-inverted-border);
+  }
+
+  /* ---- Fitted ---- */
+  .ui.fitted.divider { margin: 0; }
+
+  /* ---- Hidden ---- */
+  .ui.hidden.divider {
+    border-color: transparent;
+    margin: 1rem 0;
+  }
+
+  /* ---- Section ---- */
+  .ui.section.divider { margin: 2rem 0; }
+
+  /* ---- Clearing ---- */
+  .ui.clearing.divider { clear: both; }
+}

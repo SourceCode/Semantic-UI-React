@@ -1,39 +1,22 @@
+/**
+ * Console utility for temporarily silencing console output in tests.
+ * Uses Vitest's vi.spyOn to mock console methods.
+ */
+
 const noop = () => undefined
 
-const original = { ...console }
-const disabled = { log: noop, error: noop, debug: noop, warn: noop, info: noop }
-
-let isDisabledOnce
-
 /**
- * Enable console logging.
- * @returns {Object} console
- */
-const enable = () => Object.assign(console, original)
-
-/**
- * Disable console logging.
- * @returns {Object} console
- */
-const disable = () => Object.assign(console, disabled)
-
-/**
- * Silence the console for a single test.  It will be re-enabled after it().
+ * Silence the console for the current test.
+ * Console methods are replaced with no-ops.
+ * Vitest's restoreMocks config will auto-restore after each test.
  */
 const disableOnce = () => {
-  isDisabledOnce = true
-  disable()
+  vi.spyOn(console, 'log').mockImplementation(noop)
+  vi.spyOn(console, 'info').mockImplementation(noop)
+  vi.spyOn(console, 'warn').mockImplementation(noop)
+  vi.spyOn(console, 'error').mockImplementation(noop)
 }
 
-afterEach(() => {
-  if (isDisabledOnce) {
-    isDisabledOnce = false
-    enable()
-  }
-})
-
 export default {
-  enable,
-  disable,
   disableOnce,
 }

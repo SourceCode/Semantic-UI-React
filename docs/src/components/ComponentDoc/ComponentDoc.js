@@ -88,13 +88,13 @@ class ComponentDoc extends Component {
           <Grid.Row columns='equal'>
             <Grid.Column>
               <div ref={this.examplesRef}>
-                <ComponentDocContext.Provider value={contextValue}>
+                <ComponentDocContext value={contextValue}>
                   <ComponentExamples
                     displayName={displayName}
                     examplesExist={componentInfo.examplesExist}
                     type={componentInfo.type}
                   />
-                </ComponentDocContext.Provider>
+                </ComponentDocContext>
               </div>
               <div style={exampleEndStyle}>
                 This is the bottom <Icon name='pointing down' />

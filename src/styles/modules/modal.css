@@ -1,0 +1,154 @@
+/*
+ * Modal component CSS
+ *
+ * Class pattern: 'ui', size, basic, scrolling, 'modal transition visible active'
+ * Sub: .header, .content, .actions, .close.icon, .description
+ * Dimmer wrapper: .ui.page.modals.dimmer
+ */
+@layer sui.components {
+  /* ---- Modal dimmer ---- */
+  .ui.page.modals.dimmer {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: var(--sui-z-dimmer);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    overflow: auto;
+    padding: 1em;
+  }
+
+  .ui.page.modals.dimmer.center.aligned {
+    align-items: center;
+  }
+
+  /* Blurring support */
+  .blurring.dimmable > :not(.dimmer) { filter: none; transition: filter 0.5s ease; }
+  .blurring.dimmed.dimmable > :not(.dimmer) { filter: blur(5px) grayscale(0.7); }
+
+  /* Inverted dimmer */
+  .ui.page.modals.dimmer.inverted { background: rgba(255, 255, 255, 0.85); }
+
+  /* ---- Scrolling container ---- */
+  .scrolling.dimmable { overflow: hidden; }
+  .scrolling.dimmable > .dimmer { justify-content: flex-start; overflow: auto; }
+
+  /* ---- Modal ---- */
+  .ui.modal {
+    position: relative;
+    display: none;
+    z-index: var(--sui-z-modal);
+    text-align: left;
+    background: var(--sui-background, #ffffff);
+    border: none;
+    box-shadow: var(--sui-shadow-modal, 1px 3px 3px 0 rgba(0, 0, 0, 0.2), 1px 3px 15px 2px rgba(0, 0, 0, 0.2));
+    border-radius: var(--sui-border-radius, 0.28571429rem);
+    user-select: text;
+    margin: 0 auto;
+    width: 50%;
+
+    &.transition.visible.active { display: block; }
+  }
+
+  .ui.modal > .close.icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    z-index: 1;
+    opacity: 0.8;
+    font-size: 1.25em;
+    color: var(--sui-white);
+    transition: color var(--sui-transition-fast);
+
+    &:hover { color: var(--sui-white); opacity: 1; }
+  }
+
+  .ui.modal > .header {
+    display: block;
+    background: var(--sui-white);
+    margin: 0;
+    padding: 1.25rem 1.5rem;
+    box-shadow: none;
+    color: var(--sui-text-color);
+    font-weight: var(--sui-font-bold);
+    font-size: 1.42857143rem;
+    line-height: var(--sui-header-line-height);
+    border-bottom: 1px solid var(--sui-border-color);
+    border-radius: var(--sui-border-radius) var(--sui-border-radius) 0 0;
+  }
+
+  .ui.modal > .content {
+    display: block;
+    width: 100%;
+    font-size: 1em;
+    line-height: var(--sui-line-height);
+    padding: 1.5rem;
+    background: var(--sui-white);
+  }
+
+  .ui.modal > .content > .image { display: block; max-width: 100%; }
+  .ui.modal > .content > .description { display: block; flex: 1 0 auto; min-width: 0; }
+
+  .ui.modal > .image.content {
+    display: flex;
+    flex-direction: row;
+
+    & > .image { flex: 0 1 auto; width: auto; align-self: flex-start; max-width: 50%; }
+    & > .description { flex: 1; min-width: 0; padding-left: 2em; align-self: flex-start; }
+  }
+
+  .ui.modal > .actions {
+    background: #f9fafb;
+    padding: 1rem 1rem;
+    border-top: 1px solid var(--sui-border-color);
+    text-align: right;
+    border-radius: 0 0 var(--sui-border-radius) var(--sui-border-radius);
+
+    & > .button { margin-left: 0.75em; }
+  }
+
+  /* ---- Scrolling ---- */
+  .ui.scrolling.modal {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* ---- Basic ---- */
+  .ui.basic.modal {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--sui-inverted-text);
+
+    & > .header { background-color: transparent; border-bottom: none; color: var(--sui-white); }
+    & > .content { background-color: transparent; }
+    & > .actions { background-color: transparent; border-top: none; }
+    & > .close.icon { color: var(--sui-white); top: 1rem; right: 1.5rem; }
+  }
+
+  /* ---- Sizes ---- */
+  .ui.mini.modal { width: var(--sui-modal-mini); }
+  .ui.tiny.modal { width: var(--sui-modal-tiny); }
+  .ui.small.modal { width: var(--sui-modal-small); }
+  .ui.large.modal { width: var(--sui-modal-large); }
+  .ui.fullscreen.modal { width: var(--sui-modal-fullscreen); left: 0; margin: auto; }
+
+  /* ---- Responsive ---- */
+  @media screen and (max-width: 767px) {
+    .ui.modal { width: 95%; margin: 0 auto; }
+    .ui.mini.modal,
+    .ui.tiny.modal,
+    .ui.small.modal { width: 95%; }
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 991px) {
+    .ui.modal { width: 70%; }
+    .ui.mini.modal { width: 50%; }
+    .ui.tiny.modal { width: 55%; }
+    .ui.small.modal { width: 60%; }
+  }
+}

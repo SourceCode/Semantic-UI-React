@@ -1,0 +1,56 @@
+---
+const categories = [
+  {
+    name: 'Elements',
+    path: 'elements',
+    components: ['Button', 'Container', 'Divider', 'Flag', 'Header', 'Icon', 'Image', 'Input', 'Label', 'List', 'Loader', 'Placeholder', 'Rail', 'Reveal', 'Segment', 'Step'],
+  },
+  {
+    name: 'Collections',
+    path: 'collections',
+    components: ['Breadcrumb', 'Form', 'Grid', 'Menu', 'Message', 'Table'],
+  },
+  {
+    name: 'Views',
+    path: 'views',
+    components: ['Advertisement', 'Card', 'Comment', 'Feed', 'Item', 'Statistic'],
+  },
+  {
+    name: 'Modules',
+    path: 'modules',
+    components: ['Accordion', 'Checkbox', 'Dimmer', 'Dropdown', 'Embed', 'Modal', 'Popup', 'Progress', 'Rating', 'Search', 'Sidebar', 'Sticky', 'Tab', 'Transition'],
+  },
+  {
+    name: 'Addons',
+    path: 'addons',
+    components: ['Confirm', 'Pagination', 'Portal', 'Radio', 'Select', 'TextArea', 'TransitionablePortal'],
+  },
+]
+---
+
+<nav class="docs-sidebar">
+  <div class="sidebar-header">
+    <a href="/">
+      <h2>Semantic UI React</h2>
+    </a>
+  </div>
+  <ul class="sidebar-nav">
+    <li><a href="/usage">Usage</a></li>
+    <li><a href="/theming">Theming</a></li>
+    <li><a href="/migration">Migration Guide</a></li>
+  </ul>
+  {categories.map((category) => (
+    <div class="sidebar-category">
+      <h4>{category.name}</h4>
+      <ul>
+        {category.components.map((component) => (
+          <li>
+            <a href={`/${category.path}/${component.toLowerCase()}`}>
+              {component}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</nav>

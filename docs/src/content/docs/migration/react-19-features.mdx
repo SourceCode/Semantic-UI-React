@@ -1,0 +1,68 @@
+---
+title: React 19 Features
+description: New React 19 features available in Semantic-UI-React v4
+---
+
+# React 19 Features
+
+## Form Actions
+
+React 19 introduces form actions. Semantic-UI-React v4 supports this natively:
+
+```jsx
+import { Form, useFormAction } from 'semantic-ui-react'
+
+async function submitForm(prevState, formData) {
+  const name = formData.get('name')
+  // Process form submission
+  return { success: true }
+}
+
+function MyForm() {
+  const [state, formAction, isPending] = useFormAction(submitForm, { success: false })
+
+  return (
+    <Form action={formAction} loading={isPending}>
+      <Form.Input name="name" label="Name" />
+      <Form.Button type="submit">Submit</Form.Button>
+    </Form>
+  )
+}
+```
+
+## ThemeProvider
+
+Use the new ThemeProvider for runtime theme switching:
+
+```jsx
+import { ThemeProvider } from 'semantic-ui-react'
+
+function App() {
+  const [theme, setTheme] = useState('default')
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Button onClick={() => setTheme(t => t === 'default' ? 'dark' : 'default')}>
+        Toggle Theme
+      </Button>
+      <YourApp />
+    </ThemeProvider>
+  )
+}
+```
+
+## React Compiler
+
+All components are compatible with the React Compiler for automatic memoization. No manual `React.memo` or `useMemo` needed.
+
+## Asset Preloading
+
+```jsx
+import { preinitStyles, preloadIconFont } from 'semantic-ui-react'
+
+// Preload CSS
+preinitStyles({ href: '/styles/semantic-ui-react.css', precedence: 'default' })
+
+// Preload icon font
+preloadIconFont()
+```

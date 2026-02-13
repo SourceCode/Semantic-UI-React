@@ -1,0 +1,34 @@
+/*
+ * Default theme for Semantic-UI-React
+ *
+ * Maps semantic colors to actual values and sets light-mode defaults.
+ * Uses the sui.theme cascade layer so it can be overridden by consumer styles.
+ */
+@layer sui.theme {
+  :root {
+    /* Map semantic colors to actual values */
+    --sui-primary: var(--sui-blue);
+    --sui-secondary: var(--sui-black);
+    --sui-positive: var(--sui-green);
+    --sui-negative: var(--sui-red);
+    --sui-info: var(--sui-teal);
+    --sui-warning: var(--sui-yellow);
+
+    /* Background */
+    --sui-background: #ffffff;
+    --sui-background-subtle: #f9fafb;
+    --sui-background-muted: #f3f4f6;
+
+    /* Text */
+    --sui-text: rgba(0, 0, 0, 0.87);
+    --sui-text-muted: rgba(0, 0, 0, 0.6);
+    --sui-text-subtle: rgba(0, 0, 0, 0.4);
+    --sui-text-disabled: rgba(0, 0, 0, 0.2);
+
+    /* Border */
+    --sui-border: rgba(34, 36, 38, 0.15);
+    --sui-border-subtle: rgba(34, 36, 38, 0.08);
+
+    color-scheme: light;
+  }
+}

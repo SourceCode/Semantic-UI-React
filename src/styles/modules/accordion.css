@@ -1,0 +1,70 @@
+/*
+ * Accordion component CSS
+ *
+ * Class pattern: 'ui', fluid, inverted, styled, 'accordion'
+ * Sub: .title, .content, .active.title, .active.content
+ */
+@layer sui.components {
+  .ui.accordion {
+    max-width: 100%;
+    font-size: var(--sui-size-medium);
+  }
+
+  .ui.accordion .title {
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0.5em 0;
+    color: var(--sui-text-color);
+    font-weight: var(--sui-font-bold);
+    display: flex;
+    align-items: center;
+
+    & .dropdown.icon,
+    & .icon {
+      margin-right: 0.25rem;
+      transition: transform var(--sui-transition-fast);
+    }
+  }
+
+  .ui.accordion .active.title .dropdown.icon,
+  .ui.accordion .active.title .icon {
+    transform: rotate(90deg);
+  }
+
+  .ui.accordion .content {
+    display: none;
+    padding: 0.5em 0 1em;
+  }
+
+  .ui.accordion .active.content { display: block; }
+
+  /* ---- Styled ---- */
+  .ui.styled.accordion {
+    background: var(--sui-white);
+    border: 1px solid var(--sui-border-color);
+    border-radius: var(--sui-border-radius);
+    box-shadow: var(--sui-shadow-subtle);
+
+    & .title {
+      padding: 0.75em 1em;
+      border-top: 1px solid var(--sui-border-color);
+
+      &:first-child { border-top: none; }
+    }
+
+    & .active.title { background: var(--sui-subtle-bg); }
+
+    & .content { padding: 0.5em 1em 1.5em; }
+  }
+
+  /* ---- Fluid ---- */
+  .ui.fluid.accordion { width: 100%; }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.accordion .title { color: var(--sui-inverted-text); }
+  .ui.inverted.accordion .content { color: var(--sui-inverted-muted); }
+  .ui.inverted.styled.accordion {
+    background: var(--sui-black);
+    border-color: var(--sui-inverted-border);
+  }
+}

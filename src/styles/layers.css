@@ -1,0 +1,12 @@
+/*
+ * CSS Cascade Layers for Semantic-UI-React
+ *
+ * Layer ordering (lowest to highest priority):
+ *   sui.reset     - CSS reset / normalization
+ *   sui.tokens    - Design token custom properties
+ *   sui.base      - Base element styles (typography, links)
+ *   sui.components - All component styles
+ *   sui.utilities - Utility / helper classes
+ *   sui.theme     - Theme overrides (consumer layer)
+ */
+@layer sui.reset, sui.tokens, sui.base, sui.components, sui.utilities, sui.theme;

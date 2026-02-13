@@ -4,7 +4,7 @@ import * as React from 'react'
 // Utility types
 // ======================================================
 
-export type ForwardRefComponent<P, T> = React.ForwardRefExoticComponent<P & React.RefAttributes<T>>
+export type ForwardRefComponent<P, T> = React.FunctionComponent<P & React.RefAttributes<T>>
 
 // ======================================================
 // Alignments
@@ -68,8 +68,8 @@ export interface StrictHtmlSpanProps {
 export type SemanticShorthandItemFunc<TProps> = (
   component: React.ElementType<TProps>,
   props: TProps,
-  children?: React.ReactNode | React.ReactNodeArray,
-) => React.ReactElement<any> | null
+  children?: React.ReactNode | ReadonlyArray<React.ReactNode>,
+) => React.ReactElement | null
 
 export type ShorthandRenderFunction<C extends React.ElementType, P> = (
   Component: C,

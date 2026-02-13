@@ -1,0 +1,10 @@
+/*
+ * Confirm addon CSS
+ *
+ * Confirm is composed of Modal components.
+ * No additional CSS is needed beyond what modal.css provides.
+ * This file exists for completeness and future overrides.
+ */
+@layer sui.components {
+  /* Confirm uses .ui.modal with .ui.small.modal size by default */
+}

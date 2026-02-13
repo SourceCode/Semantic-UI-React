@@ -29,6 +29,13 @@ export {
   StrictTextAreaProps,
 } from './dist/commonjs/addons/TextArea'
 export {
+  default as ThemeProvider,
+  ThemeProviderProps,
+  StrictThemeProviderProps,
+  ThemeContextValue,
+  ThemeContext,
+} from './dist/commonjs/addons/ThemeProvider'
+export {
   default as TransitionablePortal,
   TransitionablePortalProps,
   TransitionablePortalState,

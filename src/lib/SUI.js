@@ -16,8 +16,17 @@ export const COLORS = [
   'grey',
   'black',
 ]
+
+export const COLOR_CSS_PROPERTIES = Object.fromEntries(
+  COLORS.map((color) => [color, `--sui-${color}`]),
+)
+
 export const FLOATS = ['left', 'right']
 export const SIZES = ['mini', 'tiny', 'small', 'medium', 'large', 'big', 'huge', 'massive']
+
+export const SIZE_CSS_PROPERTIES = Object.fromEntries(
+  SIZES.map((size) => [size, `--sui-size-${size}`]),
+)
 export const TEXT_ALIGNMENTS = ['left', 'center', 'right', 'justified']
 export const VERTICAL_ALIGNMENTS = ['bottom', 'middle', 'top']
 

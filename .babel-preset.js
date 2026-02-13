@@ -5,19 +5,13 @@ const isUMDBuild = NODE_ENV === 'build-umd'
 const isLibBuild = NODE_ENV === 'build' || isESBuild || isUMDBuild
 const isDocsBuild = NODE_ENV === 'development' || NODE_ENV === 'production'
 
-const browsers = [
-  'last 8 versions',
-  'safari > 8',
-  'firefox > 23',
-  'chrome > 24',
-  'opera > 15',
-  'not ie < 11',
-  'not ie_mob <= 11',
-]
+// Browser targets are defined in .browserslistrc
+// This aligns with React 19 minimum requirements
 
 const plugins = [
+  // React Compiler must run first to analyze original source before other transforms
+  'babel-plugin-react-compiler',
   '@babel/plugin-proposal-export-default-from',
-  '@babel/plugin-syntax-dynamic-import',
   [
     '@babel/plugin-transform-runtime',
     {
@@ -48,14 +42,6 @@ const plugins = [
     },
   ],
 
-  'transform-react-handled-props',
-  [
-    'transform-react-remove-prop-types',
-    {
-      mode: isUMDBuild ? 'remove' : 'wrap',
-      removeImport: isUMDBuild,
-    },
-  ],
   // A plugin for removal of debug in production builds
   isLibBuild && [
     'filter-imports',
@@ -68,37 +54,34 @@ const plugins = [
   ],
 ].filter(Boolean)
 
-module.exports = () => ({
-  compact: false,
-  presets: [
-    [
-      '@babel/env',
-      {
-        modules: isESBuild || isUMDBuild ? false : 'commonjs',
-        loose: true,
-        targets: { browsers },
-      },
-    ],
-    '@babel/react',
-  ],
-  plugins,
-  env: {
-    development: {
-      plugins: ['react-hot-loader/babel'],
+module.exports = (api) => {
+  // When called from Rollup via @rollup/plugin-babel, modules must be false
+  // because Rollup handles module format conversion itself.
+  const callerName = api.caller((c) => c && c.name)
+  const isRollup = callerName === '@rollup/plugin-babel'
+
+  return {
+    compact: false,
+    assumptions: {
+      setPublicClassFields: true,
+      privateFieldsAsProperties: true,
     },
-    test: {
-      plugins: [['istanbul', { include: ['src'] }]],
-    },
-  },
-  overrides: [
-    // A workaround to avoid collisions between "babel-plugin-dynamic-import-node" & "universal-import"
-    {
-      test: /react-static-routes.js/,
-      plugins: [
-        ['universal-import', { disableWarnings: true }],
-        '@babel/plugin-transform-modules-commonjs',
+    presets: [
+      [
+        '@babel/env',
+        {
+          modules: isESBuild || isUMDBuild || isRollup ? false : 'commonjs',
+          bugfixes: true,
+        },
       ],
-      presets: [['@babel/env', { modules: false }]],
+      ['@babel/react', { runtime: 'automatic' }],
+      '@babel/typescript',
+    ],
+    plugins,
+    env: {
+      test: {
+        plugins: [['istanbul', { include: ['src'] }]],
+      },
     },
-  ],
-})
+  }
+}

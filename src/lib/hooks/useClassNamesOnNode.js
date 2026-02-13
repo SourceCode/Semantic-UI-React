@@ -81,11 +81,7 @@ export class NodeRegistry {
       return
     }
 
-    // IE11 does not support constructor params
-    const set = new Set()
-    set.add(classNameRef)
-
-    this.nodes.set(node, set)
+    this.nodes.set(node, new Set([classNameRef]))
   }
 
   del = (node, classNameRef) => {

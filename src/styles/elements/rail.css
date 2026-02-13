@@ -1,0 +1,55 @@
+/*
+ * Rail component CSS
+ *
+ * Class pattern: 'ui', size, attached|'internally' attached, close|'very' close,
+ *   dividing, internal, {value} floated, 'rail'
+ * Note: Rail uses floated ('left floated' or 'right floated') to position.
+ */
+@layer sui.components {
+  .ui.rail {
+    position: absolute;
+    top: 0;
+    width: 300px;
+    height: 100%;
+  }
+
+  /* ---- Position via float ---- */
+  .ui.left.floated.rail,
+  .ui.left.rail {
+    left: auto;
+    right: calc(100% + 2rem);
+  }
+
+  .ui.right.floated.rail,
+  .ui.right.rail {
+    left: calc(100% + 2rem);
+    right: auto;
+  }
+
+  /* ---- Internal ---- */
+  .ui.left.internal.rail { left: 0; right: auto; }
+  .ui.right.internal.rail { right: 0; left: auto; }
+
+  /* ---- Close ---- */
+  .ui.close.rail { right: calc(100% + 1em); }
+  .ui.right.close.rail { left: calc(100% + 1em); right: auto; }
+  .ui.very.close.rail { right: calc(100% + 0.5em); }
+  .ui.right.very.close.rail { left: calc(100% + 0.5em); right: auto; }
+
+  /* ---- Dividing ---- */
+  .ui.dividing.rail { border-right: 1px solid var(--sui-border-color); padding-right: 2rem; }
+  .ui.right.dividing.rail { border-right: none; border-left: 1px solid var(--sui-border-color); padding-left: 2rem; }
+
+  /* ---- Attached ---- */
+  .ui.attached.rail { top: 0; }
+  .ui.internally.attached.rail { top: 0; }
+
+  /* ---- Sizes ---- */
+  .ui.mini.rail { font-size: var(--sui-size-mini); }
+  .ui.tiny.rail { font-size: var(--sui-size-tiny); }
+  .ui.small.rail { font-size: var(--sui-size-small); }
+  .ui.large.rail { font-size: var(--sui-size-large); width: 350px; }
+  .ui.big.rail { font-size: var(--sui-size-big); }
+  .ui.huge.rail { font-size: var(--sui-size-huge); }
+  .ui.massive.rail { font-size: var(--sui-size-massive); }
+}

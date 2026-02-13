@@ -1,0 +1,16 @@
+/*
+ * Z-index tokens for Semantic-UI-React
+ */
+@layer sui.tokens {
+  :root {
+    --sui-z-dropdown: 11;
+    --sui-z-sticky: 800;
+    --sui-z-popup: 1900;
+    --sui-z-overlay: 1000;
+    --sui-z-dimmer: 1000;
+    --sui-z-modal: 1001;
+    --sui-z-sidebar: 102;
+    --sui-z-fixed-menu: 101;
+    --sui-z-toast: 2000;
+  }
+}

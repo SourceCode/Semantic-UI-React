@@ -1,0 +1,16 @@
+/*
+ * Pagination addon CSS
+ *
+ * Pagination is composed of Menu.
+ * Uses: .ui.pagination.menu
+ * No additional CSS beyond menu.css pagination styles.
+ * This file exists for completeness and future overrides.
+ */
+@layer sui.components {
+  /* Pagination uses .ui.pagination.menu, see menu.css */
+
+  .ui.pagination.menu .item:focus-visible {
+    outline: 2px solid var(--sui-blue);
+    outline-offset: -2px;
+  }
+}

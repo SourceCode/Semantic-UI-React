@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd docs && npx astro build",
+  "outputDirectory": "docs/dist",
+  "framework": "astro"
+}

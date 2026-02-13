@@ -1,0 +1,166 @@
+/*
+ * Color tokens for Semantic-UI-React
+ * Maps to SUI.COLORS: red, orange, yellow, olive, green, teal, blue, violet, purple, pink, brown, grey, black
+ */
+@layer sui.tokens {
+  :root {
+    /* ---- Primary palette (13 SUI colors) ---- */
+    --sui-red: #db2828;
+    --sui-orange: #f2711c;
+    --sui-yellow: #fbbd08;
+    --sui-olive: #b5cc18;
+    --sui-green: #21ba45;
+    --sui-teal: #00b5ad;
+    --sui-blue: #2185d0;
+    --sui-violet: #6435c9;
+    --sui-purple: #a333c8;
+    --sui-pink: #e03997;
+    --sui-brown: #a5673f;
+    --sui-grey: #767676;
+    --sui-black: #1b1c1d;
+
+    /* ---- Hover variants using color-mix() ---- */
+    --sui-red-hover: color-mix(in srgb, var(--sui-red), #000 12%);
+    --sui-orange-hover: color-mix(in srgb, var(--sui-orange), #000 12%);
+    --sui-yellow-hover: color-mix(in srgb, var(--sui-yellow), #000 12%);
+    --sui-olive-hover: color-mix(in srgb, var(--sui-olive), #000 12%);
+    --sui-green-hover: color-mix(in srgb, var(--sui-green), #000 12%);
+    --sui-teal-hover: color-mix(in srgb, var(--sui-teal), #000 12%);
+    --sui-blue-hover: color-mix(in srgb, var(--sui-blue), #000 12%);
+    --sui-violet-hover: color-mix(in srgb, var(--sui-violet), #000 12%);
+    --sui-purple-hover: color-mix(in srgb, var(--sui-purple), #000 12%);
+    --sui-pink-hover: color-mix(in srgb, var(--sui-pink), #000 12%);
+    --sui-brown-hover: color-mix(in srgb, var(--sui-brown), #000 12%);
+    --sui-grey-hover: color-mix(in srgb, var(--sui-grey), #000 12%);
+    --sui-black-hover: color-mix(in srgb, var(--sui-black), #000 12%);
+
+    /* ---- Focus variants ---- */
+    --sui-red-focus: color-mix(in srgb, var(--sui-red), #000 18%);
+    --sui-orange-focus: color-mix(in srgb, var(--sui-orange), #000 18%);
+    --sui-yellow-focus: color-mix(in srgb, var(--sui-yellow), #000 18%);
+    --sui-olive-focus: color-mix(in srgb, var(--sui-olive), #000 18%);
+    --sui-green-focus: color-mix(in srgb, var(--sui-green), #000 18%);
+    --sui-teal-focus: color-mix(in srgb, var(--sui-teal), #000 18%);
+    --sui-blue-focus: color-mix(in srgb, var(--sui-blue), #000 18%);
+    --sui-violet-focus: color-mix(in srgb, var(--sui-violet), #000 18%);
+    --sui-purple-focus: color-mix(in srgb, var(--sui-purple), #000 18%);
+    --sui-pink-focus: color-mix(in srgb, var(--sui-pink), #000 18%);
+    --sui-brown-focus: color-mix(in srgb, var(--sui-brown), #000 18%);
+    --sui-grey-focus: color-mix(in srgb, var(--sui-grey), #000 18%);
+    --sui-black-focus: color-mix(in srgb, var(--sui-black), #000 18%);
+
+    /* ---- Active (pressed) variants ---- */
+    --sui-red-active: color-mix(in srgb, var(--sui-red), #000 24%);
+    --sui-orange-active: color-mix(in srgb, var(--sui-orange), #000 24%);
+    --sui-yellow-active: color-mix(in srgb, var(--sui-yellow), #000 24%);
+    --sui-olive-active: color-mix(in srgb, var(--sui-olive), #000 24%);
+    --sui-green-active: color-mix(in srgb, var(--sui-green), #000 24%);
+    --sui-teal-active: color-mix(in srgb, var(--sui-teal), #000 24%);
+    --sui-blue-active: color-mix(in srgb, var(--sui-blue), #000 24%);
+    --sui-violet-active: color-mix(in srgb, var(--sui-violet), #000 24%);
+    --sui-purple-active: color-mix(in srgb, var(--sui-purple), #000 24%);
+    --sui-pink-active: color-mix(in srgb, var(--sui-pink), #000 24%);
+    --sui-brown-active: color-mix(in srgb, var(--sui-brown), #000 24%);
+    --sui-grey-active: color-mix(in srgb, var(--sui-grey), #000 24%);
+    --sui-black-active: color-mix(in srgb, var(--sui-black), #000 24%);
+
+    /* ---- Light / translucent variants ---- */
+    --sui-red-light: color-mix(in srgb, var(--sui-red), #fff 85%);
+    --sui-orange-light: color-mix(in srgb, var(--sui-orange), #fff 85%);
+    --sui-yellow-light: color-mix(in srgb, var(--sui-yellow), #fff 85%);
+    --sui-olive-light: color-mix(in srgb, var(--sui-olive), #fff 85%);
+    --sui-green-light: color-mix(in srgb, var(--sui-green), #fff 85%);
+    --sui-teal-light: color-mix(in srgb, var(--sui-teal), #fff 85%);
+    --sui-blue-light: color-mix(in srgb, var(--sui-blue), #fff 85%);
+    --sui-violet-light: color-mix(in srgb, var(--sui-violet), #fff 85%);
+    --sui-purple-light: color-mix(in srgb, var(--sui-purple), #fff 85%);
+    --sui-pink-light: color-mix(in srgb, var(--sui-pink), #fff 85%);
+    --sui-brown-light: color-mix(in srgb, var(--sui-brown), #fff 85%);
+    --sui-grey-light: color-mix(in srgb, var(--sui-grey), #fff 85%);
+    --sui-black-light: color-mix(in srgb, var(--sui-black), #fff 85%);
+
+    /* ---- Semantic / role-based colors ---- */
+    --sui-primary: var(--sui-blue);
+    --sui-primary-hover: var(--sui-blue-hover);
+    --sui-primary-focus: var(--sui-blue-focus);
+    --sui-primary-active: var(--sui-blue-active);
+
+    --sui-secondary: var(--sui-black);
+    --sui-secondary-hover: var(--sui-black-hover);
+    --sui-secondary-focus: var(--sui-black-focus);
+    --sui-secondary-active: var(--sui-black-active);
+
+    --sui-positive: var(--sui-green);
+    --sui-positive-hover: var(--sui-green-hover);
+    --sui-positive-focus: var(--sui-green-focus);
+
+    --sui-negative: var(--sui-red);
+    --sui-negative-hover: var(--sui-red-hover);
+    --sui-negative-focus: var(--sui-red-focus);
+
+    --sui-info: var(--sui-teal);
+    --sui-warning: var(--sui-yellow);
+    --sui-success: var(--sui-green);
+    --sui-error: var(--sui-red);
+
+    /* ---- Background colors ---- */
+    --sui-background: #ffffff;
+    --sui-background-subtle: #f9fafb;
+    --sui-background-muted: #f3f4f6;
+
+    /* ---- Text colors ---- */
+    --sui-text: rgba(0, 0, 0, 0.87);
+    --sui-text-muted: rgba(0, 0, 0, 0.6);
+    --sui-text-subtle: rgba(0, 0, 0, 0.4);
+    --sui-text-disabled: rgba(0, 0, 0, 0.2);
+
+    /* ---- Border semantic colors ---- */
+    --sui-border: rgba(34, 36, 38, 0.15);
+    --sui-border-subtle: rgba(34, 36, 38, 0.08);
+
+    /* ---- Social brand colors ---- */
+    --sui-facebook: #3b5998;
+    --sui-facebook-hover: color-mix(in srgb, #3b5998, #000 12%);
+    --sui-twitter: #55acee;
+    --sui-twitter-hover: color-mix(in srgb, #55acee, #000 12%);
+    --sui-google-plus: #dd4b39;
+    --sui-google-plus-hover: color-mix(in srgb, #dd4b39, #000 12%);
+    --sui-linkedin: #1f88be;
+    --sui-linkedin-hover: color-mix(in srgb, #1f88be, #000 12%);
+    --sui-youtube: #ff0000;
+    --sui-youtube-hover: color-mix(in srgb, #ff0000, #000 12%);
+    --sui-instagram: #49769c;
+    --sui-instagram-hover: color-mix(in srgb, #49769c, #000 12%);
+    --sui-vk: #4d7198;
+    --sui-vk-hover: color-mix(in srgb, #4d7198, #000 12%);
+
+    /* ---- Neutral palette ---- */
+    --sui-white: #ffffff;
+    --sui-off-white: #f9fafb;
+    --sui-light-grey: #dcddde;
+    --sui-medium-grey: #999999;
+    --sui-dark-grey: #333333;
+    --sui-page-bg: var(--sui-white);
+    --sui-text-color: rgba(0, 0, 0, 0.87);
+    --sui-muted-text: rgba(0, 0, 0, 0.6);
+    --sui-light-text: rgba(0, 0, 0, 0.4);
+    --sui-unselected-text: rgba(0, 0, 0, 0.4);
+    --sui-hovered-text: rgba(0, 0, 0, 0.8);
+    --sui-selected-text: rgba(0, 0, 0, 0.95);
+    --sui-inverted-text: rgba(255, 255, 255, 0.9);
+    --sui-inverted-muted: rgba(255, 255, 255, 0.7);
+    --sui-inverted-light: rgba(255, 255, 255, 0.5);
+
+    /* ---- Border colors ---- */
+    --sui-border-color: rgba(34, 36, 38, 0.15);
+    --sui-strong-border: rgba(34, 36, 38, 0.22);
+    --sui-internal-border: rgba(34, 36, 38, 0.1);
+    --sui-selected-border: rgba(34, 36, 38, 0.35);
+    --sui-inverted-border: rgba(255, 255, 255, 0.1);
+
+    /* ---- Background tones ---- */
+    --sui-subtle-bg: rgba(0, 0, 0, 0.03);
+    --sui-transparent-black: rgba(0, 0, 0, 0.05);
+    --sui-transparent-white: rgba(255, 255, 255, 0.08);
+  }
+}

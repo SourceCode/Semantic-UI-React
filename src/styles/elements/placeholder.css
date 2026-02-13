@@ -1,0 +1,76 @@
+/*
+ * Placeholder component CSS
+ *
+ * Class pattern: 'ui', fluid, inverted, 'placeholder'
+ * Sub-components: .header, .paragraph, .line, .image
+ */
+@layer sui.components {
+  .ui.placeholder {
+    position: static;
+    overflow: hidden;
+    animation: sui-placeholder-shimmer 2s linear infinite;
+    background: linear-gradient(to right, #eee 8%, #ddd 18%, #eee 33%);
+    background-size: 800px 100%;
+    max-width: 30rem;
+  }
+
+  @keyframes sui-placeholder-shimmer {
+    0% { background-position: -800px 0; }
+    100% { background-position: 800px 0; }
+  }
+
+  .ui.placeholder .line {
+    height: 0.85714286em;
+    margin-bottom: 0.5em;
+    background: var(--sui-white);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: inherit;
+    }
+  }
+
+  .ui.placeholder .line:last-child { margin-bottom: 0; }
+
+  .ui.placeholder .header {
+    position: relative;
+
+    & .line { margin-bottom: 0.64285714em; }
+    & .line:first-child { width: 100%; }
+    & .line:nth-child(2) { width: 75%; }
+  }
+
+  .ui.placeholder .paragraph {
+    & .line:nth-child(1) { width: 100%; }
+    & .line:nth-child(2) { width: 95%; }
+    & .line:nth-child(3) { width: 87%; }
+    & .line:nth-child(4) { width: 92%; }
+    & .line:nth-child(5) { width: 82%; }
+  }
+
+  .ui.placeholder .image.header {
+    display: flex;
+    align-items: center;
+
+    & .line { margin-bottom: 0.42857143em; }
+  }
+
+  .ui.placeholder > .image {
+    height: 100px;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  /* ---- Fluid ---- */
+  .ui.fluid.placeholder { max-width: 100%; }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.placeholder {
+    background: linear-gradient(to right, rgba(255,255,255,0.08) 8%, rgba(255,255,255,0.14) 18%, rgba(255,255,255,0.08) 33%);
+    background-size: 800px 100%;
+  }
+
+  .ui.inverted.placeholder .line { background: var(--sui-black); }
+}
