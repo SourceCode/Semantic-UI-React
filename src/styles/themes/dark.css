@@ -1,0 +1,73 @@
+/*
+ * Dark theme for Semantic-UI-React
+ *
+ * Targets elements with data-sui-theme="dark" attribute.
+ * Colors are adjusted for contrast and vibrancy on dark backgrounds.
+ * Uses the sui.theme cascade layer.
+ */
+@layer sui.theme {
+  [data-sui-theme="dark"] {
+    --sui-background: #1b1c1d;
+    --sui-background-subtle: #27292a;
+    --sui-background-muted: #333536;
+
+    --sui-text: rgba(255, 255, 255, 0.9);
+    --sui-text-muted: rgba(255, 255, 255, 0.7);
+    --sui-text-subtle: rgba(255, 255, 255, 0.45);
+    --sui-text-disabled: rgba(255, 255, 255, 0.2);
+
+    --sui-border: rgba(255, 255, 255, 0.15);
+    --sui-border-subtle: rgba(255, 255, 255, 0.08);
+
+    /* Adjusted color values for dark backgrounds */
+    --sui-red: #ff4a4a;
+    --sui-orange: #ff8c42;
+    --sui-yellow: #ffd43b;
+    --sui-olive: #c5dd2c;
+    --sui-green: #36d759;
+    --sui-teal: #1cd4cb;
+    --sui-blue: #4da3e8;
+    --sui-violet: #8b6bd4;
+    --sui-purple: #be5cd6;
+    --sui-pink: #f05aaf;
+    --sui-brown: #c17e5a;
+    --sui-grey: #909090;
+    --sui-black: #d4d4d4;
+
+    /* Neutral palette overrides for dark mode */
+    --sui-white: #ffffff;
+    --sui-off-white: #27292a;
+    --sui-page-bg: #1b1c1d;
+    --sui-text-color: rgba(255, 255, 255, 0.9);
+    --sui-muted-text: rgba(255, 255, 255, 0.7);
+    --sui-light-text: rgba(255, 255, 255, 0.45);
+    --sui-hovered-text: rgba(255, 255, 255, 0.95);
+    --sui-selected-text: rgba(255, 255, 255, 1);
+    --sui-inverted-text: rgba(0, 0, 0, 0.87);
+
+    /* Border colors for dark mode */
+    --sui-border-color: rgba(255, 255, 255, 0.15);
+    --sui-strong-border: rgba(255, 255, 255, 0.22);
+    --sui-internal-border: rgba(255, 255, 255, 0.1);
+    --sui-selected-border: rgba(255, 255, 255, 0.35);
+
+    /* Shadows adjusted for dark backgrounds */
+    --sui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --sui-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --sui-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --sui-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+    --sui-shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --sui-shadow-raised: 0 2px 4px 0 rgba(0, 0, 0, 0.3), 0 2px 10px 0 rgba(0, 0, 0, 0.3);
+    --sui-shadow-floating: 0 2px 4px 0 rgba(0, 0, 0, 0.3), 0 2px 10px 0 rgba(0, 0, 0, 0.3);
+    --sui-shadow-dropdown: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+    --sui-shadow-popup: 0 2px 4px 0 rgba(0, 0, 0, 0.3), 0 2px 10px 0 rgba(0, 0, 0, 0.3);
+    --sui-shadow-modal: 1px 3px 3px 0 rgba(0, 0, 0, 0.4), 1px 3px 15px 2px rgba(0, 0, 0, 0.4);
+
+    /* Background tones for dark mode */
+    --sui-subtle-bg: rgba(255, 255, 255, 0.03);
+    --sui-transparent-black: rgba(255, 255, 255, 0.05);
+    --sui-transparent-white: rgba(0, 0, 0, 0.08);
+
+    color-scheme: dark;
+  }
+}

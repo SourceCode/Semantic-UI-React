@@ -10,8 +10,8 @@ import * as React from 'react'
  *
  * @param {{ defaultState?: any, state: any, initialState: any }} options
  *
- * @see https://reactjs.org/docs/uncontrolled-components.html
- * @see https://reactjs.org/docs/hooks-state.html
+ * @see https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components
+ * @see https://react.dev/reference/react/useState
  */
 function useAutoControlledValue(options) {
   const initialState =
@@ -19,17 +19,18 @@ function useAutoControlledValue(options) {
   const [internalState, setInternalState] = React.useState(initialState)
 
   const state = typeof options.state === 'undefined' ? internalState : options.state
-  const stateRef = React.useRef(state)
 
-  React.useEffect(() => {
-    stateRef.current = state
-  }, [state])
+  // Update ref synchronously (not in an effect) for React 19 compatibility.
+  // React 19's automatic batching can cause stale values if the ref is updated
+  // in an effect and setState is called multiple times before the effect runs.
+  const stateRef = React.useRef(state)
+  stateRef.current = state
 
   // To match the behavior of the setter returned by React.useState, this callback's identity
   // should never change. This means it MUST NOT directly reference variables that can change.
   const setState = React.useCallback((newState) => {
     // React dispatch can use a factory
-    // https://reactjs.org/docs/hooks-reference.html#functional-updates
+    // https://react.dev/reference/react/useState#updating-state-based-on-the-previous-state
     if (typeof newState === 'function') {
       stateRef.current = newState(stateRef.current)
     } else {

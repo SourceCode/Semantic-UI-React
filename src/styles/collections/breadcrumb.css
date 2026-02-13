@@ -1,0 +1,60 @@
+/*
+ * Breadcrumb component CSS
+ *
+ * Class pattern: 'ui', size, 'breadcrumb'
+ * Sub: .section, .divider, .active.section
+ */
+@layer sui.components {
+  .ui.breadcrumb {
+    display: inline-block;
+    font-size: var(--sui-size-medium);
+    margin: 0;
+    line-height: var(--sui-line-height);
+    vertical-align: middle;
+  }
+
+  .ui.breadcrumb .section {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ui.breadcrumb .section:hover {
+    color: var(--sui-hovered-text);
+  }
+
+  .ui.breadcrumb a.section {
+    color: var(--sui-blue);
+    cursor: pointer;
+
+    &:hover { color: var(--sui-blue-hover); }
+  }
+
+  .ui.breadcrumb .active.section {
+    font-weight: var(--sui-font-bold);
+    color: var(--sui-text-color);
+  }
+
+  .ui.breadcrumb .divider {
+    display: inline-block;
+    opacity: 0.7;
+    margin: 0 0.21428571rem;
+    font-size: 0.92857143em;
+    color: var(--sui-muted-text);
+    vertical-align: baseline;
+  }
+
+  .ui.breadcrumb .icon.divider {
+    font-size: 0.85714286em;
+    vertical-align: baseline;
+  }
+
+  /* ---- Sizes ---- */
+  .ui.mini.breadcrumb { font-size: var(--sui-size-mini); }
+  .ui.tiny.breadcrumb { font-size: var(--sui-size-tiny); }
+  .ui.small.breadcrumb { font-size: var(--sui-size-small); }
+  .ui.large.breadcrumb { font-size: var(--sui-size-large); }
+  .ui.big.breadcrumb { font-size: var(--sui-size-big); }
+  .ui.huge.breadcrumb { font-size: var(--sui-size-huge); }
+  .ui.massive.breadcrumb { font-size: var(--sui-size-massive); }
+}

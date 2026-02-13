@@ -2,9 +2,9 @@
  * Synthetic Event
  *
  * Names of all synthetic events and their event shape.
- * Methods are also included for comparing and validated event objects.
+ * Updated for React 19 (persist() removed - events are no longer pooled).
  *
- * https://facebook.github.io/react/docs/events.html
+ * https://react.dev/reference/react-dom/components/common#react-event-object
  */
 
 const noop = () => undefined
@@ -17,7 +17,6 @@ const baseShape = {
   eventPhase: null,
   isTrusted: null,
   nativeEvent: null,
-  persist: noop,
   preventDefault: noop,
   isDefaultPrevented: noop,
   stopPropagation: noop,
@@ -171,6 +170,7 @@ export const types = {
     eventShape: { ...baseShape, propertyName: null, pseudoElement: null, elapsedTime: null },
   },
 }
+
 // ------------------------------------
 // Methods
 // ------------------------------------
@@ -182,7 +182,7 @@ export const types = {
  * @returns {Boolean}
  */
 export const hasShape = (event, type) => {
-  const shape = typeof type === 'string' ? types[type].shape : type
+  const shape = typeof type === 'string' ? types[type].eventShape : type
   return Object.keys(event).every((key) => key in shape)
 }
 

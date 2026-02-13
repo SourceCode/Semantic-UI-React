@@ -1,0 +1,99 @@
+/*
+ * Popup component CSS
+ *
+ * Class pattern: 'ui', size, basic, flowing, inverted, wide|'very' wide,
+ *   {position} (top left, top center, top right, bottom left, etc.), 'popup'
+ */
+@layer sui.components {
+  .ui.popup {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: var(--sui-z-popup);
+    min-width: min-content;
+    max-width: 250px;
+    background: var(--sui-background, #ffffff);
+    padding: 0.833em 1em;
+    font-weight: var(--sui-font-normal, 400);
+    font-style: normal;
+    color: var(--sui-text-color, rgba(0, 0, 0, 0.87));
+    border: 1px solid var(--sui-border-color, rgba(34, 36, 38, 0.15));
+    border-radius: var(--sui-border-radius, 0.28571429rem);
+    box-shadow: var(--sui-shadow-popup, 0 2px 4px 0 rgba(34, 36, 38, 0.12), 0 2px 10px 0 rgba(34, 36, 38, 0.15));
+    font-size: var(--sui-size-small);
+    line-height: var(--sui-line-height);
+  }
+
+  .ui.popup.visible { display: block; }
+
+  .ui.popup > .header {
+    padding: 0 0 0.5em;
+    font-size: 1.14285714em;
+    line-height: var(--sui-line-height);
+    font-weight: var(--sui-font-bold);
+  }
+
+  .ui.popup::before {
+    content: '';
+    position: absolute;
+    width: 0.71428571em;
+    height: 0.71428571em;
+    background: var(--sui-white);
+    border: 1px solid var(--sui-border-color);
+    transform: rotate(45deg);
+    z-index: 2;
+    box-shadow: 1px 1px 0 0 var(--sui-border-color);
+  }
+
+  /* ---- Positions ---- */
+  .ui.top.popup { margin: 0 0 0.71428571em; }
+  .ui.top.popup::before { bottom: -0.30714286em; left: 50%; margin-left: -0.30714286em; border-top: none; border-left: none; }
+  .ui.top.left.popup::before { left: 1em; right: auto; }
+  .ui.top.right.popup::before { right: 1em; left: auto; }
+
+  .ui.bottom.popup { margin: 0.71428571em 0 0; }
+  .ui.bottom.popup::before { top: -0.30714286em; left: 50%; margin-left: -0.30714286em; border-bottom: none; border-right: none; }
+  .ui.bottom.left.popup::before { left: 1em; right: auto; }
+  .ui.bottom.right.popup::before { right: 1em; left: auto; }
+
+  .ui.left.center.popup { margin: 0 0.71428571em 0 0; }
+  .ui.left.center.popup::before { right: -0.30714286em; top: 50%; margin-top: -0.30714286em; border-left: none; border-bottom: none; }
+
+  .ui.right.center.popup { margin: 0 0 0 0.71428571em; }
+  .ui.right.center.popup::before { left: -0.30714286em; top: 50%; margin-top: -0.30714286em; border-right: none; border-top: none; }
+
+  /* ---- Wide ---- */
+  .ui.wide.popup { max-width: 350px; }
+  .ui.very.wide.popup { max-width: 550px; }
+
+  /* ---- Flowing ---- */
+  .ui.flowing.popup { max-width: none; }
+
+  /* ---- Basic ---- */
+  .ui.basic.popup {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    &::before { display: none; }
+  }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.popup {
+    background: var(--sui-black);
+    color: var(--sui-inverted-text);
+    border: none;
+    box-shadow: none;
+
+    &::before { background: var(--sui-black); border: none; box-shadow: none; }
+    & > .header { background: transparent; color: var(--sui-inverted-text); }
+  }
+
+  /* ---- Sizes ---- */
+  .ui.mini.popup { font-size: var(--sui-size-mini); }
+  .ui.tiny.popup { font-size: var(--sui-size-tiny); }
+  .ui.small.popup { font-size: var(--sui-size-small); }
+  .ui.large.popup { font-size: var(--sui-size-large); }
+  .ui.huge.popup { font-size: var(--sui-size-huge); }
+}

@@ -1,0 +1,123 @@
+/*
+ * Item component CSS
+ *
+ * Class pattern: 'ui', divided, link, relaxed, unstackable, 'items'
+ * Sub: .item, .image, .content, .header, .meta, .description, .extra
+ */
+@layer sui.components {
+  .ui.items {
+    margin: 1.5em 0;
+    font-size: var(--sui-size-medium);
+  }
+
+  .ui.items > .item {
+    display: flex;
+    margin: 1em 0;
+    width: 100%;
+    min-height: 0;
+    background: transparent;
+    padding: 0;
+    border: none;
+    border-top: none;
+    box-shadow: none;
+    transition: box-shadow var(--sui-transition-fast);
+    z-index: auto;
+  }
+
+  .ui.items > .item > .image {
+    position: relative;
+    flex: 0 0 auto;
+    display: block;
+    float: none;
+    margin: 0;
+    padding: 0;
+    max-height: auto;
+    align-self: flex-start;
+
+    & > img { display: block; width: 175px; height: auto; border-radius: var(--sui-border-radius); }
+  }
+
+  .ui.items > .item > .content {
+    display: block;
+    flex: 1 1 auto;
+    background: none;
+    margin: 0;
+    padding: 0 0 0 1.5em;
+    box-shadow: none;
+    font-size: 1em;
+    border: none;
+    border-radius: 0;
+  }
+
+  .ui.items > .item > .content > .header {
+    display: inline-block;
+    margin: -0.21425em 0 0;
+    font-family: var(--sui-header-font);
+    font-weight: var(--sui-font-bold);
+    color: var(--sui-text-color);
+    font-size: 1.28571429em;
+  }
+
+  .ui.items > .item > .content > .meta {
+    margin: 0.5em 0;
+    font-size: 1em;
+    line-height: 1em;
+    color: var(--sui-muted-text);
+  }
+
+  .ui.items > .item > .content > .description {
+    margin-top: 0.6em;
+    max-width: auto;
+    font-size: 1em;
+    line-height: var(--sui-line-height);
+    color: var(--sui-text-color);
+  }
+
+  .ui.items > .item > .content > .extra {
+    display: block;
+    position: relative;
+    background: none;
+    margin: 0.5em 0 0;
+    width: 100%;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    color: var(--sui-muted-text);
+    transition: color var(--sui-transition-fast);
+  }
+
+  /* ---- Divided ---- */
+  .ui.divided.items > .item {
+    border-top: 1px solid var(--sui-border-color);
+    margin: 0;
+    padding: 1em 0;
+
+    &:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+  }
+
+  /* ---- Relaxed ---- */
+  .ui.relaxed.items > .item { margin: 1.5em 0; }
+  .ui.very.relaxed.items > .item { margin: 2em 0; }
+
+  /* ---- Link ---- */
+  .ui.link.items > .item,
+  .ui.items > a.item {
+    cursor: pointer;
+
+    &:hover .content .header { color: var(--sui-blue); }
+  }
+
+  /* ---- Unstackable ---- */
+  .ui.unstackable.items > .item { flex-wrap: nowrap; }
+
+  /* ---- Responsive ---- */
+  @media screen and (max-width: 767px) {
+    .ui.items:not(.unstackable) > .item {
+      flex-direction: column;
+
+      & > .image { display: block; margin: 0 auto 1em; width: 100%; }
+      & > .image > img { width: 100%; }
+      & > .content { padding: 0; }
+    }
+  }
+}

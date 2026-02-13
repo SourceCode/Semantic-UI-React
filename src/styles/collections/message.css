@@ -1,0 +1,134 @@
+/*
+ * Message component CSS
+ *
+ * Class pattern: 'ui', color, size, compact, error, floating, hidden, icon, info,
+ *   negative, positive, success, visible, warning, attached|{value} attached, 'message'
+ */
+@layer sui.components {
+  .ui.message {
+    position: relative;
+    min-height: 1em;
+    margin: 1em 0;
+    padding: 1em 1.5em;
+    background: var(--sui-message-background, #f8f8f9);
+    color: var(--sui-text-color, rgba(0, 0, 0, 0.87));
+    border: 1px solid transparent;
+    border-radius: var(--sui-border-radius, 0.28571429rem);
+    box-shadow: 0 0 0 1px rgba(34, 36, 38, 0.22) inset, 0 0 0 0 transparent;
+    transition: opacity var(--sui-transition-fast), color var(--sui-transition-fast),
+                background var(--sui-transition-fast), box-shadow var(--sui-transition-fast);
+  }
+
+  .ui.message .header {
+    display: block;
+    font-weight: var(--sui-font-bold);
+    margin: 0 0 0.25rem 0;
+    font-size: 1.14285714em;
+  }
+
+  .ui.message p { margin: 0.5em 0; opacity: 0.85; }
+  .ui.message p:first-child { margin-top: 0; }
+  .ui.message p:last-child { margin-bottom: 0; }
+
+  .ui.message .list { list-style: disc inside; margin: 0.5em 0 0; padding: 0; opacity: 0.85; }
+  .ui.message .list li { margin: 0.3em 0; }
+
+  .ui.message > .close.icon {
+    position: absolute;
+    top: 0.78571429em;
+    right: 0.5em;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity var(--sui-transition-fast);
+
+    &:hover { opacity: 1; }
+  }
+
+  /* ---- Icon message ---- */
+  .ui.icon.message {
+    display: flex;
+    align-items: stretch;
+
+    & > .icon:not(.close) {
+      display: flex;
+      align-items: center;
+      font-size: 2em;
+      opacity: 0.8;
+      padding-right: 0.75rem;
+      width: auto;
+    }
+
+    & > .content { display: flex; flex-direction: column; justify-content: center; flex: 1; }
+  }
+
+  /* ---- Floating ---- */
+  .ui.floating.message { box-shadow: var(--sui-shadow-floating), 0 0 0 1px rgba(34, 36, 38, 0.22) inset; }
+
+  /* ---- Compact ---- */
+  .ui.compact.message { display: inline-block; }
+
+  /* ---- Attached ---- */
+  .ui.attached.message { margin: 0 -1px; border-radius: 0; box-shadow: 0 0 0 1px rgba(34, 36, 38, 0.15) inset; }
+  .ui.top.attached.message { border-radius: var(--sui-border-radius) var(--sui-border-radius) 0 0; margin-top: 1rem; }
+  .ui.bottom.attached.message { border-radius: 0 0 var(--sui-border-radius) var(--sui-border-radius); margin-bottom: 1rem; }
+
+  /* ---- Info ---- */
+  .ui.info.message {
+    background-color: #f8ffff;
+    color: #276f86;
+    box-shadow: 0 0 0 1px #a9d5de inset, 0 0 0 0 transparent;
+  }
+
+  /* ---- Warning ---- */
+  .ui.warning.message {
+    background-color: #fffaf3;
+    color: #573a08;
+    box-shadow: 0 0 0 1px #c9ba9b inset, 0 0 0 0 transparent;
+  }
+
+  /* ---- Positive / Success ---- */
+  .ui.positive.message,
+  .ui.success.message {
+    background-color: #fcfff5;
+    color: #2c662d;
+    box-shadow: 0 0 0 1px #a3c293 inset, 0 0 0 0 transparent;
+  }
+
+  /* ---- Negative / Error ---- */
+  .ui.negative.message,
+  .ui.error.message {
+    background-color: #fff6f6;
+    color: #9f3a38;
+    box-shadow: 0 0 0 1px #e0b4b4 inset, 0 0 0 0 transparent;
+  }
+
+  /* ---- Hidden ---- */
+  .ui.hidden.message { display: none; }
+
+  /* ---- Visible ---- */
+  .ui.visible.message { display: block; }
+
+  /* ---- Colors ---- */
+  .ui.red.message { background-color: var(--sui-red-light); color: var(--sui-red); box-shadow: 0 0 0 1px var(--sui-red) inset; }
+  .ui.orange.message { background-color: var(--sui-orange-light); color: color-mix(in srgb, var(--sui-orange), #000 30%); box-shadow: 0 0 0 1px var(--sui-orange) inset; }
+  .ui.yellow.message { background-color: var(--sui-yellow-light); color: color-mix(in srgb, var(--sui-yellow), #000 50%); box-shadow: 0 0 0 1px var(--sui-yellow) inset; }
+  .ui.olive.message { background-color: var(--sui-olive-light); color: color-mix(in srgb, var(--sui-olive), #000 40%); box-shadow: 0 0 0 1px var(--sui-olive) inset; }
+  .ui.green.message { background-color: var(--sui-green-light); color: color-mix(in srgb, var(--sui-green), #000 30%); box-shadow: 0 0 0 1px var(--sui-green) inset; }
+  .ui.teal.message { background-color: var(--sui-teal-light); color: color-mix(in srgb, var(--sui-teal), #000 30%); box-shadow: 0 0 0 1px var(--sui-teal) inset; }
+  .ui.blue.message { background-color: var(--sui-blue-light); color: color-mix(in srgb, var(--sui-blue), #000 20%); box-shadow: 0 0 0 1px var(--sui-blue) inset; }
+  .ui.violet.message { background-color: var(--sui-violet-light); color: color-mix(in srgb, var(--sui-violet), #000 20%); box-shadow: 0 0 0 1px var(--sui-violet) inset; }
+  .ui.purple.message { background-color: var(--sui-purple-light); color: color-mix(in srgb, var(--sui-purple), #000 20%); box-shadow: 0 0 0 1px var(--sui-purple) inset; }
+  .ui.pink.message { background-color: var(--sui-pink-light); color: color-mix(in srgb, var(--sui-pink), #000 20%); box-shadow: 0 0 0 1px var(--sui-pink) inset; }
+  .ui.brown.message { background-color: var(--sui-brown-light); color: color-mix(in srgb, var(--sui-brown), #000 20%); box-shadow: 0 0 0 1px var(--sui-brown) inset; }
+  .ui.grey.message { background-color: var(--sui-grey-light); color: var(--sui-grey); box-shadow: 0 0 0 1px var(--sui-grey) inset; }
+  .ui.black.message { background-color: var(--sui-black-light); color: var(--sui-black); box-shadow: 0 0 0 1px var(--sui-black) inset; }
+
+  /* ---- Sizes ---- */
+  .ui.mini.message { font-size: var(--sui-size-mini); }
+  .ui.tiny.message { font-size: var(--sui-size-tiny); }
+  .ui.small.message { font-size: var(--sui-size-small); }
+  .ui.large.message { font-size: var(--sui-size-large); }
+  .ui.big.message { font-size: var(--sui-size-big); }
+  .ui.huge.message { font-size: var(--sui-size-huge); }
+  .ui.massive.message { font-size: var(--sui-size-massive); }
+}

@@ -1,0 +1,7 @@
+export { default } from './Modal'
+export type { ModalProps, StrictModalProps } from './Modal'
+export type { ModalActionsProps, StrictModalActionsProps } from './ModalActions'
+export type { ModalContentProps, StrictModalContentProps } from './ModalContent'
+export type { ModalDescriptionProps, StrictModalDescriptionProps } from './ModalDescription'
+export type { ModalDimmerProps, StrictModalDimmerProps } from './ModalDimmer'
+export type { ModalHeaderProps, StrictModalHeaderProps } from './ModalHeader'

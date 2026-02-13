@@ -1,0 +1,53 @@
+/*
+ * Reveal component CSS
+ *
+ * Class pattern: 'ui', active, disabled, instant, animated|{value} animated, 'reveal'
+ */
+@layer sui.components {
+  .ui.reveal {
+    display: inherit;
+    position: relative;
+    font-size: var(--sui-size-medium);
+
+    & > .visible.content { position: absolute; top: 0; left: 0; z-index: 3; transition: all 0.5s ease; }
+    & > .hidden.content { position: relative; z-index: 2; }
+  }
+
+  /* ---- Fade ---- */
+  .ui.fade.reveal > .visible.content { opacity: 1; }
+  .ui.fade.reveal:hover > .visible.content { opacity: 0; }
+
+  .ui.active.fade.reveal > .visible.content { opacity: 0; }
+
+  /* ---- Move ---- */
+  .ui.move.reveal > .visible.content { left: 0; transition: left 0.5s ease; }
+  .ui.move.reveal:hover > .visible.content { left: 100%; }
+
+  .ui.move.right.reveal > .visible.content { right: 0; left: auto; transition: right 0.5s ease; }
+  .ui.move.right.reveal:hover > .visible.content { right: 100%; }
+
+  .ui.move.up.reveal > .visible.content { top: 0; transition: top 0.5s ease; }
+  .ui.move.up.reveal:hover > .visible.content { top: -100%; }
+
+  .ui.move.down.reveal > .visible.content { top: 0; transition: top 0.5s ease; }
+  .ui.move.down.reveal:hover > .visible.content { top: 100%; }
+
+  /* ---- Rotate ---- */
+  .ui.rotate.reveal > .visible.content { transition: transform 0.65s ease; }
+  .ui.rotate.reveal:hover > .visible.content { transform: rotate(110deg); }
+  .ui.left.rotate.reveal:hover > .visible.content { transform: rotate(-110deg); }
+
+  /* ---- Instant ---- */
+  .ui.instant.reveal > .visible.content { transition-duration: 0s; }
+
+  /* ---- Disabled ---- */
+  .ui.disabled.reveal {
+    pointer-events: none;
+    opacity: 1;
+
+    & > .visible.content { opacity: 1 !important; }
+  }
+
+  /* ---- Active ---- */
+  .ui.active.reveal > .visible.content { opacity: 0; }
+}

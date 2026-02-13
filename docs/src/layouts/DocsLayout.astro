@@ -1,0 +1,29 @@
+---
+import '../styles/docs.css'
+
+interface Props {
+  title: string
+  description?: string
+}
+
+const { title, description } = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | Semantic UI React</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="stylesheet" href="../../src/styles/index.css" />
+  </head>
+  <body>
+    <div class="docs-container">
+      <slot name="sidebar" />
+      <main class="docs-main">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

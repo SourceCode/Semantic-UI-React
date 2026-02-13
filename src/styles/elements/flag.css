@@ -1,0 +1,26 @@
+/*
+ * Flag component CSS
+ *
+ * Flag uses <i> with class "flag" - the component generates className like "us flag" or "ca flag".
+ * Consumers must supply their own flag sprite/image via --sui-flag-sprite.
+ */
+@layer sui.components {
+  i.flag {
+    display: inline-block;
+    width: 16px;
+    height: 11px;
+    line-height: 11px;
+    vertical-align: baseline;
+    margin: 0 0.5em 0 0;
+    text-decoration: inherit;
+    speak: none;
+    font-smoothing: antialiased;
+    backface-visibility: hidden;
+    background: var(--sui-flag-sprite, none) no-repeat;
+    background-size: auto;
+
+    &::before {
+      content: '\00a0'; /* non-breaking space placeholder */
+    }
+  }
+}

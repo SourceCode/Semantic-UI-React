@@ -1,0 +1,163 @@
+/*
+ * Icon component CSS
+ *
+ * Class pattern from Icon.tsx cx():
+ *   color, name, size, bordered, circular, disabled, fitted, inverted, link, loading,
+ *   corner|{value} corner, {value} flipped, {value} rotated, 'icon'
+ *
+ * NOTE: This provides sizing/layout only. No icon font is bundled.
+ * Set --sui-icon-font-family to your preferred icon font.
+ */
+@layer sui.components {
+  i.icon {
+    display: inline-block;
+    opacity: 1;
+    margin: 0 0.25rem 0 0;
+    width: 1.18em;
+    height: 1em;
+    font-family: var(--sui-icon-font-family, Icons);
+    font-style: normal;
+    font-weight: var(--sui-font-normal);
+    text-decoration: inherit;
+    text-align: center;
+    speak: none;
+    font-smoothing: antialiased;
+    backface-visibility: hidden;
+    line-height: 1;
+    vertical-align: baseline;
+  }
+
+  /* ---- Sizes ---- */
+  i.mini.icon { font-size: var(--sui-icon-mini); }
+  i.tiny.icon { font-size: var(--sui-icon-tiny); }
+  i.small.icon { font-size: var(--sui-icon-small); }
+  i.large.icon { font-size: var(--sui-icon-large); }
+  i.big.icon { font-size: var(--sui-icon-big); }
+  i.huge.icon { font-size: var(--sui-icon-huge); }
+  i.massive.icon { font-size: var(--sui-icon-massive); }
+
+  /* ---- Loading (spinner) ---- */
+  i.loading.icon {
+    animation: sui-icon-spin 2s linear infinite;
+  }
+
+  @keyframes sui-icon-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* ---- Fitted (no margin) ---- */
+  i.fitted.icon {
+    width: auto;
+    margin: 0;
+  }
+
+  /* ---- Link ---- */
+  i.link.icon {
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity var(--sui-transition-fast);
+
+    &:hover { opacity: 1; }
+  }
+
+  /* ---- Disabled ---- */
+  i.disabled.icon {
+    opacity: 0.45;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* ---- Circular ---- */
+  i.circular.icon {
+    border-radius: var(--sui-border-radius-circular);
+    border: 0.1em solid rgba(0, 0, 0, 0.1);
+    padding: 0.5em;
+    width: 2em;
+    height: 2em;
+    line-height: 1;
+    text-align: center;
+    box-shadow: none;
+  }
+
+  /* ---- Bordered ---- */
+  i.bordered.icon {
+    border: 0.1em solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--sui-border-radius);
+    padding: 0.5em;
+    width: 2em;
+    height: 2em;
+    line-height: 1;
+    text-align: center;
+  }
+
+  /* ---- Inverted ---- */
+  i.inverted.icon { color: var(--sui-inverted-text); }
+  i.inverted.circular.icon {
+    background: var(--sui-black);
+    color: var(--sui-white);
+    border-color: transparent;
+  }
+  i.inverted.bordered.icon {
+    background: var(--sui-black);
+    color: var(--sui-white);
+    border-color: transparent;
+  }
+
+  /* ---- Flipped ---- */
+  i.horizontally.flipped.icon { transform: scaleX(-1); }
+  i.vertically.flipped.icon { transform: scaleY(-1); }
+
+  /* ---- Rotated ---- */
+  i.clockwise.rotated.icon { transform: rotate(90deg); }
+  i.counterclockwise.rotated.icon { transform: rotate(-90deg); }
+
+  /* ---- Corner ---- */
+  i.corner.icon {
+    position: absolute;
+    font-size: 0.45em;
+    top: 0;
+    right: 0;
+    margin: 0;
+  }
+  i.top.left.corner.icon { top: 0; left: 0; right: auto; }
+  i.top.right.corner.icon { top: 0; right: 0; }
+  i.bottom.left.corner.icon { bottom: 0; left: 0; top: auto; right: auto; }
+  i.bottom.right.corner.icon { bottom: 0; right: 0; top: auto; }
+
+  /* ---- Colors ---- */
+  i.red.icon { color: var(--sui-red); }
+  i.orange.icon { color: var(--sui-orange); }
+  i.yellow.icon { color: var(--sui-yellow); }
+  i.olive.icon { color: var(--sui-olive); }
+  i.green.icon { color: var(--sui-green); }
+  i.teal.icon { color: var(--sui-teal); }
+  i.blue.icon { color: var(--sui-blue); }
+  i.violet.icon { color: var(--sui-violet); }
+  i.purple.icon { color: var(--sui-purple); }
+  i.pink.icon { color: var(--sui-pink); }
+  i.brown.icon { color: var(--sui-brown); }
+  i.grey.icon { color: var(--sui-grey); }
+  i.black.icon { color: var(--sui-black); }
+
+  /* ---- Icon Group ---- */
+  i.icons {
+    display: inline-block;
+    position: relative;
+    line-height: 1;
+    width: auto;
+
+    & .icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+
+      &:first-child {
+        position: static;
+        transform: none;
+      }
+    }
+  }
+}

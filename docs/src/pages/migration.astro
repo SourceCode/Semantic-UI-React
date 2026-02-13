@@ -1,0 +1,54 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro'
+import Sidebar from '../components/Sidebar.astro'
+---
+
+<DocsLayout title="Migration Guide">
+  <Sidebar slot="sidebar" />
+
+  <article class="docs-content">
+    <h1>Migrating from v3 to v4</h1>
+
+    <h2>Prerequisites</h2>
+    <ul>
+      <li>React 19.0.0 or later</li>
+      <li>Node.js 20 or later</li>
+      <li>Modern browser (Chrome 92+, Firefox 90+, Safari 15.4+, Edge 92+)</li>
+    </ul>
+
+    <h2>Step 1: Update Dependencies</h2>
+    <pre><code>npm install semantic-ui-react@4 react@19 react-dom@19</code></pre>
+
+    <h2>Step 2: Replace CSS Import</h2>
+    <h3>Before (v3)</h3>
+    <pre><code>import 'semantic-ui-css/semantic.min.css'</code></pre>
+    <h3>After (v4)</h3>
+    <pre><code>import 'semantic-ui-react/styles'</code></pre>
+
+    <h2>Step 3: Remove semantic-ui-css</h2>
+    <pre><code>npm uninstall semantic-ui-css</code></pre>
+
+    <h2>Step 4: Update TypeScript Types</h2>
+    <pre><code>npm install @types/react@19 @types/react-dom@19</code></pre>
+
+    <h2>Breaking Changes</h2>
+    <ul>
+      <li><strong>React 19 required</strong>: React 16, 17, and 18 are no longer supported</li>
+      <li><strong>CSS dependency replaced</strong>: semantic-ui-css is no longer needed</li>
+      <li><strong>UMD bundle removed</strong>: Use ESM imports instead</li>
+      <li><strong>IE11 dropped</strong>: Modern browsers only</li>
+      <li><strong>All function components</strong>: Class components converted; instance methods removed</li>
+      <li><strong>PropTypes removed</strong>: Use TypeScript for type checking</li>
+    </ul>
+
+    <h2>New Features</h2>
+    <ul>
+      <li>CSS Custom Properties theming with ThemeProvider</li>
+      <li>Built-in dark theme</li>
+      <li>React 19 form actions support</li>
+      <li>React Compiler compatibility</li>
+      <li>Asset preloading utilities</li>
+      <li>Per-component CSS imports</li>
+    </ul>
+  </article>
+</DocsLayout>

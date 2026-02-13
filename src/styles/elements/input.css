@@ -1,0 +1,192 @@
+/*
+ * Input component CSS
+ *
+ * Class pattern: 'ui', size, action|{value} action, disabled, error, fluid, focus,
+ *   icon|{value} icon, inverted, labeled|{value} labeled, loading, transparent, 'input'
+ */
+@layer sui.components {
+  .ui.input {
+    display: inline-flex;
+    position: relative;
+    font-size: var(--sui-size-medium);
+    color: var(--sui-text-color);
+
+    & > input {
+      margin: 0;
+      max-width: 100%;
+      flex: 1 0 auto;
+      outline: none;
+      text-align: left;
+      line-height: var(--sui-line-height);
+      font-family: var(--sui-font-family);
+      font-size: 1em;
+      padding: var(--sui-input-padding);
+      background: var(--sui-white);
+      border: 1px solid var(--sui-border-color);
+      color: var(--sui-text-color);
+      border-radius: var(--sui-border-radius);
+      transition: box-shadow var(--sui-transition-fast), border-color var(--sui-transition-fast);
+      box-shadow: none;
+
+      &::placeholder {
+        color: var(--sui-light-text);
+      }
+
+      &:focus-visible {
+        border-color: var(--sui-blue);
+        color: var(--sui-selected-text);
+      }
+    }
+  }
+
+  /* ---- Focus ---- */
+  .ui.focus.input > input,
+  .ui.input > input:focus {
+    border-color: var(--sui-blue);
+    color: var(--sui-selected-text);
+  }
+
+  .ui.input > input:focus-visible {
+    border-color: var(--sui-blue);
+    color: var(--sui-selected-text);
+    outline: 2px solid var(--sui-blue);
+    outline-offset: 2px;
+  }
+
+  .ui.input > input:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* ---- Error ---- */
+  .ui.error.input > input {
+    background-color: var(--sui-red-light);
+    border-color: var(--sui-red);
+    color: var(--sui-negative);
+  }
+
+  /* ---- Disabled ---- */
+  .ui.disabled.input {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  /* ---- Loading ---- */
+  .ui.loading.input > input {
+    color: transparent;
+  }
+  .ui.loading.input::after {
+    content: '';
+    position: absolute;
+    right: 0.65em;
+    top: 50%;
+    margin-top: -0.64285714em;
+    width: 1.28571429em;
+    height: 1.28571429em;
+    border-radius: var(--sui-border-radius-circular);
+    border: 0.2em solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--sui-grey);
+    animation: sui-icon-spin 0.6s linear infinite;
+  }
+
+  /* ---- Transparent ---- */
+  .ui.transparent.input > input {
+    border-color: transparent;
+    background: transparent;
+    padding: 0;
+  }
+
+  /* ---- Fluid ---- */
+  .ui.fluid.input {
+    display: flex;
+    width: 100%;
+  }
+
+  /* ---- Sizes ---- */
+  .ui.mini.input { font-size: var(--sui-size-mini); }
+  .ui.tiny.input { font-size: var(--sui-size-tiny); }
+  .ui.small.input { font-size: var(--sui-size-small); }
+  .ui.large.input { font-size: var(--sui-size-large); }
+  .ui.big.input { font-size: var(--sui-size-big); }
+  .ui.huge.input { font-size: var(--sui-size-huge); }
+  .ui.massive.input { font-size: var(--sui-size-massive); }
+
+  /* ---- Icon ---- */
+  .ui.icon.input {
+    & > i.icon {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      height: 100%;
+      width: 2.67142857em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.5;
+      border-radius: 0 var(--sui-border-radius) var(--sui-border-radius) 0;
+      transition: opacity var(--sui-transition-fast);
+      pointer-events: none;
+    }
+
+    & > input { padding-right: 2.67142857em !important; }
+  }
+
+  .ui.left.icon.input {
+    & > i.icon { right: auto; left: 0; border-radius: var(--sui-border-radius) 0 0 var(--sui-border-radius); }
+    & > input { padding-left: 2.67142857em !important; padding-right: 1em !important; }
+  }
+
+  /* ---- Labeled ---- */
+  .ui.labeled.input {
+    & > .label {
+      flex: 0 0 auto;
+      margin: 0;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+    }
+
+    & > .label:first-child {
+      border-radius: var(--sui-border-radius) 0 0 var(--sui-border-radius);
+      border-right: none;
+    }
+
+    & > input:first-child {
+      border-radius: 0 var(--sui-border-radius) var(--sui-border-radius) 0;
+    }
+  }
+
+  .ui.right.labeled.input > input {
+    border-radius: var(--sui-border-radius) 0 0 var(--sui-border-radius);
+  }
+  .ui.right.labeled.input > .label {
+    border-radius: 0 var(--sui-border-radius) var(--sui-border-radius) 0;
+    border-left: none;
+  }
+
+  /* ---- Action ---- */
+  .ui.action.input {
+    & > .button,
+    & > .buttons {
+      flex: 0 0 auto;
+    }
+
+    & > input { border-radius: var(--sui-border-radius) 0 0 var(--sui-border-radius); }
+    & > .button:last-child,
+    & > .buttons:last-child > .button {
+      border-radius: 0 var(--sui-border-radius) var(--sui-border-radius) 0;
+    }
+  }
+
+  .ui.left.action.input {
+    & > input { border-radius: 0 var(--sui-border-radius) var(--sui-border-radius) 0; }
+    & > .button:first-child { border-radius: var(--sui-border-radius) 0 0 var(--sui-border-radius); }
+  }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.input > input {
+    border-color: var(--sui-inverted-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--sui-inverted-text);
+  }
+}

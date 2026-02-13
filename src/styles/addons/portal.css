@@ -1,0 +1,10 @@
+/*
+ * Portal addon CSS
+ *
+ * Portal renders children into a DOM node outside the React tree.
+ * It does not produce any visual styling itself; it's a structural utility.
+ * This file exists for completeness and future overrides.
+ */
+@layer sui.components {
+  /* Portal has no CSS output by design */
+}

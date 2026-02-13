@@ -1,0 +1,170 @@
+/*
+ * Card component CSS
+ *
+ * Class pattern: 'ui', color, centered, fluid, link, raised, 'card'
+ * Group: 'ui', {count} doubling stackable, 'cards'
+ * Sub: .image, .content, .header, .meta, .description, .extra.content
+ */
+@layer sui.components {
+  .ui.card {
+    max-width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 290px;
+    min-height: 0;
+    background: var(--sui-background, #ffffff);
+    padding: 0;
+    border: none;
+    border-radius: var(--sui-border-radius, 0.28571429rem);
+    box-shadow: var(--sui-shadow, 0 1px 3px 0 #d4d4d5), 0 0 0 1px var(--sui-border-color, #d4d4d5);
+    transition: box-shadow 0.1s ease, transform 0.1s ease;
+    font-size: var(--sui-size-medium);
+    z-index: auto;
+  }
+
+  .ui.card > .image {
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: var(--sui-border-radius) var(--sui-border-radius) 0 0;
+    overflow: hidden;
+
+    & > img { display: block; width: 100%; height: auto; border-radius: inherit; }
+  }
+
+  .ui.card > .content {
+    flex-grow: 1;
+    border: none;
+    border-top: 1px solid var(--sui-internal-border);
+    background: none;
+    margin: 0;
+    padding: 1em 1em;
+    box-shadow: none;
+    font-size: 1em;
+    border-radius: 0;
+  }
+
+  .ui.card > .content:first-child { border-top: none; border-radius: var(--sui-border-radius) var(--sui-border-radius) 0 0; }
+  .ui.card > .content:last-child { border-radius: 0 0 var(--sui-border-radius) var(--sui-border-radius); }
+
+  .ui.card > .content > .header {
+    display: block;
+    margin: 0;
+    font-family: var(--sui-header-font);
+    color: var(--sui-text-color);
+    font-weight: var(--sui-font-bold);
+    font-size: 1.28571429em;
+    margin-top: -0.21425em;
+  }
+
+  .ui.card > .content > .meta {
+    font-size: 1em;
+    color: var(--sui-muted-text);
+    margin-top: 0.5em;
+  }
+
+  .ui.card > .content > .description {
+    clear: both;
+    color: var(--sui-muted-text);
+    margin-top: 0.5em;
+  }
+
+  .ui.card > .extra.content {
+    max-width: 100%;
+    min-height: 0;
+    flex-grow: 0;
+    border-top: 1px solid var(--sui-internal-border);
+    position: static;
+    background: none;
+    width: auto;
+    margin: 0;
+    padding: 0.75em 1em;
+    box-shadow: none;
+    color: var(--sui-muted-text);
+    transition: color var(--sui-transition-fast);
+  }
+
+  /* ---- Link / hoverable ---- */
+  .ui.link.card:hover,
+  .ui.card a:hover,
+  a.ui.card:hover {
+    cursor: pointer;
+    z-index: 5;
+    box-shadow: 0 1px 3px 0 #bcbdbd, 0 0 0 1px #d4d4d5;
+    transform: translateY(-3px);
+  }
+
+  /* ---- Raised ---- */
+  .ui.raised.card { box-shadow: var(--sui-shadow-raised); }
+  .ui.raised.card:hover { box-shadow: var(--sui-shadow-floating); }
+
+  /* ---- Centered ---- */
+  .ui.centered.card { margin-left: auto; margin-right: auto; }
+
+  /* ---- Fluid ---- */
+  .ui.fluid.card { width: 100%; }
+
+  /* ---- Colors ---- */
+  .ui.red.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-red), 0 1px 3px 0 #d4d4d5; }
+  .ui.orange.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-orange), 0 1px 3px 0 #d4d4d5; }
+  .ui.yellow.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-yellow), 0 1px 3px 0 #d4d4d5; }
+  .ui.olive.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-olive), 0 1px 3px 0 #d4d4d5; }
+  .ui.green.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-green), 0 1px 3px 0 #d4d4d5; }
+  .ui.teal.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-teal), 0 1px 3px 0 #d4d4d5; }
+  .ui.blue.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-blue), 0 1px 3px 0 #d4d4d5; }
+  .ui.violet.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-violet), 0 1px 3px 0 #d4d4d5; }
+  .ui.purple.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-purple), 0 1px 3px 0 #d4d4d5; }
+  .ui.pink.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-pink), 0 1px 3px 0 #d4d4d5; }
+  .ui.brown.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-brown), 0 1px 3px 0 #d4d4d5; }
+  .ui.grey.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-grey), 0 1px 3px 0 #d4d4d5; }
+  .ui.black.card { box-shadow: 0 0 0 1px #d4d4d5, 0 var(--sui-colored-border-size) 0 0 var(--sui-black), 0 1px 3px 0 #d4d4d5; }
+
+  /* ==== Card Group ==== */
+  .ui.cards {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -0.875em -0.5em;
+    container-type: inline-size;
+
+    & > .card {
+      display: flex;
+      margin: 0.875em 0.5em;
+      float: none;
+    }
+  }
+
+  @container (max-width: 500px) {
+    .ui.cards > .card {
+      width: calc(100% - 1em);
+    }
+  }
+
+  .ui.one.cards > .card { width: calc(100% - 1em); }
+  .ui.two.cards > .card { width: calc(50% - 1em); }
+  .ui.three.cards > .card { width: calc(33.333% - 1em); }
+  .ui.four.cards > .card { width: calc(25% - 1em); }
+  .ui.five.cards > .card { width: calc(20% - 1em); }
+  .ui.six.cards > .card { width: calc(16.666% - 1em); }
+  .ui.seven.cards > .card { width: calc(14.285% - 1em); }
+  .ui.eight.cards > .card { width: calc(12.5% - 1em); }
+
+  @media screen and (max-width: 767px) {
+    .ui.stackable.cards > .card { width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
+  }
+
+  .ui.doubling.cards > .card { }
+  @media screen and (min-width: 768px) and (max-width: 991px) {
+    .ui.doubling.four.cards > .card { width: calc(50% - 1em); }
+    .ui.doubling.six.cards > .card { width: calc(33.333% - 1em); }
+    .ui.doubling.eight.cards > .card { width: calc(25% - 1em); }
+  }
+  @media screen and (max-width: 767px) {
+    .ui.doubling.cards > .card { width: 100% !important; }
+    .ui.doubling.two.cards > .card { width: 100% !important; }
+    .ui.doubling.three.cards > .card { width: calc(50% - 1em) !important; }
+    .ui.doubling.four.cards > .card { width: calc(50% - 1em) !important; }
+  }
+}

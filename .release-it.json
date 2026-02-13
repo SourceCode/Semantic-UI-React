@@ -1,9 +1,17 @@
 {
+  "git": {
+    "commitMessage": "chore: release v${version}",
+    "requireBranch": "master"
+  },
   "github": {
-    "release": false
+    "release": true
   },
   "npm": {
     "publishArgs": "--registry=https://registry.npmjs.org",
     "skipChecks": true
+  },
+  "hooks": {
+    "before:init": ["yarn lint", "yarn tsd:test", "yarn test"],
+    "after:bump": "yarn build"
   }
 }

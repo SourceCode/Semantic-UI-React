@@ -1,0 +1,65 @@
+/*
+ * Advertisement component CSS
+ *
+ * Class pattern: 'ui', centered, test, unit (e.g. 'medium rectangle', 'leaderboard'), 'ad'
+ */
+@layer sui.components {
+  .ui.ad {
+    display: block;
+    overflow: hidden;
+    margin: 1em 0;
+    background: transparent;
+  }
+
+  .ui.ad:empty { display: none; }
+
+  /* ---- Common IAB ad sizes ---- */
+  .ui.leaderboard.ad { width: 728px; height: 90px; }
+  .ui.medium.rectangle.ad { width: 300px; height: 250px; }
+  .ui.large.rectangle.ad { width: 336px; height: 280px; }
+  .ui.half.page.ad { width: 300px; height: 600px; }
+  .ui.banner.ad { width: 468px; height: 60px; }
+  .ui.skyscraper.ad { width: 120px; height: 600px; }
+  .ui.wide.skyscraper.ad { width: 160px; height: 600px; }
+  .ui.square.ad { width: 250px; height: 250px; }
+  .ui.small.rectangle.ad { width: 180px; height: 150px; }
+  .ui.vertical.rectangle.ad { width: 240px; height: 400px; }
+  .ui.button.ad { width: 120px; height: 90px; }
+  .ui.small.button.ad { width: 120px; height: 60px; }
+  .ui.half.banner.ad { width: 234px; height: 60px; }
+  .ui.vertical.banner.ad { width: 120px; height: 240px; }
+  .ui.top.banner.ad { width: 930px; height: 180px; }
+  .ui.billboard.ad { width: 970px; height: 250px; }
+  .ui.netboard.ad { width: 580px; height: 400px; }
+  .ui.large.leaderboard.ad { width: 970px; height: 90px; }
+  .ui.mobile.leaderboard.ad { width: 320px; height: 50px; }
+  .ui.panorama.ad { width: 980px; height: 120px; }
+
+  /* ---- Centered ---- */
+  .ui.centered.ad { margin-left: auto; margin-right: auto; }
+
+  /* ---- Test ---- */
+  .ui.test.ad {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px dashed var(--sui-border-color);
+    color: var(--sui-muted-text);
+    text-align: center;
+    line-height: 1;
+    font-size: var(--sui-size-medium);
+
+    &::after {
+      content: 'Ad';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      font-size: var(--sui-size-large);
+      font-weight: var(--sui-font-bold);
+      color: var(--sui-light-text);
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .ui.ad:not(.mobile) { display: none; }
+  }
+}

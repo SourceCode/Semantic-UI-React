@@ -1,0 +1,137 @@
+/*
+ * Step component CSS
+ *
+ * Class pattern: 'ui', size, fluid, ordered, stackable, unstackable, vertical, {value} attached, 'steps'
+ * Step item: active, completed, disabled, link, 'step'
+ */
+@layer sui.components {
+  .ui.steps {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: stretch;
+    margin: 1em 0;
+    background: var(--sui-white);
+    border: 1px solid var(--sui-border-color);
+    border-radius: var(--sui-border-radius);
+    box-shadow: var(--sui-shadow-subtle);
+    overflow: hidden;
+  }
+
+  .ui.steps .step {
+    position: relative;
+    display: flex;
+    flex: 1 0 auto;
+    flex-wrap: wrap;
+    flex-direction: row;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+    padding: 1.14285714em 2em;
+    background: var(--sui-white);
+    color: var(--sui-text-color);
+    border-right: 1px solid var(--sui-border-color);
+
+    &:last-child { border-right: none; border-radius: 0 var(--sui-border-radius) var(--sui-border-radius) 0; }
+    &:first-child { border-radius: var(--sui-border-radius) 0 0 var(--sui-border-radius); }
+    &:only-child { border-radius: var(--sui-border-radius); }
+  }
+
+  .ui.steps .step .icon { font-size: 2.5em; margin: 0 1rem 0 0; vertical-align: middle; }
+  .ui.steps .step .title { font-weight: var(--sui-font-bold); font-size: 1.14285714em; }
+  .ui.steps .step .description { font-weight: var(--sui-font-normal); font-size: 0.92857143em; color: var(--sui-muted-text); }
+  .ui.steps .step .content { display: flex; flex-direction: column; vertical-align: middle; }
+
+  /* ---- Active ---- */
+  .ui.steps .active.step {
+    cursor: auto;
+    background: var(--sui-subtle-bg);
+
+    & .title { color: var(--sui-blue); }
+
+    &::after {
+      background: var(--sui-subtle-bg);
+    }
+  }
+
+  /* ---- Completed ---- */
+  .ui.steps .completed.step::after {
+    /* indicator (chevron colored green to show done) */
+  }
+
+  /* ---- Disabled ---- */
+  .ui.steps .disabled.step {
+    cursor: default;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  /* ---- Link ---- */
+  .ui.steps .link.step,
+  .ui.steps a.step {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--sui-subtle-bg);
+    }
+  }
+
+  /* ---- Ordered ---- */
+  .ui.ordered.steps {
+    counter-reset: ordered;
+
+    & .step::before {
+      counter-increment: ordered;
+      content: counters(ordered, '.');
+      display: table-cell;
+      font-size: 2.5em;
+      vertical-align: middle;
+      padding-right: 1rem;
+      color: var(--sui-text-color);
+    }
+  }
+
+  /* ---- Vertical ---- */
+  .ui.vertical.steps {
+    flex-direction: column;
+    display: inline-flex;
+    overflow: visible;
+
+    & .step {
+      border-right: none;
+      border-bottom: 1px solid var(--sui-border-color);
+
+      &:last-child { border-bottom: none; }
+    }
+  }
+
+  /* ---- Fluid ---- */
+  .ui.fluid.steps { display: flex; width: 100%; }
+
+  /* ---- Stackable ---- */
+  @media screen and (max-width: 767px) {
+    .ui.stackable.steps {
+      flex-direction: column;
+
+      & .step {
+        border-right: none;
+        border-bottom: 1px solid var(--sui-border-color);
+
+        &:last-child { border-bottom: none; }
+      }
+    }
+  }
+
+  /* ---- Attached ---- */
+  .ui.attached.steps { margin: 0; border-radius: 0; }
+  .ui.top.attached.steps { border-radius: var(--sui-border-radius) var(--sui-border-radius) 0 0; }
+  .ui.bottom.attached.steps { border-radius: 0 0 var(--sui-border-radius) var(--sui-border-radius); }
+
+  /* ---- Sizes ---- */
+  .ui.mini.steps { font-size: var(--sui-size-mini); }
+  .ui.tiny.steps { font-size: var(--sui-size-tiny); }
+  .ui.small.steps { font-size: var(--sui-size-small); }
+  .ui.large.steps { font-size: var(--sui-size-large); }
+  .ui.big.steps { font-size: var(--sui-size-big); }
+  .ui.huge.steps { font-size: var(--sui-size-huge); }
+  .ui.massive.steps { font-size: var(--sui-size-massive); }
+}

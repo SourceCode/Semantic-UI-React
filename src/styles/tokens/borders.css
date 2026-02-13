@@ -1,0 +1,19 @@
+/*
+ * Border tokens for Semantic-UI-React
+ */
+@layer sui.tokens {
+  :root {
+    --sui-border-width: 1px;
+    --sui-border-style: solid;
+    --sui-border: var(--sui-border-width) var(--sui-border-style) var(--sui-border-color);
+    --sui-border-radius: 0.28571429rem;
+    --sui-border-radius-sm: 0.21428571rem;
+    --sui-border-radius-lg: 0.5rem;
+    --sui-border-radius-full: 500rem;
+    --sui-border-radius-circular: 500rem;
+    --sui-border-radius-rounded: 0.28571429rem;
+
+    /* ---- Colored top border (used by segments, messages, etc.) ---- */
+    --sui-colored-border-size: 2px;
+  }
+}

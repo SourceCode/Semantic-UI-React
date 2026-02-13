@@ -1,0 +1,6 @@
+export { default } from './Placeholder'
+export type { PlaceholderProps, StrictPlaceholderProps } from './Placeholder'
+export type { PlaceholderHeaderProps, StrictPlaceholderHeaderProps } from './PlaceholderHeader'
+export type { PlaceholderImageProps, StrictPlaceholderImageProps } from './PlaceholderImage'
+export type { PlaceholderLineProps, StrictPlaceholderLineProps } from './PlaceholderLine'
+export type { PlaceholderParagraphProps, StrictPlaceholderParagraphProps } from './PlaceholderParagraph'

@@ -1,0 +1,94 @@
+/*
+ * Size tokens for Semantic-UI-React
+ * Maps to SUI.SIZES: mini, tiny, small, medium, large, big, huge, massive
+ */
+@layer sui.tokens {
+  :root {
+    /* ---- Font-size scale (maps to SUI.SIZES) ---- */
+    --sui-size-mini: 0.71428571rem;
+    --sui-size-tiny: 0.85714286rem;
+    --sui-size-small: 0.92857143rem;
+    --sui-size-medium: 1rem;
+    --sui-size-large: 1.14285714rem;
+    --sui-size-big: 1.28571429rem;
+    --sui-size-huge: 1.42857143rem;
+    --sui-size-massive: 1.71428571rem;
+
+    /* ---- Relative em-based sizes (for components that size relative to parent) ---- */
+    --sui-em-mini: 0.78571429em;
+    --sui-em-tiny: 0.85714286em;
+    --sui-em-small: 0.92857143em;
+    --sui-em-medium: 1em;
+    --sui-em-large: 1.14285714em;
+    --sui-em-big: 1.28571429em;
+    --sui-em-huge: 1.42857143em;
+    --sui-em-massive: 1.71428571em;
+
+    /* ---- Base rem ---- */
+    --sui-base-size: 14px;
+
+    /* ---- Component-specific size scales ---- */
+    --sui-button-mini: 0.78571429rem;
+    --sui-button-tiny: 0.85714286rem;
+    --sui-button-small: 0.92857143rem;
+    --sui-button-medium: 1rem;
+    --sui-button-large: 1.14285714rem;
+    --sui-button-big: 1.28571429rem;
+    --sui-button-huge: 1.42857143rem;
+    --sui-button-massive: 1.71428571rem;
+
+    /* ---- Header sizes ---- */
+    --sui-h1: 2rem;
+    --sui-h2: 1.71428571rem;
+    --sui-h3: 1.28571429rem;
+    --sui-h4: 1.07142857rem;
+    --sui-h5: 1rem;
+
+    /* ---- Icon sizes ---- */
+    --sui-icon-mini: 0.4em;
+    --sui-icon-tiny: 0.5em;
+    --sui-icon-small: 0.75em;
+    --sui-icon-medium: 1em;
+    --sui-icon-large: 1.5em;
+    --sui-icon-big: 2em;
+    --sui-icon-huge: 4em;
+    --sui-icon-massive: 8em;
+
+    /* ---- Loader sizes ---- */
+    --sui-loader-mini: 1rem;
+    --sui-loader-tiny: 1.14285714rem;
+    --sui-loader-small: 1.71428571rem;
+    --sui-loader-medium: 2.25rem;
+    --sui-loader-large: 3.5rem;
+    --sui-loader-big: 3.75rem;
+    --sui-loader-huge: 4.25rem;
+    --sui-loader-massive: 4.75rem;
+
+    /* ---- Component height tokens ---- */
+    --sui-height-mini: 1.6rem;
+    --sui-height-tiny: 1.8rem;
+    --sui-height-small: 2rem;
+    --sui-height-medium: 2.25rem;
+    --sui-height-large: 2.5rem;
+    --sui-height-big: 2.75rem;
+    --sui-height-huge: 3rem;
+    --sui-height-massive: 3.5rem;
+
+    /* ---- Icon size tokens ---- */
+    --sui-icon-size-mini: 0.4em;
+    --sui-icon-size-tiny: 0.5em;
+    --sui-icon-size-small: 0.75em;
+    --sui-icon-size-medium: 1em;
+    --sui-icon-size-large: 1.5em;
+    --sui-icon-size-big: 2em;
+    --sui-icon-size-huge: 4em;
+    --sui-icon-size-massive: 8em;
+
+    /* ---- Modal sizes ---- */
+    --sui-modal-mini: 35.2%;
+    --sui-modal-tiny: 40%;
+    --sui-modal-small: 50%;
+    --sui-modal-large: 80%;
+    --sui-modal-fullscreen: 95%;
+  }
+}

@@ -1,0 +1,43 @@
+/*
+ * Base typography for Semantic-UI-React
+ */
+@layer sui.base {
+  body {
+    font-family: var(--sui-font-family);
+    font-size: var(--sui-size-medium);
+    font-weight: var(--sui-font-normal);
+    line-height: var(--sui-line-height);
+    color: var(--sui-text-color);
+  }
+
+  h1 { font-size: var(--sui-h1); }
+  h2 { font-size: var(--sui-h2); }
+  h3 { font-size: var(--sui-h3); }
+  h4 { font-size: var(--sui-h4); }
+  h5 { font-size: var(--sui-h5); }
+
+  p {
+    margin: 0 0 1em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  strong, b { font-weight: var(--sui-font-bold); }
+
+  small { font-size: var(--sui-size-small); }
+
+  /* Screen reader only utility (within base layer) */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}

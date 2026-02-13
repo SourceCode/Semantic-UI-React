@@ -1,0 +1,29 @@
+/*
+ * Sticky component CSS
+ *
+ * Class pattern: 'ui', bound (top|bottom), fixed (top|bottom), 'sticky'
+ * The Sticky component mostly uses inline styles for positioning,
+ * but these base styles are needed.
+ */
+@layer sui.components {
+  .ui.sticky {
+    position: static;
+    transition: none;
+    z-index: var(--sui-z-sticky);
+  }
+
+  .ui.sticky.fixed {
+    position: fixed;
+    backface-visibility: hidden;
+  }
+
+  .ui.sticky.fixed.top { top: 0; }
+  .ui.sticky.fixed.bottom { bottom: 0; }
+
+  .ui.sticky.bound {
+    position: absolute;
+  }
+
+  .ui.sticky.bound.top { top: 0; }
+  .ui.sticky.bound.bottom { bottom: 0; }
+}

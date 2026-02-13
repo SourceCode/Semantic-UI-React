@@ -1,5 +1,56 @@
 # Change Log
 
+## v4.0.0 (2026-02-13)
+
+### :boom: Breaking Changes
+
+- **React 19 required**: Minimum peer dependency is now `react@^19.0.0` and `react-dom@^19.0.0`. React 16, 17, and 18 are no longer supported.
+- **CSS dependency replaced**: The external `semantic-ui-css` package is no longer required. Semantic UI React ships its own CSS in `dist/styles/`. Import `semantic-ui-react/styles` or individual component stylesheets.
+- **UMD bundle removed**: The UMD distribution is no longer produced. Use the ESM bundle for CDN usage with `<script type="module">`.
+- **IE11 support dropped**: Browser targets require Chrome 92+, Firefox 90+, Safari 15.4+, Edge 92+.
+- **All components are function components**: Class components have been converted to function components. Components that previously exposed instance methods no longer do so.
+- **`defaultProps` removed**: Default prop values are now inline destructuring defaults.
+- **`prop-types` removed**: PropTypes are no longer included. Use TypeScript for type checking.
+- **TypeScript source**: Component source is now TypeScript (.tsx). Types are generated from source.
+- **`innerRef` prop removed**: Use standard `ref` prop instead (React 19 ref-as-prop).
+- **`forwardRef` wrappers removed**: Components accept `ref` directly as a prop.
+
+### :rocket: New Features
+
+- **CSS Custom Properties theming**: All design tokens are CSS custom properties. Runtime theme switching supported.
+- **ThemeProvider component**: Scoped theming via CSS custom properties and React Context.
+- **Dark theme**: Built-in dark theme CSS at `semantic-ui-react/styles/themes/dark.css`.
+- **useTheme hook**: Access and control the current theme from any component.
+- **React 19 Form Features**:
+  - `Form` accepts async functions as the `action` prop
+  - `Form.Status` component for form submission pending state
+  - `useFormAction` hook wraps `React.useActionState`
+  - `useFormStatus` re-exports from React DOM
+  - `useOptimistic` re-exports from React
+- **React Compiler support**: All components compatible with `babel-plugin-react-compiler`.
+- **Context as Provider**: React 19 `<Context value={}>` pattern.
+- **Asset preloading**: `preloadStyles`, `preinitStyles`, `preloadIconFont` utilities.
+- **StylesheetLink component**: Declarative CSS loading with React 19 `precedence` support.
+- **CSS Cascade Layers**: `@layer` for predictable cascade ordering.
+- **Modern CSS**: `:is()`, `:where()`, `:has()`, `color-mix()`, container queries, `:focus-visible`.
+- **Per-component CSS imports**: Tree-shaken stylesheets.
+
+### :house: Internal
+
+- **Build system**: Webpack 4 + Gulp 4 replaced with Rollup 4.x (CJS, ESM, browser ESM outputs).
+- **Test framework**: Karma + Mocha + Enzyme replaced with Vitest + React Testing Library.
+- **ESLint 9**: Flat config with React Compiler compatibility checking.
+- **Node.js 20+**: CI and development require Node.js 20 or later.
+- **Yarn 4**: Package manager updated from Yarn Classic to Yarn 4 via corepack.
+- **TypeScript 5.9**: Full TypeScript source compilation.
+- **Astro documentation**: react-static replaced with Astro + React islands.
+
+### Migration Guide
+
+See [MIGRATION.md](./MIGRATION.md) for detailed upgrade instructions.
+
+---
+
 ## v3.0.0-beta.2 (2023-12-30)
 
 #### :rocket: New Feature

@@ -29,7 +29,7 @@ export const ShorthandItemFuncAssert = () => (
   <>
     <Button
       icon={{
-        children: (Component, props) => (
+        children: (Component: React.ElementType, props: any) => (
           <div className='bar'>
             <Component name={props.name} />
           </div>
@@ -38,7 +38,7 @@ export const ShorthandItemFuncAssert = () => (
     />
     <Button
       label={{
-        children: (Component, props) => (
+        children: (Component: React.ElementType, props: any) => (
           <div className='bar'>
             <Component active={props.active}>{props.children}</Component>
           </div>
@@ -60,3 +60,22 @@ export const ShorthandItemBooleanAssert = () => (
     <Button label={false} />
   </>
 )
+
+// React 19: ref cleanup function
+export const RefCleanupAssert = () => {
+  const buttonRef = (node: HTMLButtonElement | null) => {
+    if (node) {
+      // setup
+    }
+    return () => {
+      // cleanup - new in React 19
+    }
+  }
+  return <Button ref={buttonRef} />
+}
+
+// React 19: forwardRef components accept ref prop directly
+export const ForwardRefAssert = () => {
+  const ref = React.useRef<HTMLButtonElement>(null)
+  return <Button ref={ref} />
+}

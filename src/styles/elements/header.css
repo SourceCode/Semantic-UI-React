@@ -1,0 +1,147 @@
+/*
+ * Header component CSS
+ *
+ * Class pattern: 'ui', color, size, block, disabled, dividing, icon(bool), image,
+ *   inverted, sub, {value} aligned, {value} floated, {value} attached, 'header'
+ */
+@layer sui.components {
+  .ui.header {
+    margin: calc(2rem - 0.14285714em) 0 1rem;
+    padding: 0;
+    font-family: var(--sui-header-font);
+    font-weight: var(--sui-font-bold);
+    line-height: var(--sui-header-line-height);
+    color: var(--sui-text-color);
+    border: none;
+
+    &:first-child { margin-top: -0.14285714em; }
+
+    & .sub.header {
+      display: block;
+      font-weight: var(--sui-font-normal);
+      padding: 0;
+      margin: 0;
+      font-size: 1rem;
+      line-height: var(--sui-line-height);
+      color: var(--sui-muted-text);
+    }
+
+    & .icon {
+      display: table-cell;
+      vertical-align: middle;
+      font-size: 1.5em;
+      padding-right: 0.75rem;
+    }
+
+    & .image {
+      display: inline-block;
+      margin-top: 0.14285714em;
+      width: 2.5em;
+      height: auto;
+      vertical-align: middle;
+      margin-right: 0.75rem;
+    }
+
+    & .content {
+      display: inline-block;
+      vertical-align: top;
+    }
+  }
+
+  /* ---- Sizes ---- */
+  .ui.huge.header { font-size: var(--sui-h1); min-height: 1em; }
+  .ui.large.header { font-size: var(--sui-h2); }
+  .ui.medium.header { font-size: var(--sui-h3); }
+  .ui.small.header { font-size: var(--sui-h4); }
+  .ui.tiny.header { font-size: var(--sui-h5); }
+
+  /* ---- Icon header ---- */
+  .ui.icon.header {
+    display: inline-block;
+    text-align: center;
+    margin: 2rem 0 1rem;
+
+    & > .icon {
+      display: block;
+      float: none;
+      margin: 0 auto 0.5rem;
+      font-size: 3em;
+      line-height: 1;
+      padding: 0;
+    }
+
+    & > .content { display: block; }
+  }
+
+  /* ---- Dividing ---- */
+  .ui.dividing.header {
+    padding-bottom: 0.21428571rem;
+    border-bottom: 1px solid var(--sui-border-color);
+  }
+
+  /* ---- Block ---- */
+  .ui.block.header {
+    background: var(--sui-subtle-bg);
+    padding: 0.78571429rem 1rem;
+    border: 1px solid var(--sui-border-color);
+    border-radius: var(--sui-border-radius);
+  }
+
+  /* ---- Attached ---- */
+  .ui.attached.header {
+    background: var(--sui-white);
+    padding: 0.78571429rem 1rem;
+    margin: 0 -1px;
+    border: 1px solid var(--sui-border-color);
+    border-radius: 0;
+  }
+  .ui.top.attached.header {
+    border-radius: var(--sui-border-radius) var(--sui-border-radius) 0 0;
+  }
+  .ui.bottom.attached.header {
+    border-radius: 0 0 var(--sui-border-radius) var(--sui-border-radius);
+  }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.header {
+    color: var(--sui-inverted-text);
+
+    & .sub.header { color: var(--sui-inverted-muted); }
+  }
+
+  /* ---- Disabled ---- */
+  .ui.disabled.header { opacity: 0.45; }
+
+  /* ---- Colors ---- */
+  .ui.red.header { color: var(--sui-red); }
+  .ui.orange.header { color: var(--sui-orange); }
+  .ui.yellow.header { color: var(--sui-yellow); }
+  .ui.olive.header { color: var(--sui-olive); }
+  .ui.green.header { color: var(--sui-green); }
+  .ui.teal.header { color: var(--sui-teal); }
+  .ui.blue.header { color: var(--sui-blue); }
+  .ui.violet.header { color: var(--sui-violet); }
+  .ui.purple.header { color: var(--sui-purple); }
+  .ui.pink.header { color: var(--sui-pink); }
+  .ui.brown.header { color: var(--sui-brown); }
+  .ui.grey.header { color: var(--sui-grey); }
+  .ui.black.header { color: var(--sui-black); }
+
+  /* ---- Alignment ---- */
+  .ui.left.aligned.header { text-align: left; }
+  .ui.center.aligned.header { text-align: center; }
+  .ui.right.aligned.header { text-align: right; }
+  .ui.justified.header { text-align: justify; }
+
+  /* ---- Floated ---- */
+  .ui.left.floated.header { float: left; margin-right: 0.5em; }
+  .ui.right.floated.header { float: right; margin-left: 0.5em; }
+
+  /* ---- Sub ---- */
+  .ui.sub.header {
+    font-size: var(--sui-size-small);
+    font-weight: var(--sui-font-bold);
+    text-transform: uppercase;
+    color: var(--sui-muted-text);
+  }
+}

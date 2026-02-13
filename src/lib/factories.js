@@ -3,8 +3,6 @@ import _ from 'lodash'
 import * as React from 'react'
 import * as ReactIs from 'react-is'
 
-const DEPRECATED_CALLS = {}
-
 // ============================================================
 // Factories
 // ============================================================
@@ -33,14 +31,13 @@ export function createShorthand(Component, mapValueToProps, val, options = {}) {
 
   const valIsString = _.isString(val)
   const valIsNumber = _.isNumber(val)
-  const valIsFunction = _.isFunction(val)
   const valIsReactElement = React.isValidElement(val)
   const valIsPropsObject = _.isPlainObject(val)
   const valIsPrimitiveValue = valIsString || valIsNumber || _.isArray(val)
 
   // unhandled type return null
   /* eslint-disable no-console */
-  if (!valIsFunction && !valIsReactElement && !valIsPropsObject && !valIsPrimitiveValue) {
+  if (!valIsReactElement && !valIsPropsObject && !valIsPrimitiveValue) {
     if (process.env.NODE_ENV !== 'production') {
       console.error(
         [
@@ -72,7 +69,6 @@ export function createShorthand(Component, mapValueToProps, val, options = {}) {
     : overrideProps
 
   // Merge props
-  /* eslint-disable react/prop-types */
   const props = { ...defaultProps, ...usersProps, ...overrideProps }
 
   // Merge className
@@ -113,7 +109,14 @@ export function createShorthand(Component, mapValueToProps, val, options = {}) {
   // Create Element
   // ----------------------------------------
 
-  // Clone ReactElements
+  // Clone ReactElements. cloneElement is retained here because the shorthand
+  // factory is foundational to the entire component library -- every component
+  // with a `.create()` method flows through this code path when a consumer
+  // passes a React element as a shorthand value. Replacing it with
+  // createElement would lose the element's key/ref unless explicitly
+  // transferred, and changing the shorthand API is too risky for v3.
+  // The props-object form (`icon={{ name: 'user' }}`) avoids cloneElement
+  // entirely and is the recommended pattern.
   if (valIsReactElement) {
     return React.cloneElement(val, props)
   }
@@ -127,23 +130,7 @@ export function createShorthand(Component, mapValueToProps, val, options = {}) {
     return React.createElement(Component, props)
   }
 
-  // Call functions with args similar to createElement()
-  // TODO: V3 remove the implementation
-  if (valIsFunction) {
-    if (process.env.NODE_ENV !== 'production') {
-      if (!DEPRECATED_CALLS[Component]) {
-        DEPRECATED_CALLS[Component] = true
-
-        // eslint-disable-next-line no-console
-        console.warn(
-          `Warning: There is a deprecated shorthand function usage for "${Component}". It is deprecated and will be removed in v3 release. Please follow our upgrade guide: https://github.com/Semantic-Org/Semantic-UI-React/pull/4029`,
-        )
-      }
-    }
-
-    return val(Component, props, props.children)
-  }
-  /* eslint-enable react/prop-types */
+  // Function shorthand was deprecated in v2 and removed in v3
 }
 
 // ============================================================

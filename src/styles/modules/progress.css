@@ -1,0 +1,146 @@
+/*
+ * Progress component CSS
+ *
+ * Class pattern: 'ui', color, size, active, disabled, error, indicating, inverted,
+ *   success, warning, attached|{value} attached, 'progress'
+ */
+@layer sui.components {
+  .ui.progress {
+    position: relative;
+    display: block;
+    max-width: 100%;
+    margin: 1em 0 2.5em;
+    border: none;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 0;
+    border-radius: var(--sui-border-radius);
+    overflow: hidden;
+  }
+
+  .ui.progress .bar {
+    display: block;
+    line-height: 1;
+    position: relative;
+    width: 0%;
+    min-width: 2em;
+    background: var(--sui-grey);
+    border-radius: var(--sui-border-radius);
+    transition: width 0.3s ease, background-color 0.3s ease;
+    height: 1.75em;
+  }
+
+  .ui.progress .bar > .progress {
+    white-space: nowrap;
+    position: absolute;
+    width: auto;
+    font-size: 0.92857143em;
+    top: 50%;
+    right: 0.5em;
+    left: auto;
+    bottom: auto;
+    color: var(--sui-white);
+    text-shadow: none;
+    margin-top: -0.5em;
+    font-weight: var(--sui-font-bold);
+    text-align: left;
+  }
+
+  .ui.progress > .label {
+    position: absolute;
+    width: 100%;
+    font-size: 1em;
+    top: 100%;
+    right: auto;
+    left: 0;
+    bottom: auto;
+    color: var(--sui-muted-text);
+    font-weight: var(--sui-font-bold);
+    text-shadow: none;
+    margin-top: 0.2em;
+    text-align: center;
+    transition: color 0.4s ease;
+  }
+
+  /* ---- Active ---- */
+  .ui.active.progress .bar { position: relative; min-width: 2em; }
+  .ui.active.progress .bar::after {
+    content: '';
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--sui-white);
+    border-radius: var(--sui-border-radius);
+    animation: sui-progress-active 2s ease infinite;
+  }
+
+  @keyframes sui-progress-active {
+    0% { opacity: 0.3; width: 0; }
+    100% { opacity: 0; width: 100%; }
+  }
+
+  /* ---- Disabled ---- */
+  .ui.disabled.progress { opacity: 0.35; }
+
+  /* ---- Success ---- */
+  .ui.success.progress .bar { background-color: var(--sui-success); }
+  .ui.success.progress .bar::after { display: none; }
+  .ui.success.progress > .label { color: var(--sui-success); }
+
+  /* ---- Warning ---- */
+  .ui.warning.progress .bar { background-color: var(--sui-warning); }
+  .ui.warning.progress > .label { color: color-mix(in srgb, var(--sui-warning), #000 40%); }
+
+  /* ---- Error ---- */
+  .ui.error.progress .bar { background-color: var(--sui-error); }
+  .ui.error.progress > .label { color: var(--sui-error); }
+
+  /* ---- Indicating ---- */
+  .ui.indicating.progress[data-percent] .label { color: var(--sui-muted-text); }
+
+  /* ---- Inverted ---- */
+  .ui.inverted.progress { background: rgba(255, 255, 255, 0.08); }
+  .ui.inverted.progress .bar > .progress { color: var(--sui-inverted-text); }
+  .ui.inverted.progress > .label { color: var(--sui-inverted-text); }
+
+  /* ---- Attached ---- */
+  .ui.attached.progress {
+    position: relative;
+    border: none;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .ui.top.attached.progress {
+    & .bar { border-radius: 0; min-width: 0; }
+  }
+
+  .ui.bottom.attached.progress {
+    & .bar { border-radius: 0; min-width: 0; }
+  }
+
+  /* ---- Colors ---- */
+  .ui.red.progress .bar { background-color: var(--sui-red); }
+  .ui.orange.progress .bar { background-color: var(--sui-orange); }
+  .ui.yellow.progress .bar { background-color: var(--sui-yellow); }
+  .ui.olive.progress .bar { background-color: var(--sui-olive); }
+  .ui.green.progress .bar { background-color: var(--sui-green); }
+  .ui.teal.progress .bar { background-color: var(--sui-teal); }
+  .ui.blue.progress .bar { background-color: var(--sui-blue); }
+  .ui.violet.progress .bar { background-color: var(--sui-violet); }
+  .ui.purple.progress .bar { background-color: var(--sui-purple); }
+  .ui.pink.progress .bar { background-color: var(--sui-pink); }
+  .ui.brown.progress .bar { background-color: var(--sui-brown); }
+  .ui.grey.progress .bar { background-color: var(--sui-grey); }
+  .ui.black.progress .bar { background-color: var(--sui-black); }
+
+  /* ---- Sizes ---- */
+  .ui.tiny.progress { font-size: var(--sui-size-tiny); }
+  .ui.tiny.progress .bar { height: 0.5em; min-width: 0; }
+  .ui.small.progress { font-size: var(--sui-size-small); }
+  .ui.small.progress .bar { height: 1em; }
+  .ui.large.progress { font-size: var(--sui-size-large); }
+  .ui.big.progress { font-size: var(--sui-size-big); }
+}

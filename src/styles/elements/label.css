@@ -1,0 +1,286 @@
+/*
+ * Label component CSS
+ *
+ * Class pattern: 'ui', color, size, active, basic, circular, empty, floating, horizontal,
+ *   image, corner|{value} corner, pointing|{value} pointing, prompt, ribbon|{value} ribbon,
+ *   tag, 'label'
+ */
+@layer sui.components {
+  .ui.label {
+    display: inline-block;
+    vertical-align: baseline;
+    margin: 0 0.14285714em;
+    padding: 0.5833em 0.833em;
+    border: 0 solid transparent;
+    border-radius: var(--sui-border-radius);
+    background-color: var(--sui-label-background, #e8e8e8);
+    color: var(--sui-text-color, rgba(0, 0, 0, 0.87));
+    font-size: var(--sui-size-medium, 1rem);
+    font-weight: var(--sui-font-bold, 700);
+    line-height: 1;
+    white-space: nowrap;
+    transition: background var(--sui-transition-fast, 0.15s);
+  }
+
+  .ui.label:first-child { margin-left: 0; }
+  .ui.label:last-child { margin-right: 0; }
+
+  /* ---- Detail ---- */
+  .ui.label > .detail {
+    display: inline-block;
+    margin-left: 0.5em;
+    font-weight: var(--sui-font-bold, 700);
+    opacity: 0.8;
+  }
+
+  /* ---- Delete / close icon ---- */
+  .ui.label > .close.icon,
+  .ui.label > .delete.icon {
+    cursor: pointer;
+    margin: 0 0 0 0.5em;
+    font-size: 0.92857143em;
+    opacity: 0.5;
+    transition: opacity var(--sui-transition-fast), background var(--sui-transition-fast);
+
+    &:hover { opacity: 1; }
+  }
+
+  /* ---- Image label ---- */
+  .ui.image.label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5833em 0.833em 0.5833em 0.5em;
+    background-color: #e8e8e8;
+    border-radius: var(--sui-border-radius-circular);
+
+    & img {
+      height: 2.1666em;
+      margin: -0.5833em 0.5em -0.5833em -0.5em;
+      border-radius: var(--sui-border-radius-circular);
+      vertical-align: top;
+    }
+  }
+
+  /* ---- Basic ---- */
+  .ui.basic.label {
+    background: transparent;
+    border: 1px solid var(--sui-border-color);
+    color: var(--sui-text-color);
+  }
+
+  /* ---- Circular ---- */
+  .ui.circular.label {
+    min-width: 2em;
+    min-height: 2em;
+    padding: 0.5em;
+    line-height: 1em;
+    text-align: center;
+    border-radius: var(--sui-border-radius-circular);
+  }
+
+  /* ---- Empty / dot ---- */
+  .ui.empty.circular.label {
+    width: 0.5em;
+    height: 0.5em;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+    vertical-align: baseline;
+  }
+
+  /* ---- Pointing ---- */
+  .ui.pointing.label {
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      width: 0.6666em;
+      height: 0.6666em;
+      background: inherit;
+      border: inherit;
+      border-width: 0 0 1px 1px;
+      transform: rotate(-45deg);
+      bottom: -0.3333em;
+      left: 50%;
+      margin-left: -0.3333em;
+    }
+  }
+
+  .ui.left.pointing.label::before {
+    top: 50%;
+    left: -0.3333em;
+    bottom: auto;
+    margin-top: -0.3333em;
+    margin-left: 0;
+    transform: rotate(45deg);
+  }
+
+  .ui.right.pointing.label::before {
+    top: 50%;
+    right: -0.3333em;
+    left: auto;
+    bottom: auto;
+    margin-top: -0.3333em;
+    transform: rotate(-135deg);
+  }
+
+  .ui.below.pointing.label::before,
+  .ui.pointing.below.label::before {
+    top: -0.3333em;
+    bottom: auto;
+    transform: rotate(135deg);
+  }
+
+  /* ---- Floating ---- */
+  .ui.floating.label {
+    position: absolute;
+    z-index: 100;
+    top: -1em;
+    left: 100%;
+    margin: 0 0 0 -1.5em;
+  }
+
+  /* ---- Tag ---- */
+  .ui.tag.label {
+    margin-left: 1em;
+    position: relative;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    border-radius: 0 var(--sui-border-radius) var(--sui-border-radius) 0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 1.56em;
+      height: 1.56em;
+      background: inherit;
+      border: inherit;
+      border-width: 1px 0 0 1px;
+      transform: translateY(-50%) rotate(-45deg);
+      margin-left: -0.78em;
+      border-radius: 0 0 0 var(--sui-border-radius);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: -0.25em;
+      margin-top: -0.25em;
+      width: 0.5em;
+      height: 0.5em;
+      background: var(--sui-white);
+      border-radius: var(--sui-border-radius-circular);
+      box-shadow: 0 -1px 1px 0 rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  /* ---- Corner ---- */
+  .ui.corner.label {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    width: 4em;
+    height: 4em;
+    padding: 0;
+    background: transparent;
+    text-align: center;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      border-style: solid;
+      border-width: 0 4em 4em 0;
+      border-color: transparent #e8e8e8 transparent transparent;
+    }
+
+    & > .icon { position: relative; top: 0.64285714em; right: -1em; font-size: 0.78571429em; margin: 0; }
+  }
+
+  .ui.left.corner.label {
+    right: auto;
+    left: 0;
+
+    &::after {
+      right: auto;
+      left: 0;
+      border-width: 4em 4em 0 0;
+      border-color: #e8e8e8 transparent transparent transparent;
+    }
+  }
+
+  /* ---- Ribbon ---- */
+  .ui.ribbon.label {
+    position: relative;
+    margin: 0;
+    left: calc(-1rem - 1.2em);
+    padding-left: calc(1rem + 1.2em);
+    border-radius: 0 var(--sui-border-radius) var(--sui-border-radius) 0;
+    border-color: transparent;
+  }
+
+  .ui.right.ribbon.label {
+    left: auto;
+    right: calc(-1rem - 1.2em);
+    padding-left: 1em;
+    padding-right: calc(1rem + 1.2em);
+    border-radius: var(--sui-border-radius) 0 0 var(--sui-border-radius);
+    text-align: right;
+  }
+
+  /* ---- Horizontal ---- */
+  .ui.horizontal.label {
+    margin: 0 0.5em 0 0;
+    padding: 0.4em 0.833em;
+    min-width: 3em;
+    text-align: center;
+  }
+
+  /* ---- Prompt ---- */
+  .ui.prompt.label {
+    background: var(--sui-white);
+    border: 1px solid var(--sui-red);
+    color: var(--sui-red);
+  }
+
+  /* ---- Colors ---- */
+  .ui.red.label { background-color: var(--sui-red); color: var(--sui-white); border-color: var(--sui-red); }
+  .ui.orange.label { background-color: var(--sui-orange); color: var(--sui-white); border-color: var(--sui-orange); }
+  .ui.yellow.label { background-color: var(--sui-yellow); color: var(--sui-white); border-color: var(--sui-yellow); }
+  .ui.olive.label { background-color: var(--sui-olive); color: var(--sui-white); border-color: var(--sui-olive); }
+  .ui.green.label { background-color: var(--sui-green); color: var(--sui-white); border-color: var(--sui-green); }
+  .ui.teal.label { background-color: var(--sui-teal); color: var(--sui-white); border-color: var(--sui-teal); }
+  .ui.blue.label { background-color: var(--sui-blue); color: var(--sui-white); border-color: var(--sui-blue); }
+  .ui.violet.label { background-color: var(--sui-violet); color: var(--sui-white); border-color: var(--sui-violet); }
+  .ui.purple.label { background-color: var(--sui-purple); color: var(--sui-white); border-color: var(--sui-purple); }
+  .ui.pink.label { background-color: var(--sui-pink); color: var(--sui-white); border-color: var(--sui-pink); }
+  .ui.brown.label { background-color: var(--sui-brown); color: var(--sui-white); border-color: var(--sui-brown); }
+  .ui.grey.label { background-color: var(--sui-grey); color: var(--sui-white); border-color: var(--sui-grey); }
+  .ui.black.label { background-color: var(--sui-black); color: var(--sui-white); border-color: var(--sui-black); }
+
+  /* ---- Sizes ---- */
+  .ui.mini.label { font-size: var(--sui-size-mini); }
+  .ui.tiny.label { font-size: var(--sui-size-tiny); }
+  .ui.small.label { font-size: var(--sui-size-small); }
+  .ui.large.label { font-size: var(--sui-size-large); }
+  .ui.big.label { font-size: var(--sui-size-big); }
+  .ui.huge.label { font-size: var(--sui-size-huge); }
+  .ui.massive.label { font-size: var(--sui-size-massive); }
+
+  /* ---- Label Group ---- */
+  .ui.labels {
+    & > .label {
+      margin: 0 0.5em 0.5em 0;
+    }
+  }
+
+  .ui.circular.labels > .label { min-width: 2em; min-height: 2em; border-radius: var(--sui-border-radius-circular); }
+}

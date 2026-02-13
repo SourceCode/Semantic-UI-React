@@ -1,0 +1,35 @@
+/*
+ * Transition tokens for Semantic-UI-React
+ */
+@layer sui.tokens {
+  :root {
+    --sui-transition-duration: 0.3s;
+    --sui-transition-easing: ease;
+    --sui-transition-fast: 0.15s;
+    --sui-transition-normal: 0.3s;
+    --sui-transition-slow: 0.5s;
+
+    /* ---- Animation defaults ---- */
+    --sui-animation-duration: 500ms;
+    --sui-animation-easing: ease;
+    --sui-animation-fill: both;
+
+    /* ---- Per-animation duration overrides ---- */
+    --sui-animation-fade-duration: 500ms;
+    --sui-animation-slide-duration: 500ms;
+    --sui-animation-scale-duration: 500ms;
+    --sui-animation-fly-duration: 500ms;
+    --sui-animation-swing-duration: 500ms;
+    --sui-animation-bounce-duration: 500ms;
+    --sui-animation-flash-duration: 500ms;
+    --sui-animation-shake-duration: 500ms;
+    --sui-animation-pulse-duration: 500ms;
+    --sui-animation-tada-duration: 500ms;
+    --sui-animation-jiggle-duration: 500ms;
+    --sui-animation-glow-duration: 500ms;
+    --sui-animation-flip-duration: 500ms;
+    --sui-animation-drop-duration: 500ms;
+    --sui-animation-browse-duration: 500ms;
+    --sui-animation-zoom-duration: 500ms;
+  }
+}

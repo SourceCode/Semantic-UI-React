@@ -1,0 +1,66 @@
+---
+title: Theming System
+description: How theming works in Semantic-UI-React v4
+---
+
+# Theming System
+
+## CSS Custom Properties
+
+All design tokens are exposed as CSS custom properties:
+
+- `--sui-color-primary` — Primary brand color
+- `--sui-color-secondary` — Secondary color
+- `--sui-font-family` — Base font family
+- `--sui-border-radius` — Default border radius
+- `--sui-spacing-*` — Spacing scale (xs, sm, md, lg, xl)
+
+## ThemeProvider
+
+The ThemeProvider component enables scoped theming:
+
+```jsx
+import { ThemeProvider } from 'semantic-ui-react'
+import 'semantic-ui-react/styles/themes/dark.css'
+
+function App() {
+  return (
+    <ThemeProvider theme="dark">
+      <YourApp />
+    </ThemeProvider>
+  )
+}
+```
+
+## Custom Themes
+
+Create a custom theme by defining CSS custom properties:
+
+```css
+.my-custom-theme {
+  --sui-color-primary: #e03997;
+  --sui-color-background: #fafafa;
+  --sui-border-radius: 8px;
+}
+```
+
+Apply it with ThemeProvider:
+
+```jsx
+<ThemeProvider className="my-custom-theme">
+  <App />
+</ThemeProvider>
+```
+
+## useTheme Hook
+
+Access theme state from any component:
+
+```jsx
+import { useTheme } from 'semantic-ui-react'
+
+function MyComponent() {
+  const { theme, setTheme } = useTheme()
+  return <button onClick={() => setTheme('dark')}>Switch to Dark</button>
+}
+```

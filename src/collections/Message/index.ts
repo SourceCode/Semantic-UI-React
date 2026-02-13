@@ -1,0 +1,6 @@
+export { default } from './Message'
+export type { MessageProps, StrictMessageProps, MessageSizeProp } from './Message'
+export type { MessageContentProps, StrictMessageContentProps } from './MessageContent'
+export type { MessageHeaderProps, StrictMessageHeaderProps } from './MessageHeader'
+export type { MessageItemProps, StrictMessageItemProps } from './MessageItem'
+export type { MessageListProps, StrictMessageListProps } from './MessageList'

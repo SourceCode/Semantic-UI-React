@@ -7,6 +7,7 @@ export PortalInner from './addons/Portal/PortalInner'
 export Radio from './addons/Radio'
 export Select from './addons/Select'
 export TextArea from './addons/TextArea'
+export ThemeProvider from './addons/ThemeProvider'
 export TransitionablePortal from './addons/TransitionablePortal'
 
 // Collections

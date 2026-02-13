@@ -1,5 +1,3 @@
-import * as ReactIs from 'react-is'
-
 /**
  * Gets proper props for a component.
  *
@@ -7,10 +5,6 @@ import * as ReactIs from 'react-is'
  * @return {Object}
  */
 export default function getComponentProps(Component) {
-  if (Component.$$typeof === ReactIs.Memo) {
-    return getComponentProps(Component.type)
-  }
-
   return {
     autoControlledProps: Component.autoControlledProps,
     handledProps: Component.handledProps,

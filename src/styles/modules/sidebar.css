@@ -1,0 +1,103 @@
+/*
+ * Sidebar component CSS
+ *
+ * Class pattern: 'ui', animation, direction, visible, width, 'sidebar'
+ * animation: overlay, push, scale down, uncover, slide along, slide out
+ * direction: left, right, top, bottom
+ */
+@layer sui.components {
+  .ui.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    backface-visibility: hidden;
+    transition: transform 0.5s ease;
+    will-change: transform;
+    transform: translate3d(-100%, 0, 0);
+    z-index: var(--sui-z-sidebar);
+    overflow-y: auto;
+    background: var(--sui-white);
+    width: 260px;
+    height: 100%;
+  }
+
+  .ui.right.sidebar {
+    left: auto;
+    right: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+
+  .ui.top.sidebar {
+    width: 100%;
+    height: auto;
+    transform: translate3d(0, -100%, 0);
+  }
+
+  .ui.bottom.sidebar {
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  /* ---- Visible ---- */
+  .ui.visible.sidebar {
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* ---- Width ---- */
+  .ui.thin.sidebar { width: 150px; }
+  .ui.very.thin.sidebar { width: 60px; }
+  .ui.wide.sidebar { width: 350px; }
+  .ui.very.wide.sidebar { width: 475px; }
+
+  /* ---- Pushable ---- */
+  .pushable {
+    height: 100%;
+    overflow-x: hidden;
+    position: relative;
+    background: #545454;
+  }
+
+  .pushable > .pusher {
+    position: relative;
+    z-index: 2;
+    background: var(--sui-white);
+    min-height: 100%;
+    transition: transform 0.5s ease;
+    overflow: hidden;
+  }
+
+  .pushable > .ui.sidebar { position: absolute; }
+
+  /* ---- Overlay ---- */
+  .ui.overlay.sidebar { z-index: var(--sui-z-sidebar); }
+
+  /* ---- Push ---- */
+  .pushable > .pusher.dimmed { cursor: pointer; }
+
+  /* Push animation */
+  .ui.visible.push.sidebar ~ .pusher { transform: translate3d(260px, 0, 0); }
+  .ui.visible.right.push.sidebar ~ .pusher { transform: translate3d(-260px, 0, 0); }
+  .ui.visible.top.push.sidebar ~ .pusher { transform: translate3d(0, 36px, 0); }
+  .ui.visible.bottom.push.sidebar ~ .pusher { transform: translate3d(0, -36px, 0); }
+
+  /* ---- Dimmer ---- */
+  .pushable > .pusher::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: var(--sui-z-sidebar);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s;
+    will-change: opacity;
+  }
+
+  .pushable > .pusher.dimmed::after {
+    opacity: 1;
+    visibility: visible;
+  }
+}

@@ -1,0 +1,46 @@
+---
+title: Migrating from v3 to v4
+description: Step-by-step guide to upgrading from Semantic-UI-React v3 to v4
+---
+
+# Migrating from v3 to v4
+
+## Overview
+
+Semantic-UI-React v4 is a major release built for React 19. Key changes include:
+
+- **React 19 required** — v4 does not support React 16, 17, or 18
+- **Built-in CSS** — No more `semantic-ui-css` dependency
+- **All function components** — Class components removed
+- **TypeScript source** — Types generated from source, not hand-written
+- **CSS Custom Properties** — Runtime theming via custom properties
+
+## Step-by-Step Migration
+
+### 1. Update Dependencies
+
+```bash
+npm install semantic-ui-react@4 react@19 react-dom@19
+npm install -D @types/react@19 @types/react-dom@19
+npm uninstall semantic-ui-css
+```
+
+### 2. Update CSS Imports
+
+Replace your CSS import:
+
+```diff
+- import 'semantic-ui-css/semantic.min.css'
++ import 'semantic-ui-react/styles'
+```
+
+Or use per-component imports for smaller bundles:
+
+```js
+import 'semantic-ui-react/styles/elements/button.css'
+import 'semantic-ui-react/styles/collections/form.css'
+```
+
+### 3. Review Breaking Changes
+
+See the [CHANGELOG](/changelog) for the complete list of breaking changes.

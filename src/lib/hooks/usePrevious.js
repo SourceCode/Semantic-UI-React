@@ -1,16 +1,19 @@
 import * as React from 'react'
 
 /**
- * Hook keeping track of a given value from a previous execution of the component the Hook is used in.
+ * Returns the value from the previous render.
  *
- * @see https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
+ * The effect intentionally has no dependency array -- it must run after
+ * every render to update the ref with the current value.
+ *
+ * @see https://react.dev/reference/react/useRef#referencing-a-value-with-a-ref
  */
 function usePrevious(value) {
   const ref = React.useRef()
 
   React.useEffect(() => {
     ref.current = value
-  })
+  }) // No deps -- intentional
 
   return ref.current
 }

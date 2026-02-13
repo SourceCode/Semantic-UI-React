@@ -1,0 +1,56 @@
+---
+title: CSS Migration
+description: Migrating from semantic-ui-css to built-in CSS
+---
+
+# CSS Migration Guide
+
+## Overview
+
+Semantic-UI-React v4 ships its own CSS. The external `semantic-ui-css` package is no longer required.
+
+## Full CSS Import
+
+For the simplest migration, import the full CSS bundle:
+
+```js
+import 'semantic-ui-react/styles'
+```
+
+This includes all component styles, tokens, and the base theme.
+
+## Per-Component Imports
+
+For smaller bundles, import only the CSS you need:
+
+```js
+// Base tokens and reset (always needed)
+import 'semantic-ui-react/styles/tokens/index.css'
+import 'semantic-ui-react/styles/base/reset.css'
+
+// Individual components
+import 'semantic-ui-react/styles/elements/button.css'
+import 'semantic-ui-react/styles/collections/form.css'
+import 'semantic-ui-react/styles/modules/dropdown.css'
+```
+
+## CSS Layers
+
+All CSS uses `@layer` for cascade ordering:
+
+```
+sui.reset < sui.tokens < sui.base < sui.components < sui.utilities < sui.theme
+```
+
+Your custom CSS (without a layer) will naturally override all Semantic UI styles.
+
+## Custom Properties
+
+All design tokens are CSS custom properties. Override them for customization:
+
+```css
+:root {
+  --sui-color-primary: #e03997;
+  --sui-font-family: 'Inter', sans-serif;
+}
+```
