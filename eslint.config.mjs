@@ -245,22 +245,6 @@ export default [
     },
   },
 
-  // ── Cypress override (replaces cypress/.eslintrc) ────────────────────
-  {
-    files: ['cypress/**/*.js'],
-    languageOptions: {
-      globals: {
-        cy: 'readonly',
-        Cypress: 'readonly',
-        expect: 'readonly',
-        assert: 'readonly',
-      },
-    },
-    rules: {
-      // Note: eslint-plugin-cypress rules removed - install plugin separately if needed
-    },
-  },
-
   // ── Prettier MUST be last to override formatting rules ───────────────
   prettierConfig,
 ]
