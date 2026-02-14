@@ -1,4 +1,4 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import Advertisement from 'src/views/Advertisement/Advertisement'
 import * as common from 'test/specs/commonTests'
@@ -45,6 +45,7 @@ describe('Advertisement', () => {
   )
 
   it('renders a <div> by default', () => {
-    shallow(<Advertisement {...requiredProps} />).should.have.tagName('div')
+    const { container } = render(<Advertisement {...requiredProps} />)
+    expect(container.firstChild.tagName).toBe('DIV')
   })
 })

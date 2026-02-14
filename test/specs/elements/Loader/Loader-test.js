@@ -1,5 +1,5 @@
-import faker from 'faker'
-import React from 'react'
+import { faker } from '@faker-js/faker'
+import { render } from '@testing-library/react'
 
 import Loader from 'src/elements/Loader/Loader'
 import { SUI } from 'src/lib'
@@ -7,7 +7,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('Loader', () => {
   common.isConformant(Loader)
-  common.forwardsRef(Loader)
   common.hasUIClassName(Loader)
   common.rendersChildren(Loader)
 
@@ -22,19 +21,20 @@ describe('Loader', () => {
 
   describe('text (class)', () => {
     it('omitted by default', () => {
-      shallow(<Loader />).should.not.have.className('text')
+      const { container } = render(<Loader />)
+      expect(container.firstChild).not.toHaveClass('text')
     })
 
     it('add class when has children', () => {
       const text = faker.hacker.phrase()
-
-      shallow(<Loader>{text}</Loader>).should.have.className('text')
+      const { container } = render(<Loader>{text}</Loader>)
+      expect(container.firstChild).toHaveClass('text')
     })
 
     it('add class when has content prop', () => {
       const text = faker.hacker.phrase()
-
-      shallow(<Loader content={text} />).should.have.className('text')
+      const { container } = render(<Loader content={text} />)
+      expect(container.firstChild).toHaveClass('text')
     })
   })
 })

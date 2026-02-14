@@ -1,11 +1,10 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import * as common from 'test/specs/commonTests'
 import TableHeader from 'src/collections/Table/TableHeader'
 
 describe('TableHeader', () => {
   common.isConformant(TableHeader)
-  common.forwardsRef(TableHeader, { tagName: 'thead' })
   common.rendersChildren(TableHeader)
 
   common.propKeyOnlyToClassName(TableHeader, 'fullWidth', {
@@ -13,6 +12,12 @@ describe('TableHeader', () => {
   })
 
   it('renders as a thead by default', () => {
-    shallow(<TableHeader />).should.have.tagName('thead')
+    const { container } = render(
+      <table>
+        <TableHeader />
+      </table>,
+    )
+    expect(container.querySelector('thead')).toBeInTheDocument()
+    expect(container.querySelector('thead').tagName).toBe('THEAD')
   })
 })

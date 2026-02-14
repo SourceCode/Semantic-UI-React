@@ -1,4 +1,3 @@
-import keyboardKey from 'keyboard-key'
 import _ from 'lodash'
 import * as React from 'react'
 
@@ -50,7 +49,7 @@ function PaginationItem({ ref, ...props }: PaginationItemProps & { ref?: React.R
   const handleKeyDown = (e: any) => {
     _.invoke(props, 'onKeyDown', e, props)
 
-    if (keyboardKey.getCode(e) === keyboardKey.Enter) {
+    if (e.key === 'Enter') {
       _.invoke(props, 'onClick', e, props)
     }
   }

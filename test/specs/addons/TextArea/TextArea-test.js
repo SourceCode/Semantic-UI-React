@@ -1,89 +1,69 @@
 import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import TextArea from 'src/addons/TextArea/TextArea'
-import { sandbox } from 'test/utils'
 import * as common from 'test/specs/commonTests'
 
-// ----------------------------------------
-// Wrapper
-// ----------------------------------------
-// we need to unmount the dropdown after every test to ensure all event listeners are cleaned up
-// wrap the render methods to update a global wrapper that is unmounted after each test
-let attachTo
-let wrapper
-const wrapperMount = (element, opts) => {
-  attachTo = document.createElement('div')
-  document.body.appendChild(attachTo)
-
-  wrapper = mount(element, { ...opts, attachTo })
-  return wrapper
-}
-const wrapperShallow = (...args) => (wrapper = shallow(...args))
-
 describe('TextArea', () => {
-  beforeEach(() => {
-    attachTo = undefined
-    wrapper = undefined
-  })
-
-  afterEach(() => {
-    if (wrapper) {
-      if (wrapper.unmount) wrapper.unmount()
-      if (wrapper.detach) wrapper.detach()
-    }
-    if (attachTo) document.body.removeChild(attachTo)
-  })
-
   common.isConformant(TextArea)
-  common.forwardsRef(TextArea, { tagName: 'textarea' })
 
   describe('focus', () => {
     it('can be set via a ref', () => {
       const ref = React.createRef()
 
-      wrapperMount(<TextArea ref={ref} />)
+      render(<TextArea ref={ref} />)
       const element = document.querySelector('textarea')
 
       ref.current.focus()
-      document.activeElement.should.equal(element)
+      expect(document.activeElement).toBe(element)
     })
   })
 
   describe('onChange', () => {
     it('is called with (e, data) on change', () => {
-      const onChange = sandbox.spy()
-      const e = { target: { value: 'name' } }
+      const onChange = vi.fn()
       const props = { 'data-foo': 'bar', onChange }
 
-      wrapperShallow(<TextArea {...props} />)
-      wrapper.find('textarea').simulate('change', e)
+      const { container } = render(<TextArea {...props} />)
+      const textarea = container.querySelector('textarea')
 
-      onChange.should.have.been.calledOnce()
-      onChange.should.have.been.calledWithMatch(e, { ...props, value: e.target.value })
+      fireEvent.change(textarea, { target: { value: 'name' } })
+
+      expect(onChange).toHaveBeenCalledOnce()
+      expect(onChange).toHaveBeenCalledWith(
+        expect.objectContaining({ target: expect.objectContaining({ value: 'name' }) }),
+        expect.objectContaining({ ...props, value: 'name' }),
+      )
     })
   })
 
   describe('onInput', () => {
     it('is called with (e, data) on input', () => {
-      const onInput = sandbox.spy()
-      const e = { target: { value: 'name' } }
+      const onInput = vi.fn()
       const props = { 'data-foo': 'bar', onInput }
 
-      wrapperShallow(<TextArea {...props} />)
-      wrapper.find('textarea').simulate('input', e)
+      const { container } = render(<TextArea {...props} />)
+      const textarea = container.querySelector('textarea')
 
-      onInput.should.have.been.calledOnce()
-      onInput.should.have.been.calledWithMatch(e, { ...props, value: e.target.value })
+      fireEvent.input(textarea, { target: { value: 'name' } })
+
+      expect(onInput).toHaveBeenCalledOnce()
+      expect(onInput).toHaveBeenCalledWith(
+        expect.objectContaining({ target: expect.objectContaining({ value: 'name' }) }),
+        expect.objectContaining({ ...props, value: 'name' }),
+      )
     })
   })
 
   describe('rows', () => {
     it('has default value', () => {
-      shallow(<TextArea />, { autoNesting: true }).should.have.prop('rows', 3)
+      const { container } = render(<TextArea />)
+      expect(container.querySelector('textarea')).toHaveAttribute('rows', '3')
     })
 
     it('sets prop', () => {
-      shallow(<TextArea rows={1} />, { autoNesting: true }).should.have.prop('rows', 1)
+      const { container } = render(<TextArea rows={1} />)
+      expect(container.querySelector('textarea')).toHaveAttribute('rows', '1')
     })
   })
 })

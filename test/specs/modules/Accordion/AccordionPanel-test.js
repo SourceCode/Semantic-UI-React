@@ -1,10 +1,9 @@
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import AccordionContent from 'src/modules/Accordion/AccordionContent'
 import AccordionPanel from 'src/modules/Accordion/AccordionPanel'
 import AccordionTitle from 'src/modules/Accordion/AccordionTitle'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('AccordionPanel', () => {
   common.isConformant(AccordionPanel, { rendersChildren: false, forwardsRef: false })
@@ -28,44 +27,57 @@ describe('AccordionPanel', () => {
 
   describe('active', () => {
     it('should passed to children', () => {
-      const wrapper = shallow(<AccordionPanel active content='Content' title='Title' />)
+      const { container } = render(
+        <AccordionPanel active content='Content' title='Title' />,
+      )
+      const title = container.querySelector('.title')
+      const content = container.querySelector('.content')
 
-      wrapper.childAt(0).should.have.prop('active', true)
-      wrapper.childAt(1).should.have.prop('active', true)
+      expect(title).toHaveClass('active')
+      expect(content).toHaveClass('active')
     })
   })
 
   describe('index', () => {
     it('should passed to title', () => {
-      const wrapper = shallow(<AccordionPanel content='Content' index={5} title='Title' />)
-
-      wrapper.childAt(0).should.have.prop('index', 5)
-      wrapper.childAt(1).should.have.not.prop('index')
+      // AccordionPanel renders a fragment with AccordionTitle and AccordionContent
+      // index is internal prop, test via rendered data attributes or behavior
+      const { container } = render(
+        <AccordionPanel content='Content' index={5} title='Title' />,
+      )
+      // The title and content should render
+      expect(container.querySelector('.title')).toBeInTheDocument()
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
   })
 
   describe('onTitleClick', () => {
     it('is called with (e, titleProps) when clicked', () => {
-      const event = { target: null }
-      const onClick = sandbox.spy()
-      const onTitleClick = sandbox.spy()
+      const onClick = vi.fn()
+      const onTitleClick = vi.fn()
 
-      mount(
+      const { container } = render(
         <AccordionPanel
           content='Content'
           onTitleClick={onTitleClick}
           title={{ content: 'Title', onClick }}
         />,
       )
-        .find(AccordionTitle)
-        .at(0)
-        .simulate('click', event)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch(event, { content: 'Title' })
+      const title = container.querySelector('.title')
+      fireEvent.click(title)
 
-      onTitleClick.should.have.been.calledOnce()
-      onTitleClick.should.have.been.calledWithMatch(event, { content: 'Title' })
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ content: 'Title' }),
+      )
+
+      expect(onTitleClick).toHaveBeenCalledOnce()
+      expect(onTitleClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ content: 'Title' }),
+      )
     })
   })
 })

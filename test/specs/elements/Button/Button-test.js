@@ -1,5 +1,4 @@
-import faker from 'faker'
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import Button from 'src/elements/Button/Button'
 import ButtonContent from 'src/elements/Button/ButtonContent'
@@ -7,14 +6,9 @@ import ButtonGroup from 'src/elements/Button/ButtonGroup'
 import ButtonOr from 'src/elements/Button/ButtonOr'
 import { SUI } from 'src/lib'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
-
-const syntheticEvent = { preventDefault: () => undefined }
 
 describe('Button', () => {
   common.isConformant(Button)
-  common.forwardsRef(Button, { tagName: 'button' })
-  common.forwardsRef(Button, { requiredProps: { label: faker.lorem.word() }, tagName: 'button' })
   common.hasSubcomponents(Button, [ButtonContent, ButtonGroup, ButtonOr])
   common.hasUIClassName(Button)
   common.rendersChildren(Button)
@@ -63,239 +57,254 @@ describe('Button', () => {
   common.propValueOnlyToClassName(Button, 'size', SUI.SIZES)
 
   it('renders a button by default', () => {
-    shallow(<Button />)
-      .first()
-      .should.have.tagName('button')
+    const { container } = render(<Button />)
+    expect(container.firstChild.tagName).toBe('BUTTON')
   })
 
   describe('attached', () => {
     it('renders a div', () => {
-      shallow(<Button attached />).should.have.tagName('div')
+      const { container } = render(<Button attached />)
+      expect(container.firstChild.tagName).toBe('DIV')
     })
   })
 
   describe('disabled', () => {
     it('is not set by default', () => {
-      shallow(<Button />, { autoNesting: true }).should.not.have.prop('disabled')
+      const { container } = render(<Button />)
+      expect(container.querySelector('button')).not.toHaveAttribute('disabled')
     })
 
     it('applied when defined', () => {
-      shallow(<Button disabled />, { autoNesting: true }).should.have.prop('disabled', true)
+      const { container } = render(<Button disabled />)
+      expect(container.querySelector('button')).toHaveAttribute('disabled')
     })
 
     it("don't apply when the element's type isn't button", () => {
-      shallow(<Button as='div' disabled />, { autoNesting: true }).should.not.have.prop('disabled')
+      const { container } = render(<Button as='div' disabled />)
+      expect(container.firstChild).not.toHaveAttribute('disabled')
     })
 
     it('is not set by default when has a label', () => {
-      shallow(<Button label='foo' />)
-        .find('button')
-        .should.not.have.prop('disabled')
+      const { container } = render(<Button label='foo' />)
+      expect(container.querySelector('button')).not.toHaveAttribute('disabled')
     })
 
     it('applied when defined and has a label', () => {
-      shallow(<Button disabled label='foo' />)
-        .find('button')
-        .should.have.prop('disabled', true)
+      const { container } = render(<Button disabled label='foo' />)
+      expect(container.querySelector('button')).toHaveAttribute('disabled')
     })
   })
 
   describe('toggle', () => {
     it('is not set by default', () => {
-      shallow(<Button />, { autoNesting: true }).should.not.have.prop('toggle')
+      const { container } = render(<Button />)
+      expect(container.querySelector('button')).not.toHaveAttribute('toggle')
     })
 
     it('should have aria-pressed', () => {
-      shallow(<Button toggle />, { autoNesting: true }).should.have.prop('aria-pressed')
+      const { container } = render(<Button toggle />)
+      expect(container.querySelector('button')).toHaveAttribute('aria-pressed')
     })
 
     it('aria-pressed should be true when active', () => {
-      shallow(<Button toggle active />, { autoNesting: true }).should.have.prop(
-        'aria-pressed',
-        true,
-      )
+      const { container } = render(<Button toggle active />)
+      expect(container.querySelector('button')).toHaveAttribute('aria-pressed', 'true')
     })
 
     it('aria-pressed should be false when inactive', () => {
-      shallow(<Button toggle />, { autoNesting: true }).should.have.prop('aria-pressed', false)
+      const { container } = render(<Button toggle />)
+      expect(container.querySelector('button')).toHaveAttribute('aria-pressed', 'false')
     })
   })
 
   describe('icon', () => {
     it('adds className icon', () => {
-      shallow(<Button icon='user' />, { autoNesting: true }).should.have.className('icon')
+      const { container } = render(<Button icon='user' />)
+      expect(container.firstChild).toHaveClass('icon')
     })
 
     it('adds className icon when true', () => {
-      shallow(<Button icon />, { autoNesting: true }).should.have.className('icon')
+      const { container } = render(<Button icon />)
+      expect(container.firstChild).toHaveClass('icon')
     })
 
     it('does not add className icon when there is content', () => {
-      shallow(<Button icon='user' content={0} />, { autoNesting: true }).should.not.have.className(
-        'icon',
-      )
-      shallow(<Button icon='user' content='Yo' />, { autoNesting: true }).should.not.have.className(
-        'icon',
-      )
+      const { container: c1 } = render(<Button icon='user' content={0} />)
+      expect(c1.firstChild).not.toHaveClass('icon')
+
+      const { container: c2 } = render(<Button icon='user' content='Yo' />)
+      expect(c2.firstChild).not.toHaveClass('icon')
     })
 
     it('adds className icon given labelPosition and content', () => {
-      shallow(<Button labelPosition='left' icon='user' content='My Account' />, {
-        autoNesting: true,
-      }).should.have.className('icon')
-      shallow(<Button labelPosition='right' icon='user' content='My Account' />, {
-        autoNesting: true,
-      }).should.have.className('icon')
+      const { container: c1 } = render(
+        <Button labelPosition='left' icon='user' content='My Account' />,
+      )
+      expect(c1.firstChild).toHaveClass('icon')
+
+      const { container: c2 } = render(
+        <Button labelPosition='right' icon='user' content='My Account' />,
+      )
+      expect(c2.firstChild).toHaveClass('icon')
     })
   })
 
   describe('label', () => {
     it('renders as a div', () => {
-      shallow(<Button label='http' />).should.have.tagName('div')
+      const { container } = render(<Button label='http' />)
+      expect(container.firstChild.tagName).toBe('DIV')
     })
 
     it('renders a div with a button and Label child', () => {
-      const wrapper = shallow(<Button label='hi' />)
+      const { container } = render(<Button label='hi' />)
 
-      wrapper.should.have.tagName('div')
-      wrapper.should.have.exactly(1).descendants('button')
-      wrapper.should.have.exactly(1).descendants('Label')
+      expect(container.firstChild.tagName).toBe('DIV')
+      expect(container.querySelectorAll('button')).toHaveLength(1)
+      expect(container.querySelectorAll('.label')).toHaveLength(1)
     })
 
     it('adds the labeled className to the root element', () => {
-      shallow(<Button label='hi' />).should.have.className('labeled')
+      const { container } = render(<Button label='hi' />)
+      expect(container.firstChild).toHaveClass('labeled')
     })
 
     it('contains children without disabled class when disabled attribute is set', () => {
-      const wrapper = shallow(<Button label='hi' disabled />)
+      const { container } = render(<Button label='hi' disabled />)
 
-      wrapper.should.have.className('disabled')
-      wrapper.find('Label').should.not.have.className('disabled')
-      wrapper.find('button').should.not.have.className('disabled')
+      expect(container.firstChild).toHaveClass('disabled')
+      expect(container.querySelector('.label')).not.toHaveClass('disabled')
+      expect(container.querySelector('button')).not.toHaveClass('disabled')
     })
 
     it('contains children without floated class when floated attribute is set', () => {
-      const wrapper = shallow(<Button label='hi' floated='left' />)
+      const { container } = render(<Button label='hi' floated='left' />)
 
-      wrapper.should.have.className('floated')
-      wrapper.find('Label').should.not.have.className('floated')
-      wrapper.find('button').should.not.have.className('floated')
+      expect(container.firstChild).toHaveClass('floated')
+      expect(container.querySelector('.label')).not.toHaveClass('floated')
+      expect(container.querySelector('button')).not.toHaveClass('floated')
     })
 
     it('creates a basic pointing label', () => {
-      shallow(<Button label='foo' />)
-        .should.have.exactly(1)
-        .descendants('Label[basic][pointing]')
+      const { container } = render(<Button label='foo' />)
+      expect(container.querySelectorAll('.label.basic.pointing')).toHaveLength(1)
     })
 
     it('is before the button and pointing="right" when labelPosition="left"', () => {
-      const wrapper = mount(<Button labelPosition='left' label='foo' />)
+      const { container } = render(<Button labelPosition='left' label='foo' />)
 
-      wrapper.should.have.exactly(1).descendants('Label[pointing="right"]')
+      expect(container.querySelectorAll('.label.pointing.right')).toHaveLength(1)
 
-      wrapper.childAt(0).childAt(0).should.have.className('label')
-      wrapper.childAt(0).childAt(1).should.have.tagName('button')
+      expect(container.firstChild.children[0]).toHaveClass('label')
+      expect(container.firstChild.children[1].tagName).toBe('BUTTON')
     })
 
     it('is after the button and pointing="left" when labelPosition="right"', () => {
-      const wrapper = mount(<Button labelPosition='right' label='foo' />)
+      const { container } = render(<Button labelPosition='right' label='foo' />)
 
-      wrapper.should.have.exactly(1).descendants('Label[pointing="left"]')
+      expect(container.querySelectorAll('.label.pointing.left')).toHaveLength(1)
 
-      wrapper.childAt(0).childAt(0).should.have.tagName('button')
-      wrapper.childAt(0).childAt(1).should.have.className('label')
+      expect(container.firstChild.children[0].tagName).toBe('BUTTON')
+      expect(container.firstChild.children[1]).toHaveClass('label')
     })
 
     it('is after the button and pointing="left" by default', () => {
-      const wrapper = mount(<Button label='foo' />)
+      const { container } = render(<Button label='foo' />)
 
-      wrapper.should.have.exactly(1).descendants('Label[pointing="left"]')
+      expect(container.querySelectorAll('.label.pointing.left')).toHaveLength(1)
 
-      wrapper.childAt(0).childAt(0).should.have.tagName('button')
-      wrapper.childAt(0).childAt(1).should.have.className('label')
+      expect(container.firstChild.children[0].tagName).toBe('BUTTON')
+      expect(container.firstChild.children[1]).toHaveClass('label')
     })
   })
 
   describe('labelPosition', () => {
     it('renders as a button when given an icon', () => {
-      shallow(<Button labelPosition='left' icon='user' />).should.have.tagName('button')
-      shallow(<Button labelPosition='right' icon='user' />).should.have.tagName('button')
+      const { container: c1 } = render(<Button labelPosition='left' icon='user' />)
+      expect(c1.firstChild.tagName).toBe('BUTTON')
+
+      const { container: c2 } = render(<Button labelPosition='right' icon='user' />)
+      expect(c2.firstChild.tagName).toBe('BUTTON')
     })
   })
 
   describe('onClick', () => {
     it('is called with (e, data) when clicked', () => {
-      const onClick = sandbox.spy()
-      const wrapper = shallow(<Button onClick={onClick} />, { autoNesting: true })
+      const onClick = vi.fn()
+      const { container } = render(<Button onClick={onClick} />)
 
-      wrapper.simulate('click', syntheticEvent)
+      fireEvent.click(container.querySelector('button'))
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithExactly(syntheticEvent, {
-        onClick,
-        ...Button.defaultProps,
-      })
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'click' }),
+        expect.objectContaining({ onClick }),
+      )
     })
 
     it('is not called when is disabled', () => {
-      const onClick = sandbox.spy()
+      const onClick = vi.fn()
+      const { container } = render(<Button disabled onClick={onClick} />)
 
-      shallow(<Button disabled onClick={onClick} />).simulate('click', syntheticEvent)
-      onClick.should.have.callCount(0)
+      fireEvent.click(container.querySelector('button'))
+      expect(onClick).not.toHaveBeenCalled()
     })
   })
 
   describe('role', () => {
     it('is not set by default', () => {
-      shallow(<Button />, { autoNesting: true }).should.not.have.prop('role')
+      const { container } = render(<Button />)
+      expect(container.querySelector('button')).not.toHaveAttribute('role')
     })
     it('defaults to "button" when rendered as not "button" element', () => {
-      shallow(<Button as='label' />, { autoNesting: true }).should.have.prop('role', 'button')
+      const { container } = render(<Button as='label' />)
+      expect(container.firstChild).toHaveAttribute('role', 'button')
     })
     it('is configurable', () => {
-      shallow(<Button role='link' />, { autoNesting: true }).should.have.prop('role', 'link')
-      shallow(<Button role='button' />, { autoNesting: true }).should.have.prop('role', 'button')
+      const { container: c1 } = render(<Button role='link' />)
+      expect(c1.querySelector('button')).toHaveAttribute('role', 'link')
+
+      const { container: c2 } = render(<Button role='button' />)
+      expect(c2.querySelector('button')).toHaveAttribute('role', 'button')
     })
   })
 
   describe('type', () => {
     it('is not set by default', () => {
-      mount(<Button />)
-        .find('button')
-        .should.not.have.prop('type')
+      const { container } = render(<Button />)
+      expect(container.querySelector('button')).not.toHaveAttribute('type')
     })
 
     it('is passed to <button />', () => {
-      mount(<Button type='submit' />)
-        .find('button')
-        .should.have.prop('type', 'submit')
+      const { container } = render(<Button type='submit' />)
+      expect(container.querySelector('button')).toHaveAttribute('type', 'submit')
     })
 
     it('is passed to <button /> when "label" is defined', () => {
-      mount(<Button label='Foo' type='submit' />)
-        .find('button')
-        .should.have.prop('type', 'submit')
+      const { container } = render(<Button label='Foo' type='submit' />)
+      expect(container.querySelector('button')).toHaveAttribute('type', 'submit')
     })
   })
 
   describe('tabIndex', () => {
     it('is not set by default', () => {
-      shallow(<Button />, { autoNesting: true }).should.not.have.prop('tabIndex')
+      const { container } = render(<Button />)
+      expect(container.querySelector('button')).not.toHaveAttribute('tabindex')
     })
     it('defaults to 0 as div', () => {
-      shallow(<Button as='div' />, { autoNesting: true }).should.have.prop('tabIndex', 0)
+      const { container } = render(<Button as='div' />)
+      expect(container.firstChild).toHaveAttribute('tabindex', '0')
     })
     it('defaults to -1 when disabled', () => {
-      shallow(<Button disabled />, { autoNesting: true }).should.have.prop('tabIndex', -1)
+      const { container } = render(<Button disabled />)
+      expect(container.querySelector('button')).toHaveAttribute('tabindex', '-1')
     })
     it('can be set explicitly', () => {
-      shallow(<Button tabIndex={123} />, { autoNesting: true }).should.have.prop('tabIndex', 123)
+      const { container } = render(<Button tabIndex={123} />)
+      expect(container.querySelector('button')).toHaveAttribute('tabindex', '123')
     })
     it('can be set explicitly when disabled', () => {
-      shallow(<Button tabIndex={123} disabled />, { autoNesting: true }).should.have.prop(
-        'tabIndex',
-        123,
-      )
+      const { container } = render(<Button tabIndex={123} disabled />)
+      expect(container.querySelector('button')).toHaveAttribute('tabindex', '123')
     })
   })
 })

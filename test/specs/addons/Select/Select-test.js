@@ -1,4 +1,4 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import Select from 'src/addons/Select/Select'
 import Dropdown from 'src/modules/Dropdown/Dropdown'
@@ -11,11 +11,11 @@ const requiredProps = {
 describe('Select', () => {
   common.isConformant(Select, { requiredProps })
   common.hasSubcomponents(Select, [Dropdown.Divider, Dropdown.Header, Dropdown.Item, Dropdown.Menu])
-  common.forwardsRef(Select, { requiredProps })
 
   it('renders a selection Dropdown', () => {
-    shallow(<Select {...requiredProps} />)
-      .first()
-      .should.contain(<Dropdown {...requiredProps} selection />)
+    const { container } = render(<Select {...requiredProps} />)
+
+    expect(container.firstChild).toHaveClass('selection')
+    expect(container.firstChild).toHaveClass('dropdown')
   })
 })

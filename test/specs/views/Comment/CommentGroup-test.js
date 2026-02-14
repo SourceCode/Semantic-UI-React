@@ -6,7 +6,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('CommentGroup', () => {
   common.isConformant(CommentGroup)
-  common.forwardsRef(CommentGroup)
   common.rendersChildren(CommentGroup)
 
   common.propKeyOnlyToClassName(CommentGroup, 'collapsed')

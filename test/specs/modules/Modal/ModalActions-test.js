@@ -1,13 +1,10 @@
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import ModalActions from 'src/modules/Modal/ModalActions'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('ModalActions', () => {
   common.isConformant(ModalActions)
-  common.forwardsRef(ModalActions)
-  common.forwardsRef(ModalActions, { requiredProps: { children: <span /> } })
   common.rendersChildren(ModalActions)
 
   common.implementsCreateMethod(ModalActions)
@@ -18,46 +15,55 @@ describe('ModalActions', () => {
   ]
 
   describe('actions', () => {
-    const buttons = mount(<ModalActions actions={actions} />).find('Button')
-
     it('renders children', () => {
-      buttons.at(0).should.have.prop('content', 'Cancel')
-      buttons.at(1).should.have.prop('content', 'OK')
+      const { container } = render(<ModalActions actions={actions} />)
+      const buttons = container.querySelectorAll('.button')
+
+      expect(buttons[0].textContent).toContain('Cancel')
+      expect(buttons[1].textContent).toContain('OK')
     })
 
     it('passes arbitrary props', () => {
-      buttons.everyWhere((action) => action.should.have.prop('data-foo', 'something'))
+      const { container } = render(<ModalActions actions={actions} />)
+      const buttons = container.querySelectorAll('.button')
+
+      buttons.forEach((button) => {
+        expect(button).toHaveAttribute('data-foo', 'something')
+      })
     })
   })
 
   describe('onActionClick', () => {
     it('can be omitted', () => {
-      const click = () =>
-        mount(<ModalActions actions={actions} />)
-          .find('Button')
-          .first()
-          .simulate('click')
+      const { container } = render(<ModalActions actions={actions} />)
+      const buttons = container.querySelectorAll('.button')
 
-      expect(click).to.not.throw()
+      expect(() => fireEvent.click(buttons[0])).not.toThrow()
     })
 
     it('is called with (e, actionProps) when clicked', () => {
-      const event = { target: null }
-      const onActionClick = sandbox.spy()
-      const onButtonClick = sandbox.spy()
+      const onActionClick = vi.fn()
+      const onButtonClick = vi.fn()
 
       const action = { key: 'users', content: 'Disable', onClick: onButtonClick }
-      const matchProps = { content: 'Disable' }
 
-      mount(<ModalActions actions={[...actions, action]} onActionClick={onActionClick} />)
-        .find('Button')
-        .last()
-        .simulate('click', event)
+      const { container } = render(
+        <ModalActions actions={[...actions, action]} onActionClick={onActionClick} />,
+      )
+      const buttons = container.querySelectorAll('.button')
 
-      onActionClick.should.have.been.calledOnce()
-      onActionClick.should.have.been.calledWithMatch(event, matchProps)
-      onButtonClick.should.have.been.calledOnce()
-      onButtonClick.should.have.been.calledWithMatch(event, matchProps)
+      fireEvent.click(buttons[buttons.length - 1])
+
+      expect(onActionClick).toHaveBeenCalledOnce()
+      expect(onActionClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ content: 'Disable' }),
+      )
+      expect(onButtonClick).toHaveBeenCalledOnce()
+      expect(onButtonClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ content: 'Disable' }),
+      )
     })
   })
 })

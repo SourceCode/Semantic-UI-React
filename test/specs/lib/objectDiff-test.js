@@ -1,23 +1,26 @@
-import _ from 'lodash'
-
-import { objectDiff } from 'src/lib'
+import objectDiff from 'src/lib/objectDiff'
 
 describe('objectDiff', () => {
   let a
   let b
+
+  const noop = () => {}
+
   beforeEach(() => {
-    ;[a, b] = _.times(2, () => ({
+    const makeObj = () => ({
       undef: undefined,
       nil: null,
       bool: true,
       num: 1,
       str: 'foo',
       obj: { key: 'val', nested: { key: 'val' } },
-      func: _.noop,
-    }))
+      func: noop,
+    })
+    a = makeObj()
+    b = makeObj()
   })
 
-  const assertDiff = (diff) => objectDiff(a, b).should.deep.equal(diff)
+  const assertDiff = (diff) => expect(objectDiff(a, b)).toEqual(diff)
 
   it('picks up undefined values', () => {
     b.nil = undefined

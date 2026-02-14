@@ -1,4 +1,3 @@
-import keyboardKey from 'keyboard-key'
 import _ from 'lodash'
 import * as React from 'react'
 
@@ -238,7 +237,7 @@ function Portal(props: PortalProps) {
     if (!closeOnEscape) {
       return
     }
-    if (keyboardKey.getCode(e) !== keyboardKey.Escape) {
+    if (e.key !== 'Escape') {
       return
     }
 

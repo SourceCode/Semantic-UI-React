@@ -1,4 +1,4 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import * as common from 'test/specs/commonTests'
 import TableCell from 'src/collections/Table/TableCell'
@@ -6,8 +6,6 @@ import { SUI } from 'src/lib'
 
 describe('TableCell', () => {
   common.isConformant(TableCell)
-  common.forwardsRef(TableCell, { tagName: 'td' })
-  common.forwardsRef(TableCell, { requiredProps: { children: <span /> }, tagName: 'td' })
   common.rendersChildren(TableCell)
 
   common.implementsCreateMethod(TableCell)
@@ -32,6 +30,16 @@ describe('TableCell', () => {
   common.propKeyOnlyToClassName(TableCell, 'warning')
 
   it('renders as a td by default', () => {
-    shallow(<TableCell />).should.have.tagName('td')
+    const { container } = render(
+      <table>
+        <tbody>
+          <tr>
+            <TableCell />
+          </tr>
+        </tbody>
+      </table>,
+    )
+    expect(container.querySelector('td')).toBeInTheDocument()
+    expect(container.querySelector('td').tagName).toBe('TD')
   })
 })

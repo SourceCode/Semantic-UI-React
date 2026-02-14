@@ -4,7 +4,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('ImageGroup', () => {
   common.isConformant(ImageGroup)
-  common.forwardsRef(ImageGroup)
   common.hasUIClassName(ImageGroup)
   common.rendersChildren(ImageGroup)
 

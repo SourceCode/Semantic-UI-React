@@ -14,6 +14,8 @@
 - **TypeScript source**: Component source is now TypeScript (.tsx). Types are generated from source.
 - **`innerRef` prop removed**: Use standard `ref` prop instead (React 19 ref-as-prop).
 - **`forwardRef` wrappers removed**: Components accept `ref` directly as a prop.
+- **Popup: `popperModifiers` accepts Floating UI middleware**: The `popperModifiers` prop now accepts an array of [Floating UI middleware](https://floating-ui.com/docs/middleware) instead of Popper.js modifiers. The `offset` prop array format `[skidding, distance]` is unchanged, but the function form now receives `{ popper, reference, placement }` with Floating UI rect types.
+- **`keyboard-key` removed**: Keyboard handling now uses the native `KeyboardEvent.key` API. This is an internal change with no impact on component props.
 
 ### :rocket: New Features
 
@@ -44,6 +46,11 @@
 - **Yarn 4**: Package manager updated from Yarn Classic to Yarn 4 via corepack.
 - **TypeScript 5.9**: Full TypeScript source compilation.
 - **Astro documentation**: react-static replaced with Astro + React islands.
+- **Popup positioning**: Replaced archived `react-popper` / `@popperjs/core` with actively maintained [`@floating-ui/react-dom`](https://floating-ui.com/).
+- **Keyboard handling**: Replaced unmaintained `keyboard-key` package with native `KeyboardEvent.key` API.
+- **Shallow comparison**: Replaced unmaintained `shallowequal` package with inline utility.
+- **Removed deprecated deps**: Removed `@semantic-ui-react/event-stack` (deprecated) and unused `@fluentui/react-component-event-listener`.
+- **Runtime dependencies reduced**: Only 6 runtime dependencies remain: `@babel/runtime`, `@floating-ui/react-dom`, `clsx`, `lodash`, `lodash-es`, `react-is`.
 
 ### Migration Guide
 

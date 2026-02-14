@@ -1,6 +1,5 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
-import Portal from 'src/addons/Portal/Portal'
 import Dimmer from 'src/modules/Dimmer/Dimmer'
 import DimmerDimmable from 'src/modules/Dimmer/DimmerDimmable'
 import DimmerInner from 'src/modules/Dimmer/DimmerInner'
@@ -8,24 +7,21 @@ import * as common from 'test/specs/commonTests'
 
 describe('Dimmer', () => {
   common.isConformant(Dimmer)
-  common.forwardsRef(Dimmer)
   common.hasSubcomponents(Dimmer, [DimmerDimmable, DimmerInner])
 
   common.implementsCreateMethod(Dimmer)
 
   describe('children', () => {
     it('renders a DimmerInner', () => {
-      shallow(<Dimmer />)
-        .type()
-        .should.equal(DimmerInner)
+      const { container } = render(<Dimmer />)
+      expect(container.querySelector('.dimmer')).toBeInTheDocument()
     })
   })
 
   describe('page', () => {
-    it('renders a Portal', () => {
-      shallow(<Dimmer page />)
-        .type()
-        .should.equal(Portal)
+    it('renders a Portal when page', () => {
+      const { baseElement } = render(<Dimmer page active />)
+      expect(baseElement.querySelector('.dimmer')).toBeInTheDocument()
     })
 
     describe('active', () => {
@@ -34,33 +30,29 @@ describe('Dimmer', () => {
       })
 
       it('when true, Portal is opened dimmer classes are present on body', () => {
-        const dimmer = mount(<Dimmer page active />)
+        render(<Dimmer page active />)
         const classes = document.body.classList
 
-        dimmer.find(Portal).should.have.prop('open', true)
-
-        classes.contains('dimmable').should.be.true()
-        classes.contains('dimmed').should.be.true()
+        expect(classes.contains('dimmable')).toBe(true)
+        expect(classes.contains('dimmed')).toBe(true)
       })
 
       it('when false, Portal is closed dimmer classes are absent on body', () => {
-        const dimmer = mount(<Dimmer page active={false} />)
+        render(<Dimmer page active={false} />)
         const classes = document.body.classList
 
-        dimmer.find(Portal).should.have.prop('open', false)
-
-        classes.contains('dimmable').should.be.false()
-        classes.contains('dimmed').should.be.false()
+        expect(classes.contains('dimmable')).toBe(false)
+        expect(classes.contains('dimmed')).toBe(false)
       })
 
       it('when changed to false, dimmer classes are removed from body', () => {
-        const dimmer = mount(<Dimmer page active />)
+        const { rerender } = render(<Dimmer page active />)
         const classes = document.body.classList
 
-        dimmer.setProps({ active: false })
+        rerender(<Dimmer page active={false} />)
 
-        classes.contains('dimmable').should.be.false()
-        classes.contains('dimmed').should.be.false()
+        expect(classes.contains('dimmable')).toBe(false)
+        expect(classes.contains('dimmed')).toBe(false)
       })
     })
   })

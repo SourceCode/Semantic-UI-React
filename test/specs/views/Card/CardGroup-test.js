@@ -1,6 +1,6 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import _ from 'lodash'
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import { SUI } from 'src/lib'
 import CardGroup from 'src/views/Card/CardGroup'
@@ -8,10 +8,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('CardGroup', () => {
   common.isConformant(CardGroup)
-
-  common.forwardsRef(CardGroup)
-  common.forwardsRef(CardGroup, { requiredProps: { children: <span /> } })
-  common.forwardsRef(CardGroup, { requiredProps: { content: faker.lorem.word() } })
 
   common.hasUIClassName(CardGroup)
   common.rendersChildren(CardGroup)
@@ -30,10 +26,11 @@ describe('CardGroup', () => {
     it('with `items` prop', () => {
       const items = [{ header: firstText }, { header: secondText }]
 
-      const wrapper = mount(<CardGroup items={items} />).find('Card')
+      const { container } = render(<CardGroup items={items} />)
+      const headers = container.querySelectorAll('.header')
 
-      wrapper.first().find('CardHeader').should.contain.text(firstText)
-      wrapper.last().find('CardHeader').should.contain.text(secondText)
+      expect(headers[0]).toHaveTextContent(firstText)
+      expect(headers[headers.length - 1]).toHaveTextContent(secondText)
     })
   })
 })

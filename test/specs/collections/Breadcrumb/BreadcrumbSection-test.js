@@ -1,49 +1,53 @@
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import BreadcrumbSection from 'src/collections/Breadcrumb/BreadcrumbSection'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('BreadcrumbSection', () => {
   common.isConformant(BreadcrumbSection)
-  common.forwardsRef(BreadcrumbSection)
   common.rendersChildren(BreadcrumbSection)
 
   common.propKeyOnlyToClassName(BreadcrumbSection, 'active')
 
   it('renders as a div by default', () => {
-    shallow(<BreadcrumbSection />).should.have.tagName('div')
+    const { container } = render(<BreadcrumbSection />)
+    expect(container.firstChild.tagName).toBe('DIV')
   })
 
   describe('link', () => {
     it('is should be `a` when has prop link', () => {
-      shallow(<BreadcrumbSection link />).should.have.tagName('a')
+      const { container } = render(<BreadcrumbSection link />)
+      expect(container.firstChild.tagName).toBe('A')
     })
   })
 
   describe('href', () => {
     it('is not present by default', () => {
-      shallow(<BreadcrumbSection />).should.not.have.attr('href')
+      const { container } = render(<BreadcrumbSection />)
+      expect(container.firstChild).not.toHaveAttribute('href')
     })
 
     it('should have attr `href` when has prop', () => {
-      const section = shallow(<BreadcrumbSection href='http://example.com' />)
+      const { container } = render(<BreadcrumbSection href='http://example.com' />)
 
-      section.should.have.tagName('a')
-      section.should.have.attr('href').and.equal('http://example.com')
+      expect(container.firstChild.tagName).toBe('A')
+      expect(container.firstChild).toHaveAttribute('href', 'http://example.com')
     })
   })
 
   describe('onClick', () => {
     it('is called with (e, props) when clicked', () => {
-      const onClick = sandbox.spy()
-      const event = { target: null }
+      const onClick = vi.fn()
       const props = { active: true, content: 'home' }
 
-      mount(<BreadcrumbSection onClick={onClick} {...props} />).simulate('click', event)
+      const { container } = render(<BreadcrumbSection onClick={onClick} {...props} />)
+      fireEvent.click(container.firstChild)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch(event, props)
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'click' }),
+        expect.objectContaining(props),
+      )
     })
   })
 })

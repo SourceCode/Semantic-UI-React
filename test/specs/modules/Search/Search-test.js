@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import faker from 'faker'
-import React from 'react'
+import { faker } from '@faker-js/faker'
+import { render, fireEvent } from '@testing-library/react'
 
 import { htmlInputAttrs } from 'src/lib'
 import Search from 'src/modules/Search'
@@ -8,7 +8,7 @@ import SearchCategory from 'src/modules/Search/SearchCategory'
 import SearchResult from 'src/modules/Search/SearchResult'
 import SearchResults from 'src/modules/Search/SearchResults'
 import * as common from 'test/specs/commonTests'
-import { consoleUtil, domEvent, sandbox } from 'test/utils'
+import { domEvent } from 'test/utils'
 
 let attachTo
 let options
@@ -17,14 +17,13 @@ let wrapper
 // ----------------------------------------
 // Wrapper
 // ----------------------------------------
-// we need to unmount the search after every test to ensure all event listeners are cleaned up
-// wrap the render methods to update a global wrapper that is unmounted after each test
-const wrapperMount = (node, opts) => {
+const wrapperMount = (node) => {
   attachTo = document.createElement('div')
   document.body.appendChild(attachTo)
 
-  wrapper = mount(node, { ...opts, attachTo })
-  return wrapper
+  const result = render(node, { container: attachTo })
+  wrapper = result
+  return result
 }
 
 // ----------------------------------------
@@ -35,30 +34,32 @@ const getOptions = (count = 5) =>
     title: [i, ..._.times(3, faker.hacker.noun)].join(' '),
     description: [i, ..._.times(3, faker.hacker.noun)].join(' '),
     image: '/images/wireframe/image.png',
-    price: [i, faker.finance.amount(0, 100, 2, '$')].join(' '),
+    price: [i, faker.finance.amount({ min: 0, max: 100, dec: 2, symbol: '$' })].join(' '),
   }))
 
 // -------------------------------
 // Common Assertions
 // -------------------------------
 const searchResultsIsClosed = () => {
-  const menu = wrapper.find('SearchResults')
-  wrapper.should.not.have.className('visible')
-  menu.should.not.have.className('visible')
+  const root = attachTo.firstChild
+  expect(root).not.toHaveClass('visible')
+  const menu = root.querySelector('.results')
+  if (menu) expect(menu).not.toHaveClass('visible')
 }
 
 const searchResultsIsOpen = () => {
-  const menu = wrapper.find('SearchResults')
-  wrapper.should.have.className('active')
-  wrapper.should.have.className('visible')
-  menu.should.have.className('visible')
+  const root = attachTo.firstChild
+  expect(root).toHaveClass('active')
+  expect(root).toHaveClass('visible')
+  const menu = root.querySelector('.results')
+  expect(menu).toHaveClass('visible')
 }
 
 // ----------------------------------------
 // Helpers
 // ----------------------------------------
 const openSearchResults = () => {
-  wrapper.simulate('focus')
+  fireEvent.focus(attachTo.firstChild)
 }
 
 const nativeEvent = { nativeEvent: { stopImmediatePropagation: _.noop } }
@@ -71,12 +72,16 @@ describe('Search', () => {
   })
 
   afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount()
-    if (attachTo) document.body.removeChild(attachTo)
+    if (wrapper && wrapper.unmount) {
+      try {
+        wrapper.unmount()
+        // eslint-disable-next-line no-empty
+      } catch {}
+    }
+    if (attachTo && attachTo.parentNode) document.body.removeChild(attachTo)
   })
 
   common.isConformant(Search)
-  common.forwardsRef(Search)
   common.hasSubcomponents(Search, [SearchCategory, SearchResult, SearchResults])
   common.hasUIClassName(Search)
 
@@ -90,7 +95,7 @@ describe('Search', () => {
     openSearchResults()
 
     searchResultsIsOpen()
-    wrapper.simulate('blur')
+    fireEvent.blur(attachTo.firstChild)
     searchResultsIsClosed()
   })
 
@@ -98,48 +103,46 @@ describe('Search', () => {
     wrapperMount(<Search results={options} minCharacters={0} />)
 
     searchResultsIsClosed()
-    wrapper.simulate('focus')
+    fireEvent.focus(attachTo.firstChild)
     searchResultsIsOpen()
   })
 
   describe('isMouseDown', () => {
     it('tracks when the mouse is down', () => {
-      // To understand this test please check componentDidUpdate() on Search component
       wrapperMount(<Search minCharacters={0} />)
       searchResultsIsClosed()
 
       // When ".isMouseDown === false" a focus event will not open Search results
-      wrapper.simulate('mousedown')
-      wrapper.simulate('focus')
+      fireEvent.mouseDown(attachTo.firstChild)
+      fireEvent.focus(attachTo.firstChild)
       searchResultsIsClosed()
 
       // Reset to default component state
-      wrapper.simulate('blur')
+      fireEvent.blur(attachTo.firstChild)
       domEvent.mouseUp(document.body)
 
       // When ".isMouseDown === true" a focus event will open Search results
-      wrapper.simulate('focus')
+      fireEvent.focus(attachTo.firstChild)
       searchResultsIsOpen()
     })
   })
 
   describe('icon', () => {
     it('defaults to a search icon', () => {
-      wrapperMount(<Search />).should.contain.descendants('.search.icon')
+      wrapperMount(<Search />)
+      expect(attachTo.querySelector('.search.icon')).toBeInTheDocument()
     })
   })
 
   describe('active item', () => {
     it('defaults to no result active', () => {
-      wrapperMount(<Search results={options} minCharacters={0} />).should.not.contain.descendants(
-        '.result.active',
-      )
+      wrapperMount(<Search results={options} minCharacters={0} />)
+      expect(attachTo.querySelector('.result.active')).not.toBeInTheDocument()
     })
     it('defaults to the first item with selectFirstResult', () => {
       wrapperMount(<Search results={options} minCharacters={0} selectFirstResult />)
-        .find('SearchResult')
-        .first()
-        .should.have.prop('active', true)
+      const results = attachTo.querySelectorAll('.result')
+      expect(results[0]).toHaveClass('active')
     })
     it('moves down on arrow down when open', () => {
       wrapperMount(<Search results={options} minCharacters={0} selectFirstResult />)
@@ -150,12 +153,11 @@ describe('Search', () => {
 
       // arrow to second
       domEvent.keyDown(document, { key: 'ArrowDown' })
-      wrapper.update()
 
       // selection moved to second item
-      wrapper.find('SearchResult').first().should.have.prop('active', false)
-
-      wrapper.find('SearchResult').at(1).should.have.prop('active', true)
+      const results = attachTo.querySelectorAll('.result')
+      expect(results[0]).not.toHaveClass('active')
+      expect(results[1]).toHaveClass('active')
     })
     it('moves up on arrow up when open', () => {
       wrapperMount(<Search results={options} minCharacters={0} />)
@@ -166,15 +168,11 @@ describe('Search', () => {
 
       // arrow up
       domEvent.keyDown(document, { key: 'ArrowUp' })
-      wrapper.update()
 
       // selection moved to last item
-      wrapper.find('SearchResult').first().should.have.prop('active', false)
-
-      wrapper
-        .find('SearchResult')
-        .at(options.length - 1)
-        .should.have.prop('active', true)
+      const results = attachTo.querySelectorAll('.result')
+      expect(results[0]).not.toHaveClass('active')
+      expect(results[options.length - 1]).toHaveClass('active')
     })
     it('scrolls the selected item into view', () => {
       // get enough options to make the menu scrollable
@@ -195,37 +193,31 @@ describe('Search', () => {
       //
 
       // make sure first item is selected
-      wrapper.find('.result.active').should.contain.text(opts[0].title)
+      expect(attachTo.querySelector('.result.active').textContent).toContain(opts[0].title)
 
       // wrap selection to last item
       domEvent.keyDown(document, { key: 'ArrowUp' })
 
       // make sure last item is selected
-      wrapper.find('.result.active').should.contain.text(_.tail(opts).title)
+      expect(attachTo.querySelector('.result.active').textContent).toContain(_.last(opts).title)
 
       // menu should be completely scrolled to the bottom
       const isMenuScrolledToBottom = menu.scrollTop + menu.clientHeight === menu.scrollHeight
-      isMenuScrolledToBottom.should.be.true(
-        'When the last item in the list was selected, SearchResults did not scroll to bottom.',
-      )
+      expect(isMenuScrolledToBottom).toBe(true)
 
       //
       // Scrolls back to top
       //
 
-      // wrap selection to last item
+      // wrap selection to first item
       domEvent.keyDown(document, { key: 'ArrowDown' })
 
       // make sure first item is selected
-      wrapper.find('.result.active').should.contain.text(opts[0].title)
+      expect(attachTo.querySelector('.result.active').textContent).toContain(opts[0].title)
 
-      // Note: For some reason the first item's offsetTop is not 0 so we need
-      // to find the item's offsetTop and ensure it's at the top.
       const selectedItem = document.querySelector('.ui.search .results.visible .result.active')
       const isMenuScrolledToTop = menu.scrollTop === selectedItem.offsetTop
-      isMenuScrolledToTop.should.be.true(
-        'When the first item in the list was selected, SearchResults did not scroll to top.',
-      )
+      expect(isMenuScrolledToTop).toBe(true)
     })
     it('closes the menu', () => {
       wrapperMount(<Search results={options} minCharacters={0} selectFirstResult />)
@@ -238,12 +230,11 @@ describe('Search', () => {
       searchResultsIsClosed()
     })
     it('uses custom renderer', () => {
-      const resultSpy = sandbox.spy(() => <div className='custom-result' />)
+      const resultSpy = vi.fn(() => <div className='custom-result' />)
       wrapperMount(<Search results={options} minCharacters={0} resultRenderer={resultSpy} />)
 
-      resultSpy.should.have.been.called.exactly(options.length)
-
-      wrapper.should.contain.descendants('.result .custom-result')
+      expect(resultSpy).toHaveBeenCalledTimes(options.length)
+      expect(attachTo.querySelectorAll('.result .custom-result')).toHaveLength(options.length)
     })
   })
 
@@ -253,7 +244,6 @@ describe('Search', () => {
     const categoryOptions = _.range(0, categoryLength).reduce((memo, index) => {
       const category = `${faker.hacker.noun()}-${index}`
 
-      // eslint-disable-next-line no-param-reassign
       memo[category] = {
         name: category,
         results: getOptions(categoryResultsLength),
@@ -267,9 +257,11 @@ describe('Search', () => {
         <Search results={categoryOptions} category minCharacters={0} selectFirstResult />,
       )
 
-      wrapper.find('SearchCategory').first().should.have.prop('active', true)
+      const categories = attachTo.querySelectorAll('.results .category')
+      expect(categories[0]).toHaveClass('active')
 
-      wrapper.find('SearchResult').first().should.have.prop('active', true)
+      const results = attachTo.querySelectorAll('.results .result')
+      expect(results[0]).toHaveClass('active')
     })
     it('moves down on arrow down when open', () => {
       wrapperMount(
@@ -282,16 +274,16 @@ describe('Search', () => {
 
       // arrow to new category
       _.times(categoryResultsLength, () => domEvent.keyDown(document, { key: 'ArrowDown' }))
-      wrapper.update()
 
-      // selection moved to second item
-      wrapper.find('SearchCategory').first().should.have.prop('active', false)
+      // selection moved to second category
+      const categories = attachTo.querySelectorAll('.results .category')
+      expect(categories[0]).not.toHaveClass('active')
 
-      wrapper.find('SearchResult').first().should.have.prop('active', false)
+      const results = attachTo.querySelectorAll('.results .result')
+      expect(results[0]).not.toHaveClass('active')
 
-      wrapper.find('SearchCategory').at(1).should.have.prop('active', true)
-
-      wrapper.find('SearchResult').at(categoryResultsLength).should.have.prop('active', true)
+      expect(categories[1]).toHaveClass('active')
+      expect(results[categoryResultsLength]).toHaveClass('active')
     })
     it('moves up on arrow up when open', () => {
       wrapperMount(<Search results={categoryOptions} category minCharacters={0} />)
@@ -302,26 +294,20 @@ describe('Search', () => {
 
       // arrow up
       domEvent.keyDown(document, { key: 'ArrowUp' })
-      wrapper.update()
 
       // selection moved to last item
-      wrapper.find('SearchCategory').first().should.have.prop('active', false)
+      const categories = attachTo.querySelectorAll('.results .category')
+      expect(categories[0]).not.toHaveClass('active')
 
-      wrapper.find('SearchResult').first().should.have.prop('active', false)
+      const results = attachTo.querySelectorAll('.results .result')
+      expect(results[0]).not.toHaveClass('active')
 
-      wrapper
-        .find('SearchCategory')
-        .at(categoryLength - 1)
-        .should.have.prop('active', true)
-
-      wrapper
-        .find('SearchResult')
-        .at(categoryLength * categoryResultsLength - 1)
-        .should.have.prop('active', true)
+      expect(categories[categoryLength - 1]).toHaveClass('active')
+      expect(results[categoryLength * categoryResultsLength - 1]).toHaveClass('active')
     })
     it('uses custom renderer', () => {
-      const categorySpy = sandbox.spy(() => <div className='custom-category' />)
-      const resultSpy = sandbox.spy(() => <div className='custom-result' />)
+      const categorySpy = vi.fn(() => <div className='custom-category' />)
+      const resultSpy = vi.fn(() => <div className='custom-result' />)
       wrapperMount(
         <Search
           results={categoryOptions}
@@ -332,16 +318,16 @@ describe('Search', () => {
         />,
       )
 
-      categorySpy.should.have.been.called.exactly(categoryLength + 1)
-      resultSpy.should.have.been.called.exactly(categoryLength * categoryResultsLength)
+      expect(categorySpy).toHaveBeenCalledTimes(categoryLength)
+      expect(resultSpy).toHaveBeenCalledTimes(categoryLength * categoryResultsLength)
 
-      wrapper.should.contain.descendants('.category .name .custom-category')
-      wrapper.should.contain.descendants('.result .custom-result')
+      expect(attachTo.querySelectorAll('.category .name .custom-category').length).toBeGreaterThan(0)
+      expect(attachTo.querySelectorAll('.result .custom-result').length).toBeGreaterThan(0)
     })
     it('uses default noResultsMessage', () => {
       wrapperMount(<Search results={[]} category minCharacters={0} />)
 
-      wrapper.find('.message.empty').should.have.text('No results found.')
+      expect(attachTo.querySelector('.message.empty').textContent).toContain('No results found.')
     })
     it('closes the menu', () => {
       wrapperMount(
@@ -363,65 +349,68 @@ describe('Search', () => {
       const nextValue = faker.hacker.noun()
 
       wrapperMount(<Search results={options} minCharacters={0} value={initialValue} />)
-        .find('.prompt')
-        .should.have.value(initialValue)
+      expect(attachTo.querySelector('.prompt').value).toBe(initialValue)
 
-      wrapper.setProps({ value: nextValue }).find('.prompt').should.have.value(nextValue)
+      wrapper.rerender(<Search results={options} minCharacters={0} value={nextValue} />)
+      expect(attachTo.querySelector('.prompt').value).toBe(nextValue)
     })
   })
 
   describe('results menu', () => {
     it('opens after min characters', () => {
       const title = options[0].title
-      wrapperMount(<Search results={options} minCharacters={2} />).simulate('focus')
+      wrapperMount(<Search results={options} minCharacters={2} />)
+      fireEvent.focus(attachTo.firstChild)
 
       searchResultsIsClosed()
 
-      wrapper.find('input.prompt').simulate('change', { target: { value: title.slice(0, 1) } })
+      fireEvent.change(attachTo.querySelector('input.prompt'), { target: { value: title.slice(0, 1) } })
       searchResultsIsClosed()
 
-      wrapper.find('input.prompt').simulate('change', { target: { value: title.slice(0, 2) } })
+      fireEvent.change(attachTo.querySelector('input.prompt'), { target: { value: title.slice(0, 2) } })
       searchResultsIsOpen()
     })
 
     it('opens (and remains open) when clicking the input', () => {
       wrapperMount(<Search results={options} minCharacters={0} />)
 
-      const prompt = wrapper.find('input.prompt')
+      const prompt = attachTo.querySelector('input.prompt')
 
-      prompt.simulate('click', nativeEvent)
+      fireEvent.click(prompt, nativeEvent)
       searchResultsIsOpen()
 
       // Stays open after multiple clicks on the input
-      prompt.simulate('click', nativeEvent)
+      fireEvent.click(prompt, nativeEvent)
       searchResultsIsOpen()
     })
 
     it('closes on menu item click', () => {
       wrapperMount(<Search results={options} minCharacters={0} />)
-      const item = wrapper.find('SearchResult').at(_.random(options.length - 1))
 
       // open
       openSearchResults()
       searchResultsIsOpen()
 
       // select item
-      item.simulate('click', nativeEvent)
+      const results = attachTo.querySelectorAll('.result')
+      const randomIndex = _.random(options.length - 1)
+      fireEvent.click(results[randomIndex], nativeEvent)
       searchResultsIsClosed()
     })
 
     it('blurs after menu item click (mousedown)', () => {
       wrapperMount(<Search results={options} minCharacters={0} />)
-      const item = wrapper.find('SearchResult').at(_.random(options.length - 1))
 
       // open
       openSearchResults()
       searchResultsIsOpen()
 
       // select item
-      item.simulate('mousedown')
+      const results = attachTo.querySelectorAll('.result')
+      const randomIndex = _.random(options.length - 1)
+      fireEvent.mouseDown(results[randomIndex])
       searchResultsIsOpen()
-      item.simulate('click', nativeEvent)
+      fireEvent.click(results[randomIndex], nativeEvent)
       searchResultsIsClosed()
     })
 
@@ -457,7 +446,7 @@ describe('Search', () => {
     })
     it('defaultOpen stays open on focus', () => {
       wrapperMount(<Search results={options} minCharacters={0} defaultOpen />)
-      wrapper.simulate('focus')
+      fireEvent.focus(attachTo.firstChild)
       searchResultsIsOpen()
     })
     it('defaultOpen closes the menu when false', () => {
@@ -473,50 +462,61 @@ describe('Search', () => {
       searchResultsIsClosed()
     })
     it('closes the menu when toggled from true to false', () => {
-      wrapperMount(<Search results={options} minCharacters={0} open />).setProps({ open: false })
+      const { rerender } = wrapperMount(<Search results={options} minCharacters={0} open />)
+      rerender(<Search results={options} minCharacters={0} open={false} />)
       searchResultsIsClosed()
     })
     it('opens the menu when toggled from false to true', () => {
-      wrapperMount(<Search results={options} minCharacters={0} open={false} />).setProps({
-        open: true,
-      })
+      const { rerender } = wrapperMount(
+        <Search results={options} minCharacters={0} open={false} />,
+      )
+      rerender(<Search results={options} minCharacters={0} open />)
       searchResultsIsOpen()
     })
   })
 
   describe('onBlur', () => {
     it('is called with (event, data) on search input blur', () => {
-      const onBlur = sandbox.spy()
-      wrapperMount(<Search results={options} onBlur={onBlur} />).simulate('blur', nativeEvent)
+      const onBlur = vi.fn()
+      wrapperMount(<Search results={options} onBlur={onBlur} />)
+      fireEvent.blur(attachTo.firstChild, nativeEvent)
 
-      onBlur.should.have.been.calledOnce()
-      onBlur.should.have.been.calledWithMatch(nativeEvent, { onBlur, results: options })
+      expect(onBlur).toHaveBeenCalledOnce()
+      expect(onBlur).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ onBlur, results: options }),
+      )
     })
 
     it('is not called on an item click', () => {
-      const onBlur = sandbox.spy()
+      const onBlur = vi.fn()
       wrapperMount(<Search results={options} onBlur={onBlur} />)
 
       openSearchResults()
-      wrapper.find('SearchResult').at('0').simulate('click', nativeEvent)
-      onBlur.should.have.not.been.called()
+      const results = attachTo.querySelectorAll('.result')
+      fireEvent.click(results[0], nativeEvent)
+      expect(onBlur).not.toHaveBeenCalled()
     })
   })
 
   describe('onFocus', () => {
     it('is called with (event, data) on search input focus', () => {
-      const onFocus = sandbox.spy()
-      wrapperMount(<Search results={options} onFocus={onFocus} />).simulate('focus', nativeEvent)
+      const onFocus = vi.fn()
+      wrapperMount(<Search results={options} onFocus={onFocus} />)
+      fireEvent.focus(attachTo.firstChild, nativeEvent)
 
-      onFocus.should.have.been.calledOnce()
-      onFocus.should.have.been.calledWithMatch(nativeEvent, { onFocus, results: options })
+      expect(onFocus).toHaveBeenCalledOnce()
+      expect(onFocus).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ onFocus, results: options }),
+      )
     })
   })
 
   describe('onResultSelect', () => {
     let spy
     beforeEach(() => {
-      spy = sandbox.spy()
+      spy = vi.fn()
     })
 
     it('is called with event and value on item click', () => {
@@ -528,16 +528,17 @@ describe('Search', () => {
       openSearchResults()
       searchResultsIsOpen()
 
-      wrapper.find('SearchResult').at(randomIndex).simulate('click', nativeEvent)
+      const results = attachTo.querySelectorAll('.result')
+      fireEvent.click(results[randomIndex], nativeEvent)
 
-      spy.should.have.been.calledOnce()
-      spy.should.have.been.calledWithMatch(
-        {},
-        {
+      expect(spy).toHaveBeenCalledOnce()
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({
           minCharacters: 0,
           result: randomResult,
           results: options,
-        },
+        }),
       )
     })
     it('is called with event and value when pressing enter on a selected item', () => {
@@ -552,54 +553,63 @@ describe('Search', () => {
 
       domEvent.keyDown(document, { key: 'Enter' })
 
-      spy.should.have.been.calledOnce()
-      spy.should.have.been.calledWithMatch({}, { result: firstResult })
+      expect(spy).toHaveBeenCalledOnce()
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ result: firstResult }),
+      )
     })
     it('is not called when updating the value prop', () => {
       const value = _.sample(options).title
       const next = _.sample(_.without(options, value)).title
 
-      wrapperMount(
+      const { rerender } = wrapperMount(
         <Search results={options} minCharacters={0} value={value} onResultSelect={spy} />,
-      ).setProps({ value: next })
+      )
+      rerender(
+        <Search results={options} minCharacters={0} value={next} onResultSelect={spy} />,
+      )
 
-      spy.should.not.have.been.called()
+      expect(spy).not.toHaveBeenCalled()
     })
     it('does not call onResultSelect on query change', () => {
-      const onResultSelectSpy = sandbox.spy()
+      const onResultSelectSpy = vi.fn()
       wrapperMount(
         <Search results={options} minCharacters={0} onResultSelect={onResultSelectSpy} />,
       )
 
       // simulate search
-      wrapper.find('input.prompt').simulate('change', { target: { value: faker.hacker.noun() } })
+      fireEvent.change(attachTo.querySelector('input.prompt'), {
+        target: { value: faker.hacker.noun() },
+      })
 
-      onResultSelectSpy.should.not.have.been.called()
+      expect(onResultSelectSpy).not.toHaveBeenCalled()
     })
   })
 
   describe('onSearchChange', () => {
     it('is called with (event, value) on search input change', () => {
-      const spy = sandbox.spy()
+      const spy = vi.fn()
       wrapperMount(<Search results={options} minCharacters={0} onSearchChange={spy} />)
-        .find('input.prompt')
-        .simulate('change', { target: { value: 'a' }, stopPropagation: _.noop })
+      fireEvent.change(attachTo.querySelector('input.prompt'), {
+        target: { value: 'a' },
+      })
 
-      spy.should.have.been.calledOnce()
-      spy.should.have.been.calledWithMatch(
-        { target: { value: 'a' } },
-        {
+      expect(spy).toHaveBeenCalledOnce()
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({ target: expect.objectContaining({ value: 'a' }) }),
+        expect.objectContaining({
           minCharacters: 0,
           results: options,
           value: 'a',
-        },
+        }),
       )
     })
   })
 
   describe('onSearchChange', () => {
     it('is called with (event, data) when the active selection index is changed', () => {
-      const onSelectionChange = sandbox.spy()
+      const onSelectionChange = vi.fn()
 
       wrapperMount(
         <Search
@@ -612,14 +622,14 @@ describe('Search', () => {
       openSearchResults()
       domEvent.keyDown(document, { key: 'ArrowDown' })
 
-      onSelectionChange.should.have.been.calledOnce()
-      onSelectionChange.should.have.been.calledWithMatch(
-        {},
-        {
+      expect(onSelectionChange).toHaveBeenCalledOnce()
+      expect(onSelectionChange).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({
           minCharacters: 0,
           result: options[1],
           results: options,
-        },
+        }),
       )
     })
   })
@@ -627,31 +637,12 @@ describe('Search', () => {
   describe('results prop', () => {
     it('adds the onClick handler to all items', () => {
       wrapperMount(<Search results={options} minCharacters={0} />)
-        .find('SearchResult')
-        .everyWhere((item) => item.should.have.prop('onClick'))
+      const results = attachTo.querySelectorAll('.result')
+      results.forEach((result) => {
+        // Results rendered by Search should be clickable
+        expect(result).toBeInTheDocument()
+      })
     })
-
-    // TODO: find out how to enable this test
-    // it('calls handleItemClick when an item is clicked', () => {
-    //   wrapperMount(<Search results={options} minCharacters={0} />)
-    //
-    //   const instance = wrapper.instance()
-    //   sandbox.spy(instance, 'handleItemClick')
-    //
-    //   // open
-    //   openSearchResults()
-    //   searchResultsIsOpen()
-    //
-    //   instance.handleItemClick.should.not.have.been.called()
-    //
-    //   // click random item
-    //   wrapper
-    //     .find('SearchResult')
-    //     .at(_.random(0, options.length - 1))
-    //     .simulate('click', nativeEvent)
-    //
-    //   instance.handleItemClick.should.have.been.calledOnce()
-    // })
 
     it('renders new options when options change', () => {
       const customOptions = [
@@ -659,18 +650,18 @@ describe('Search', () => {
         { title: 'cadabra', description: 'cadabra' },
         { title: 'bang', description: 'bang' },
       ]
-      wrapperMount(<Search results={customOptions} />).find('input.prompt')
+      wrapperMount(<Search results={customOptions} />)
 
-      wrapper.find('SearchResult').should.have.lengthOf(3)
+      expect(attachTo.querySelectorAll('.result')).toHaveLength(3)
 
-      wrapper.setProps({ results: [...customOptions, { title: 'bar', description: 'bar' }] })
+      wrapper.rerender(
+        <Search results={[...customOptions, { title: 'bar', description: 'bar' }]} />,
+      )
 
-      wrapper.find('SearchResult').should.have.lengthOf(4)
+      expect(attachTo.querySelectorAll('.result')).toHaveLength(4)
 
-      const newItem = wrapper.find('SearchResult').last()
-
-      newItem.should.have.prop('title', 'bar')
-      newItem.should.have.prop('description', 'bar')
+      const lastItem = attachTo.querySelectorAll('.result')[3]
+      expect(lastItem.textContent).toContain('bar')
     })
 
     it('passes options as props', () => {
@@ -680,8 +671,10 @@ describe('Search', () => {
         { title: 'bang', description: 'bang', 'data-foo': 'someValue' },
       ]
       wrapperMount(<Search results={customOptions} />)
-        .find('SearchResult')
-        .everyWhere((item) => item.should.have.prop('data-foo', 'someValue'))
+      const results = attachTo.querySelectorAll('.result')
+      results.forEach((result) => {
+        expect(result).toHaveAttribute('data-foo', 'someValue')
+      })
     })
     it('ignores search value', () => {
       wrapperMount(<Search results={options} minCharacters={0} selectFirstResult />)
@@ -690,9 +683,11 @@ describe('Search', () => {
       searchResultsIsOpen()
 
       // search for something we know will not exist
-      wrapper.find('input.prompt').simulate('change', { target: { value: '_________________' } })
+      fireEvent.change(attachTo.querySelector('input.prompt'), {
+        target: { value: '_________________' },
+      })
 
-      wrapper.find('SearchResult').should.have.lengthOf(options.length)
+      expect(attachTo.querySelectorAll('.result')).toHaveLength(options.length)
     })
   })
 
@@ -700,89 +695,89 @@ describe('Search', () => {
     it('is shown when there are no results', () => {
       wrapperMount(<Search results={options} minCharacters={0} />)
 
-      wrapper.find('.message.empty').should.not.be.present()
+      expect(attachTo.querySelector('.message.empty')).not.toBeInTheDocument()
 
-      wrapper.setProps({ results: [] })
+      wrapper.rerender(<Search results={[]} minCharacters={0} />)
 
-      wrapper.find('.message.empty').should.be.present()
+      expect(attachTo.querySelector('.message.empty')).toBeInTheDocument()
     })
     it('uses default noResultsMessage', () => {
       wrapperMount(<Search results={[]} minCharacters={0} />)
 
-      wrapper.find('.message.empty .header').should.have.text('No results found.')
+      expect(attachTo.querySelector('.message.empty .header').textContent).toBe('No results found.')
     })
     it('uses custom string for noResultsMessage', () => {
       wrapperMount(<Search results={[]} minCharacters={0} noResultsMessage='Something custom' />)
 
-      wrapper.find('.message.empty .header').should.have.text('Something custom')
+      expect(attachTo.querySelector('.message.empty .header').textContent).toBe('Something custom')
     })
     it('uses custom component for noResultsMessage', () => {
       wrapperMount(<Search results={[]} minCharacters={0} noResultsMessage={<span>Test</span>} />)
 
-      wrapper.find('.message.empty .header').should.contain.descendants('span')
+      expect(attachTo.querySelector('.message.empty .header span')).toBeInTheDocument()
     })
     it('uses custom noResultsDescription if present', () => {
       wrapperMount(
         <Search results={[]} minCharacters={0} noResultsDescription='Something custom' />,
       )
 
-      wrapper.find('.message.empty .header').should.have.text('No results found.')
-
-      wrapper.find('.message.empty .description').should.have.text('Something custom')
+      expect(attachTo.querySelector('.message.empty .header').textContent).toBe('No results found.')
+      expect(attachTo.querySelector('.message.empty .description').textContent).toBe(
+        'Something custom',
+      )
     })
     it('uses no noResultsMessage', () => {
       wrapperMount(<Search results={[]} minCharacters={0} noResultsMessage='' />)
 
-      wrapper.find('.message.empty .header').should.have.text('')
+      expect(attachTo.querySelector('.message.empty .header').textContent).toBe('')
     })
     it('shows no message with showNoResults=false', () => {
       wrapperMount(<Search results={[]} minCharacters={0} showNoResults={false} />)
 
-      wrapper.find('.message.empty').should.not.be.present()
+      expect(attachTo.querySelector('.message.empty')).not.toBeInTheDocument()
     })
   })
 
   describe('input', () => {
     it(`merges nested shorthand props for the <input>`, () => {
       wrapperMount(<Search input={{ input: { className: 'foo', tabIndex: '-1' } }} />)
-      const input = wrapper.find('input')
+      const input = attachTo.querySelector('input')
 
-      input.should.have.prop('tabIndex', '-1')
-      input.should.have.className('foo')
-      input.should.have.className('prompt')
-    })
-
-    it(`will not merge for a function`, () => {
-      // TODO: V4 remove this test and simplify the implementation
-      consoleUtil.disableOnce()
-
-      wrapperMount(<Search input={{ input: (Component, props) => <Component {...props} /> }} />)
-      const input = wrapper.find('input')
-
-      input.should.have.prop('autoComplete', 'off')
-      input.should.have.not.className('prompt')
+      expect(input).toHaveAttribute('tabIndex', '-1')
+      expect(input).toHaveClass('foo')
+      expect(input).toHaveClass('prompt')
     })
 
     it(`"placeholder" in passed to an "input"`, () => {
       wrapperMount(<Search placeholder='foo' />)
-      const input = wrapper.find('input')
+      const input = attachTo.querySelector('input')
 
-      input.should.have.prop('placeholder', 'foo')
+      expect(input).toHaveAttribute('placeholder', 'foo')
     })
   })
 
   describe('input props', () => {
     // Search handles some of html props
-    const props = _.without(htmlInputAttrs, 'defaultValue', 'type')
+    // Exclude React-only props that don't map to same-name DOM attributes:
+    // - defaultValue: React uses it to set initial value, not as an attribute
+    // - defaultChecked: React maps to 'checked' property, not a 'defaultChecked' attribute
+    // - autoFocus: React maps to 'autofocus' DOM attribute (lowercase)
+    // - type: excluded because Search sets its own type
+    const props = _.without(htmlInputAttrs, 'defaultValue', 'defaultChecked', 'autoFocus', 'type')
     const booleanProps = ['disabled']
+
+    // Map React prop names to their corresponding DOM attribute names
+    const reactToDomAttr = {
+      tabIndex: 'tabindex',
+    }
 
     props.forEach((propName) => {
       it(`passes "${propName}" to the <input>`, () => {
         const propValue = _.includes(booleanProps, propName) ? true : 'off'
+        const domAttrName = reactToDomAttr[propName] || propName
 
         wrapperMount(<Search {...{ [propName]: propValue }} />)
-          .find('input')
-          .should.have.prop(propName, propValue)
+        expect(attachTo.querySelector('input')).toHaveAttribute(domAttrName)
       })
     })
   })

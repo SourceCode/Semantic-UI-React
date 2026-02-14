@@ -18,15 +18,10 @@ const externalDeps = [
   'react-dom',
   'react/jsx-runtime',
   'react-is',
-  '@popperjs/core',
-  'react-popper',
+  '@floating-ui/react-dom',
   'clsx',
   'lodash',
   'lodash-es',
-  'keyboard-key',
-  'shallowequal',
-  '@fluentui/react-component-event-listener',
-  '@semantic-ui-react/event-stack',
   'debug',
 ]
 

@@ -1,10 +1,9 @@
 import React from 'react'
-import { act } from 'react'
+import { render } from '@testing-library/react'
 
 import PortalInner from 'src/addons/Portal/PortalInner'
 import { isBrowser } from 'src/lib'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('PortalInner', () => {
   common.isConformant(PortalInner, {
@@ -14,105 +13,117 @@ describe('PortalInner', () => {
   })
 
   describe('children', () => {
-    before(() => {
+    beforeEach(() => {
       isBrowser.override = false
     })
 
-    after(() => {
+    afterEach(() => {
       isBrowser.override = null
     })
 
     it('renders `null` when during Server-Side Rendering', () => {
-      mount(
+      const { container } = render(
         <PortalInner>
           <p />
         </PortalInner>,
-      ).should.be.blank()
+      )
+
+      // PortalInner renders into document.body via createPortal, but when isBrowser is false
+      // it returns null, so nothing should be rendered via the portal
+      expect(container.innerHTML).toBe('')
     })
   })
 
   describe('ref', () => {
-    it('returns ref a DOM element', () => {
+    it('returns ref to a DOM element', () => {
       const portalRef = React.createRef()
       const elementRef = React.createRef()
 
-      const wrapper = mount(
+      render(
         <PortalInner ref={portalRef}>
           <p ref={elementRef} />
         </PortalInner>,
       )
-      const domNode = wrapper.getDOMNode()
 
-      expect(elementRef.current).to.equal(domNode)
-      expect(portalRef.current).to.equal(domNode)
-      expect(domNode.tagName).to.equal('P')
+      expect(elementRef.current).toBeInstanceOf(HTMLElement)
+      expect(elementRef.current.tagName).toBe('P')
+
+      // usePortalElement wraps children in a <div data-suir-portal="true">,
+      // so portalRef points to the wrapper div, not the inner element
+      expect(portalRef.current).toBeInstanceOf(HTMLElement)
+      expect(portalRef.current.tagName).toBe('DIV')
+      expect(portalRef.current.dataset.suirPortal).toBe('true')
+      expect(portalRef.current).toContainElement(elementRef.current)
     })
 
-    it('returns ref a elements that uses ref forwarding', () => {
+    it('returns ref for elements that use ref forwarding', () => {
       const CustomComponent = React.forwardRef((props, ref) => {
         return <p {...props} ref={ref} />
       })
+      CustomComponent.displayName = 'CustomComponent'
 
       const portalRef = React.createRef()
       const elementRef = React.createRef()
 
-      const wrapper = mount(
+      render(
         <PortalInner ref={portalRef}>
           <CustomComponent ref={elementRef} />
         </PortalInner>,
       )
-      const domNode = wrapper.getDOMNode()
 
-      expect(elementRef.current).to.equal(domNode)
-      expect(portalRef.current).to.equal(domNode)
-      expect(domNode.tagName).to.equal('P')
+      expect(elementRef.current).toBeInstanceOf(HTMLElement)
+      expect(elementRef.current.tagName).toBe('P')
+
+      // usePortalElement wraps children in a <div data-suir-portal="true">,
+      // so portalRef points to the wrapper div, not the inner element
+      expect(portalRef.current).toBeInstanceOf(HTMLElement)
+      expect(portalRef.current.tagName).toBe('DIV')
+      expect(portalRef.current.dataset.suirPortal).toBe('true')
+      expect(portalRef.current).toContainElement(elementRef.current)
     })
 
-    it('returns ref to a create element in other cases', () => {
+    it('returns ref to a created element in other cases', () => {
       function CustomComponent(props) {
         return <p {...props} />
       }
 
       const portalRef = React.createRef()
-      const wrapper = mount(
+      render(
         <PortalInner ref={portalRef}>
           <CustomComponent />
         </PortalInner>,
       )
-      const domNode = wrapper.getDOMNode()
 
-      expect(portalRef.current).to.equal(domNode)
-      expect(domNode.tagName).to.equal('DIV')
-      expect(domNode.dataset.suirPortal).to.equal('true')
+      expect(portalRef.current).toBeInstanceOf(HTMLElement)
+      expect(portalRef.current.tagName).toBe('DIV')
+      expect(portalRef.current.dataset.suirPortal).toBe('true')
     })
   })
 
   describe('onMount', () => {
     it('called when mounting', () => {
-      const onMount = sandbox.spy()
-      mount(
+      const onMount = vi.fn()
+      render(
         <PortalInner onMount={onMount}>
           <p />
         </PortalInner>,
       )
 
-      onMount.should.have.been.calledOnce()
+      expect(onMount).toHaveBeenCalledOnce()
     })
   })
 
   describe('onUnmount', () => {
     it('is called only once when unmounting', () => {
-      const onUnmount = sandbox.spy()
-      const wrapper = mount(
+      const onUnmount = vi.fn()
+      const { unmount } = render(
         <PortalInner onUnmount={onUnmount}>
           <p />
         </PortalInner>,
       )
 
-      act(() => {
-        wrapper.unmount()
-      })
-      onUnmount.should.have.been.calledOnce()
+      unmount()
+      expect(onUnmount).toHaveBeenCalledOnce()
     })
   })
 })

@@ -1,4 +1,5 @@
-import React from 'react'
+import { render } from '@testing-library/react'
+
 import IconGroup from 'src/elements/Icon/IconGroup'
 import * as common from 'test/specs/commonTests'
 
@@ -7,6 +8,7 @@ describe('IconGroup', () => {
   common.rendersChildren(IconGroup)
 
   it('renders as an <i> by default', () => {
-    shallow(<IconGroup />).should.have.tagName('i')
+    const { container } = render(<IconGroup />)
+    expect(container.firstChild.tagName).toBe('I')
   })
 })

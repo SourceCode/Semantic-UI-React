@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 import SearchCategoryLayout from 'src/modules/Search/SearchCategoryLayout'
 import * as common from 'test/specs/commonTests'
 

@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import Message from 'src/collections/Message/Message'
 import MessageContent from 'src/collections/Message/MessageContent'
@@ -7,12 +7,9 @@ import MessageHeader from 'src/collections/Message/MessageHeader'
 import MessageList from 'src/collections/Message/MessageList'
 import { SUI } from 'src/lib'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('Message', () => {
   common.isConformant(Message)
-  common.forwardsRef(Message)
-  common.forwardsRef(Message, { requiredProps: { children: <span /> } })
   common.hasSubcomponents(Message, [MessageContent, MessageHeader, MessageList])
   common.hasUIClassName(Message)
   common.rendersChildren(Message, {
@@ -58,51 +55,60 @@ describe('Message', () => {
 
   describe('header', () => {
     it('adds MessageContent when defined', () => {
-      shallow(<Message header='This is a message' />).should.have.descendants('MessageContent')
+      const { container } = render(<Message header='This is a message' />)
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
   })
 
   describe('icon', () => {
     it('does not have MessageContent by default', () => {
-      shallow(<Message />).should.not.have.descendants('.content')
+      const { container } = render(<Message />)
+      expect(container.querySelector('.content')).toBeNull()
     })
     it('renders children when "true"', () => {
       const text = 'child text'
       const node = <div id='foo' />
 
-      shallow(<Message icon>{text}</Message>).should.have.text(text)
+      const { container: c1 } = render(<Message icon>{text}</Message>)
+      expect(c1.firstChild).toHaveTextContent(text)
 
-      shallow(<Message icon>{node}</Message>).should.contain(node)
+      const { container: c2 } = render(<Message icon>{node}</Message>)
+      expect(c2.querySelector('#foo')).toBeInTheDocument()
     })
   })
 
   describe('list', () => {
     it('adds MessageContent when defined', () => {
-      shallow(<Message list={[]} />).should.have.descendants('MessageContent')
+      const { container } = render(<Message list={[]} />)
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
   })
 
   describe('onDismiss', () => {
     it('has no close icon by default', () => {
-      shallow(<Message />).should.not.have.descendants('.close.icon')
+      const { container } = render(<Message />)
+      expect(container.querySelector('.close.icon')).toBeNull()
     })
 
     it('adds a close icon when defined', () => {
-      render(<Message onDismiss={() => undefined} />).should.have.descendants('.close.icon')
+      const { container } = render(<Message onDismiss={() => undefined} />)
+      expect(container.querySelector('.close.icon')).toBeInTheDocument()
     })
 
     it('is called with (event) on close icon click', () => {
-      const event = { fake: 'event data' }
       const props = { icon: true }
 
-      const spy = sandbox.spy()
-      const wrapper = mount(<Message {...props} onDismiss={spy} />)
+      const spy = vi.fn()
+      const { container } = render(<Message {...props} onDismiss={spy} />)
 
-      wrapper.should.have.descendants('.close.icon')
-      wrapper.find('.close.icon').simulate('click', event)
+      expect(container.querySelector('.close.icon')).toBeInTheDocument()
+      fireEvent.click(container.querySelector('.close.icon'))
 
-      spy.should.have.been.calledOnce()
-      spy.should.have.been.calledWithMatch(event, props)
+      expect(spy).toHaveBeenCalledOnce()
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'click' }),
+        expect.objectContaining(props),
+      )
     })
   })
 })

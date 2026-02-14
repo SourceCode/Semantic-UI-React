@@ -41,6 +41,27 @@ import 'semantic-ui-react/styles/elements/button.css'
 import 'semantic-ui-react/styles/collections/form.css'
 ```
 
-### 3. Review Breaking Changes
+### 3. Update Popup Usage (if using `popperModifiers`)
+
+The `Popup` component now uses [Floating UI](https://floating-ui.com/) instead of Popper.js. If you pass custom `popperModifiers`, update them from Popper.js modifier objects to Floating UI middleware:
+
+```diff
++ import { shift, flip } from '@floating-ui/react-dom'
+
+  <Popup
+-   popperModifiers={[
+-     { name: 'preventOverflow', options: { padding: 10 } },
+-     { name: 'flip', options: { fallbackPlacements: ['bottom'] } },
+-   ]}
++   popperModifiers={[
++     shift({ padding: 10 }),
++     flip({ fallbackPlacements: ['bottom'] }),
++   ]}
+  />
+```
+
+The `offset` prop array format (`[skidding, distance]`) and other Popup props (`position`, `positionFixed`, `eventsEnabled`, `pinned`) are unchanged.
+
+### 4. Review Breaking Changes
 
 See the [CHANGELOG](/changelog) for the complete list of breaking changes.

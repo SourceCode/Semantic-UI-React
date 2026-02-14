@@ -1,5 +1,4 @@
 import cx from 'clsx'
-import keyboardKey from 'keyboard-key'
 import _ from 'lodash'
 import * as React from 'react'
 
@@ -72,9 +71,9 @@ function RatingIcon({ ref, ...props }: RatingIconProps & { ref?: React.Ref<HTMLE
   const handleKeyUp = (e: React.KeyboardEvent<HTMLElement>) => {
     _.invoke(props, 'onKeyUp', e, props)
 
-    switch (keyboardKey.getCode(e)) {
-      case keyboardKey.Enter:
-      case keyboardKey.Spacebar:
+    switch (e.key) {
+      case 'Enter':
+      case ' ':
         e.preventDefault()
         _.invoke(props, 'onClick', e, props)
         break

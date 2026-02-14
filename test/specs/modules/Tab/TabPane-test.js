@@ -1,11 +1,10 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import TabPane from 'src/modules/Tab/TabPane'
 import * as common from 'test/specs/commonTests'
 
 describe('TabPane', () => {
   common.isConformant(TabPane)
-  common.forwardsRef(TabPane)
 
   common.implementsCreateMethod(TabPane)
 
@@ -13,6 +12,7 @@ describe('TabPane', () => {
   common.propKeyOnlyToClassName(TabPane, 'loading')
 
   it('renders a Segment by default', () => {
-    shallow(<TabPane />).should.match('Segment')
+    const { container } = render(<TabPane />)
+    expect(container.querySelector('.segment')).toBeInTheDocument()
   })
 })

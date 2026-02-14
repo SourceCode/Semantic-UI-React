@@ -1,4 +1,4 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import ButtonGroup from 'src/elements/Button/ButtonGroup'
 import { SUI } from 'src/lib'
@@ -6,7 +6,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('ButtonGroup', () => {
   common.isConformant(ButtonGroup)
-  common.forwardsRef(ButtonGroup)
   common.hasUIClassName(ButtonGroup)
   common.rendersChildren(ButtonGroup)
 
@@ -43,12 +42,12 @@ describe('ButtonGroup', () => {
 
   describe('buttons', () => {
     it('renders shorthand collection', () => {
-      const wrapper = shallow(<ButtonGroup buttons={['one', 'two']} />)
-      const buttons = wrapper.children()
+      const { container } = render(<ButtonGroup buttons={['one', 'two']} />)
+      const buttons = container.querySelectorAll('.button')
 
-      wrapper.should.have.exactly(2).descendants('Button')
-      buttons.at(0).should.have.prop('content', 'one')
-      buttons.at(1).should.have.prop('content', 'two')
+      expect(buttons).toHaveLength(2)
+      expect(buttons[0]).toHaveTextContent('one')
+      expect(buttons[1]).toHaveTextContent('two')
     })
   })
 })

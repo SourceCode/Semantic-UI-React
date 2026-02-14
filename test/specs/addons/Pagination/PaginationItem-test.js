@@ -1,105 +1,113 @@
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import PaginationItem from 'src/addons/Pagination/PaginationItem'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('PaginationItem', () => {
   common.isConformant(PaginationItem)
-  common.forwardsRef(PaginationItem, { tagName: 'a' })
   common.implementsCreateMethod(PaginationItem)
 
   describe('active', () => {
-    it('is "undefined" by default', () => {
-      shallow(<PaginationItem />).should.have.not.prop('active')
+    it('is not active by default', () => {
+      const { container } = render(<PaginationItem />)
+      expect(container.firstChild).not.toHaveClass('active')
     })
 
-    it('can pass its value', () => {
-      shallow(<PaginationItem active />).should.have.prop('active', true)
+    it('can be set to active', () => {
+      const { container } = render(<PaginationItem active />)
+      expect(container.firstChild).toHaveClass('active')
     })
   })
 
   describe('aria-current', () => {
     it('matches the values of "active" prop by default', () => {
-      shallow(<PaginationItem active />).should.have.prop('aria-current', true)
+      const { container } = render(<PaginationItem active />)
+      expect(container.firstChild).toHaveAttribute('aria-current', 'true')
     })
 
     it('can be overridden', () => {
-      shallow(<PaginationItem active aria-current={false} />).should.have.prop(
-        'aria-current',
-        false,
-      )
+      const { container } = render(<PaginationItem active aria-current={false} />)
+      expect(container.firstChild).toHaveAttribute('aria-current', 'false')
     })
   })
 
   describe('disabled', () => {
-    it('is "false" by default', () => {
-      const wrapper = shallow(<PaginationItem />)
-
-      wrapper.should.have.prop('disabled', false)
-      wrapper.should.have.prop('aria-disabled', false)
+    it('is not disabled by default', () => {
+      const { container } = render(<PaginationItem />)
+      expect(container.firstChild).not.toHaveClass('disabled')
+      expect(container.firstChild).toHaveAttribute('aria-disabled', 'false')
     })
 
-    it('is "true" when "type" is "ellipsisItem"', () => {
-      const wrapper = shallow(<PaginationItem type='ellipsisItem' />)
-
-      wrapper.should.have.prop('disabled', true)
-      wrapper.should.have.prop('aria-disabled', true)
+    it('is disabled when "type" is "ellipsisItem"', () => {
+      const { container } = render(<PaginationItem type='ellipsisItem' />)
+      expect(container.firstChild).toHaveClass('disabled')
+      expect(container.firstChild).toHaveAttribute('aria-disabled', 'true')
     })
 
     it('can be overridden', () => {
-      const wrapper = shallow(<PaginationItem disabled />)
-
-      wrapper.should.have.prop('disabled', true)
-      wrapper.should.have.prop('aria-disabled', true)
+      const { container } = render(<PaginationItem disabled />)
+      expect(container.firstChild).toHaveClass('disabled')
+      expect(container.firstChild).toHaveAttribute('aria-disabled', 'true')
     })
   })
 
   describe('onClick', () => {
     it('is called with (e, props) when clicked', () => {
-      const event = { target: null }
-      const onClick = sandbox.spy()
+      const onClick = vi.fn()
 
-      shallow(<PaginationItem onClick={onClick} />).simulate('click', event)
+      const { container } = render(<PaginationItem onClick={onClick} />)
+      fireEvent.click(container.firstChild)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch(event, { onClick })
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ onClick }),
+      )
     })
 
     it('is called with (e, props) when "Enter" is pressed', () => {
-      const event = { key: 'Enter', target: null }
-      const onClick = sandbox.spy()
+      const onClick = vi.fn()
 
-      shallow(<PaginationItem onClick={onClick} />).simulate('keyDown', event)
+      const { container } = render(<PaginationItem onClick={onClick} />)
+      fireEvent.keyDown(container.firstChild, { key: 'Enter' })
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch(event, { onClick })
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'Enter' }),
+        expect.objectContaining({ onClick }),
+      )
     })
   })
 
   describe('onKeyDown', () => {
-    it('is called with (e, props) when clicked', () => {
-      const event = { key: 'Enter', target: null }
-      const onKeyDown = sandbox.spy()
+    it('is called with (e, props) when a key is pressed', () => {
+      const onKeyDown = vi.fn()
 
-      shallow(<PaginationItem onKeyDown={onKeyDown} />).simulate('keyDown', event)
+      const { container } = render(<PaginationItem onKeyDown={onKeyDown} />)
+      fireEvent.keyDown(container.firstChild, { key: 'Enter' })
 
-      onKeyDown.should.have.been.calledOnce()
-      onKeyDown.should.have.been.calledWithMatch(event, { onKeyDown })
+      expect(onKeyDown).toHaveBeenCalledOnce()
+      expect(onKeyDown).toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'Enter' }),
+        expect.objectContaining({ onKeyDown }),
+      )
     })
   })
 
   describe('tabIndex', () => {
     it('is "0" by default', () => {
-      shallow(<PaginationItem />).should.have.prop('tabIndex', 0)
+      const { container } = render(<PaginationItem />)
+      expect(container.firstChild).toHaveAttribute('tabindex', '0')
     })
 
     it('is "-1" when "type" is "ellipsisItem"', () => {
-      shallow(<PaginationItem type='ellipsisItem' />).should.have.prop('tabIndex', -1)
+      const { container } = render(<PaginationItem type='ellipsisItem' />)
+      expect(container.firstChild).toHaveAttribute('tabindex', '-1')
     })
 
     it('can be overridden', () => {
-      shallow(<PaginationItem tabIndex={5} />).should.have.prop('tabIndex', 5)
+      const { container } = render(<PaginationItem tabIndex={5} />)
+      expect(container.firstChild).toHaveAttribute('tabindex', '5')
     })
   })
 })

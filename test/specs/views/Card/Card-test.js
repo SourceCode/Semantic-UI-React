@@ -1,5 +1,5 @@
-import faker from 'faker'
-import React from 'react'
+import { faker } from '@faker-js/faker'
+import { render, fireEvent } from '@testing-library/react'
 
 import { SUI } from 'src/lib'
 import Card from 'src/views/Card/Card'
@@ -9,14 +9,9 @@ import CardGroup from 'src/views/Card/CardGroup'
 import CardHeader from 'src/views/Card/CardHeader'
 import CardMeta from 'src/views/Card/CardMeta'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('Card', () => {
   common.isConformant(Card)
-
-  common.forwardsRef(Card)
-  common.forwardsRef(Card, { requiredProps: { children: <span /> } })
-  common.forwardsRef(Card, { requiredProps: { content: faker.lorem.word() } })
 
   common.hasSubcomponents(Card, [CardContent, CardDescription, CardGroup, CardHeader, CardMeta])
   common.hasUIClassName(Card)
@@ -30,41 +25,47 @@ describe('Card', () => {
   common.propValueOnlyToClassName(Card, 'color', SUI.COLORS)
 
   it('renders a <div> by default', () => {
-    shallow(<Card />).should.have.tagName('div')
+    const { container } = render(<Card />)
+    expect(container.firstChild.tagName).toBe('DIV')
   })
 
   describe('href', () => {
     it('renders an <a> with an href attr', () => {
       const url = faker.internet.url()
-      const wrapper = shallow(<Card href={url} />)
+      const { container } = render(<Card href={url} />)
 
-      wrapper.should.have.tagName('a')
-      wrapper.should.have.attr('href', url)
+      expect(container.firstChild.tagName).toBe('A')
+      expect(container.firstChild).toHaveAttribute('href', url)
     })
   })
 
   describe('onClick', () => {
     it('renders <a> instead of <div>', () => {
-      const handleClick = sandbox.spy()
-      const wrapper = shallow(<Card onClick={handleClick} />)
+      const handleClick = vi.fn()
+      const { container } = render(<Card onClick={handleClick} />)
 
-      wrapper.should.have.tagName('a')
+      expect(container.firstChild.tagName).toBe('A')
     })
 
     it('is called with (e, data) when clicked', () => {
-      const onClick = sandbox.spy()
-      mount(<Card onClick={onClick} />).simulate('click')
+      const onClick = vi.fn()
+      const { container } = render(<Card onClick={onClick} />)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch({ type: 'click' }, { onClick })
+      fireEvent.click(container.firstChild)
+
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'click' }),
+        expect.objectContaining({ onClick }),
+      )
     })
   })
 
   describe('extra', () => {
     it('renders a CardContent', () => {
-      const wrapper = shallow(<Card extra={faker.hacker.phrase()} />)
+      const { container } = render(<Card extra={faker.hacker.phrase()} />)
 
-      wrapper.should.have.descendants('CardContent')
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
   })
 })

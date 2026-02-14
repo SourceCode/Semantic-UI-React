@@ -1,4 +1,4 @@
-import { Accordion, Button, List, Message, Segment } from 'semantic-ui-react'
+import { Button, Message, Segment } from 'semantic-ui-react'
 
 export const meta = {
   title: 'Theming',
@@ -6,182 +6,132 @@ export const meta = {
   nextPage: { title: 'Layout examples', href: '/layouts' },
 }
 
-## Preface
+## Overview
 
-Semantic UI React does not have its own styling system and fully relies on the theming of
-Semantic UI. It's really powerful, you don't need to know LESS or CSS you can simply
-update values of variables or use styles from predefined themes.
+Semantic UI React v4 uses **CSS custom properties** (CSS variables) for all design tokens. This enables runtime theming, dark mode, and easy customization — no build tools or preprocessors required.
 
-In fact, all you know about theming and styling of Semantic UI is fully applicable to Semantic UI React.
+## CSS Custom Properties
 
-<Button
-  content='Learn more about theming'
-  labelPosition='right'
-  href='https://semantic-ui.com/usage/theming.html'
-  icon='external alternate'
-  target='_blank'
-/>
-<Button
-  content='Creating themes'
-  labelPosition='right'
-  href='http://learnsemantic.com/themes/creating.html'
-  icon='external alternate'
-  target='_blank'
-/>
+All design tokens are exposed as CSS custom properties. Override them to customize any aspect of the design:
 
-## Quick start
-
-Semantic UI offers its own build system that uses Gulp and produces prepared CSS files.
-
-In all cases, we recommend to use the LESS package and tune it into your build system with Webpack. The LESS package also does not depend on Gulp and other cruft things.
-However, this package is not friendly for Webpack and requires additional configuration.
-
-<Button
-  content='Semantic UI LESS'
-  labelPosition='right'
-  href='https://github.com/Semantic-Org/Semantic-UI-LESS'
-  icon='github'
-  target='_blank'
-/>
-<Button
-  content='Configuring Webpack for theming'
-  labelPosition='right'
-  href='https://medium.com/@marekurbanowicz/how-to-customize-fomantic-ui-with-less-and-webpack-applicable-to-semantic-ui-too-fbf98a74506c'
-  icon='medium'
-  target='_blank'
-/>
-
-## Theming with Create React App
-
-The key point is that you don't want `eject`, but you want to customize styles 🤔
-
-> This is a one-way operation. Once you `eject`, you can't go back!
-
-<Button
-  content="Don't eject your Create React App"
-  labelPosition='right'
-  href='https://medium.com/curated-by-versett/dont-eject-your-create-react-app-b123c5247741'
-  icon='medium'
-  size='small'
-  target='_blank'
-/>
-
-### Remove existing styles
-
-First of all, please remove existing references for `semantic-ui` & `semantic-ui-css` package or styles included from CDN to avoid styles duplication.
-
-```bash
-npm uninstall semantic-ui semantic-ui-css
-```
-
-```bash
-yarn remove semantic-ui semantic-ui-css
-```
-
-### Install required dependencies
-
-Create React App does not support LESS out of the box; we propose to use [`@craco/craco`](https://www.npmjs.com/package/@craco/craco) to add its support and avoid `eject`. You have to install required packages:
-
-```bash
-npm install @craco/craco @semantic-ui-react/craco-less --save-dev
-npm install semantic-ui-less --save
-```
-
-```bash
-yarn add @craco/craco @semantic-ui-react/craco-less --dev
-yarn add semantic-ui-less
-```
-
-And then update your `package.json` and create `craco.config.js`:
-
-```json label=package.json
-{
-  "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "craco eject"
-  }
+```css
+:root {
+  --sui-color-primary: #e03997;
+  --sui-color-secondary: #6435c9;
+  --sui-font-family: 'Inter', sans-serif;
+  --sui-border-radius: 8px;
 }
 ```
 
-```jsx label=craco.config.js
-module.exports = {
-  plugins: [{ plugin: require('@semantic-ui-react/craco-less') }],
+Common token categories:
+
+- `--sui-color-*` — Colors (primary, secondary, success, error, warning, info)
+- `--sui-font-*` — Typography (family, size, weight, line-height)
+- `--sui-spacing-*` — Spacing scale (xs, sm, md, lg, xl)
+- `--sui-border-*` — Border radius and widths
+- `--sui-shadow-*` — Box shadows
+
+## ThemeProvider
+
+The `ThemeProvider` component enables scoped theming via React Context and CSS classes:
+
+```jsx
+import { ThemeProvider } from 'semantic-ui-react'
+import 'semantic-ui-react/styles/themes/dark.css'
+
+function App() {
+  return (
+    <ThemeProvider theme="dark">
+      <YourApp />
+    </ThemeProvider>
+  )
 }
 ```
 
-### Scaffold custom styles
+## Dark Mode
 
-We made a special CLI tool that will copy necessary files with the skeleton of your customization.
+A built-in dark theme is available:
 
-```bash
-npx @semantic-ui-react/bootstrap
+```jsx
+import 'semantic-ui-react/styles/themes/dark.css'
 ```
 
-<Accordion
-  defaultActiveIndex={-1}
-  panels={[
-    {
-      title: { content: <i>I want copy files manually</i>, style: { fontSize: '0.9rem' } },
-      content: {
-        as: Segment,
-        content: (
-          <List bulleted>
-            <List.Item>
-              Copy the entire <code>node_modules/semantic-ui-less/_site</code> folder to{' '}
-              <code>src/semantic-ui/site</code>
-            </List.Item>
-            <List.Item>
-              Copy <code>node_modules/semantic-ui-less/theme.config.example</code> to{' '}
-              <code>src/semantic-ui/theme.config</code>
-            </List.Item>
-          </List>
-        ),
-      },
-    },
-  ]}
-/>
+Toggle it at runtime with ThemeProvider:
 
-### `theme.config`
+```jsx
+import { ThemeProvider, Button } from 'semantic-ui-react'
+import { useState } from 'react'
 
-This file is mostly prepared, but you have to change some details in the bottom of it:
+function App() {
+  const [theme, setTheme] = useState('default')
 
-```json label=src/semantic-ui/theme.config formattable=false
-/*******************************
-            Folders
-*******************************/
-
-@themesFolder : 'themes';
-@siteFolder  : '../../src/semantic-ui/site';
-
-/*******************************
-         Import Theme
-*******************************/
-
-@import (multiple) '~semantic-ui-less/theme.less';
-@fontPath : '../../../themes/@{theme}/assets/fonts';
+  return (
+    <ThemeProvider theme={theme}>
+      <Button onClick={() => setTheme(t => t === 'default' ? 'dark' : 'default')}>
+        Toggle Theme
+      </Button>
+      <YourApp />
+    </ThemeProvider>
+  )
+}
 ```
 
-### Last but not least: import main LESS file
+## useTheme Hook
 
-You have to import `semantic.less` file in your entry file.
+Access and control the current theme from any component:
 
-```jsx label=index.js
-import 'semantic-ui-less/semantic.less'
+```jsx
+import { useTheme } from 'semantic-ui-react'
+
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme()
+
+  return (
+    <button onClick={() => setTheme(theme === 'default' ? 'dark' : 'default')}>
+      Current theme: {theme}
+    </button>
+  )
+}
 ```
 
-### It is working now!
+## Custom Themes
 
-```bash
-yarn start
+Create a custom theme by defining CSS custom properties in a class:
+
+```css label=my-theme.css
+.my-brand-theme {
+  --sui-color-primary: #e03997;
+  --sui-color-background: #fafafa;
+  --sui-border-radius: 8px;
+  --sui-font-family: 'Inter', sans-serif;
+}
 ```
 
-You can now go e.g. to `src/semantic-ui/site/globals/site.variables` and add:
+Apply it with ThemeProvider:
 
-```json formattable=false
-@primaryColor: #002f4e;
-@pageBackground: #eff0f1;
+```jsx
+import './my-theme.css'
+import { ThemeProvider } from 'semantic-ui-react'
+
+function App() {
+  return (
+    <ThemeProvider className="my-brand-theme">
+      <YourApp />
+    </ThemeProvider>
+  )
+}
 ```
 
-Which will change your primary color and background color of the `<body>` 🚀
+## CSS Layers
+
+All built-in CSS uses `@layer` for predictable cascade ordering:
+
+```
+sui.reset < sui.tokens < sui.base < sui.components < sui.utilities < sui.theme
+```
+
+Your custom CSS (without a `@layer`) will naturally override all Semantic UI styles. This makes customization straightforward — just write normal CSS.
+
+<Message info size='tiny'>
+  <strong>Migrating from v3?</strong> If you previously used <code>semantic-ui-css</code>, <code>semantic-ui-less</code>, or LESS-based theming, see the <a href="/migration-guide">Migration Guide</a> for upgrade instructions.
+</Message>

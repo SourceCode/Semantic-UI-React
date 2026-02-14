@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import Menu from 'src/collections/Menu/Menu'
 import MenuItem from 'src/collections/Menu/MenuItem'
@@ -7,7 +7,6 @@ import MenuHeader from 'src/collections/Menu/MenuHeader'
 import MenuMenu from 'src/collections/Menu/MenuMenu'
 import { SUI } from 'src/lib'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('Menu', () => {
   common.isConformant(Menu)
@@ -44,7 +43,8 @@ describe('Menu', () => {
   common.propValueOnlyToClassName(Menu, 'size', _.without(SUI.SIZES, 'medium', 'big'))
 
   it('renders a `div` by default', () => {
-    shallow(<Menu />).should.have.tagName('div')
+    const { container } = render(<Menu />)
+    expect(container.firstChild.tagName).toBe('DIV')
   })
 
   describe('activeIndex', () => {
@@ -54,63 +54,88 @@ describe('Menu', () => {
     ]
 
     it('is null by default', () => {
-      shallow(<Menu items={items} />).should.not.have.descendants('.active')
+      const { container } = render(<Menu items={items} />)
+      expect(container.querySelector('.active')).toBeNull()
     })
 
     it('is set when clicking an item', () => {
-      const wrapper = mount(<Menu items={items} />)
+      const { container } = render(<Menu items={items} />)
+      const menuItems = container.querySelectorAll('.item')
 
-      wrapper.find('MenuItem').at(1).simulate('click')
+      fireEvent.click(menuItems[1])
 
-      // must re-query for the menu items or we get a cached copy
-      wrapper.find('MenuItem').at(1).should.have.prop('active', true)
+      // Re-query after click
+      expect(container.querySelectorAll('.item')[1]).toHaveClass('active')
     })
 
     it('works as a string', () => {
-      mount(<Menu items={items} activeIndex={1} />)
-        .find('MenuItem')
-        .at(1)
-        .should.have.prop('active', true)
+      const { container } = render(<Menu items={items} activeIndex={1} />)
+      const menuItems = container.querySelectorAll('.item')
+
+      expect(menuItems[1]).toHaveClass('active')
     })
   })
 
   describe('items', () => {
-    const spy = sandbox.spy()
-    const items = [
-      { key: 'home', name: 'home', onClick: spy, 'data-foo': 'something' },
-      { key: 'users', name: 'users', active: true, 'data-foo': 'something' },
-    ]
-    const children = mount(<Menu items={items} />).find('MenuItem')
-
     it('renders children', () => {
-      children.first().should.have.prop('name', 'home')
-      children.last().should.have.prop('name', 'users')
+      const items = [
+        { key: 'home', name: 'home', 'data-foo': 'something' },
+        { key: 'users', name: 'users', active: true, 'data-foo': 'something' },
+      ]
+      const { container } = render(<Menu items={items} />)
+      const menuItems = container.querySelectorAll('.item')
+
+      expect(menuItems[0]).toHaveTextContent('Home')
+      expect(menuItems[1]).toHaveTextContent('Users')
     })
 
-    it('onClick can omitted', () => {
-      const click = () => children.last().simulate('click')
-      expect(click).to.not.throw()
+    it('onClick can be omitted', () => {
+      const items = [
+        { key: 'home', name: 'home' },
+        { key: 'users', name: 'users', active: true },
+      ]
+      const { container } = render(<Menu items={items} />)
+      const menuItems = container.querySelectorAll('.item')
+
+      expect(() => fireEvent.click(menuItems[1])).not.toThrow()
     })
 
     it('passes onClick handler', () => {
-      const event = { target: null }
-      const props = { name: 'home', index: 0 }
+      const spy = vi.fn()
+      const items = [
+        { key: 'home', name: 'home', onClick: spy, 'data-foo': 'something' },
+        { key: 'users', name: 'users', active: true, 'data-foo': 'something' },
+      ]
+      const { container } = render(<Menu items={items} />)
+      const menuItems = container.querySelectorAll('.item')
 
-      children.first().simulate('click', event)
+      fireEvent.click(menuItems[0])
 
-      spy.should.have.been.calledOnce()
-      spy.should.have.been.calledWithMatch(event, props)
+      expect(spy).toHaveBeenCalledOnce()
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'click' }),
+        expect.objectContaining({ name: 'home', index: 0 }),
+      )
     })
 
     it('passes arbitrary props', () => {
-      children.everyWhere((item) => item.should.have.prop('data-foo', 'something'))
+      const items = [
+        { key: 'home', name: 'home', 'data-foo': 'something' },
+        { key: 'users', name: 'users', active: true, 'data-foo': 'something' },
+      ]
+      const { container } = render(<Menu items={items} />)
+      const menuItems = container.querySelectorAll('.item')
+
+      menuItems.forEach((item) => {
+        expect(item).toHaveAttribute('data-foo', 'something')
+      })
     })
   })
 
   describe('onItemClick', () => {
     it('is called with (e, { name, index }) when clicked', () => {
-      const onClick = sandbox.spy()
-      const onItemClick = sandbox.spy()
+      const onClick = vi.fn()
+      const onItemClick = vi.fn()
 
       const items = [
         { key: 'home', name: 'home' },
@@ -118,14 +143,21 @@ describe('Menu', () => {
       ]
       const matchProps = { index: 1, name: 'users' }
 
-      const wrapper = mount(<Menu items={items} onItemClick={onItemClick} />)
+      const { container } = render(<Menu items={items} onItemClick={onItemClick} />)
+      const menuItems = container.querySelectorAll('.item')
 
-      wrapper.find('MenuItem').last().simulate('click')
+      fireEvent.click(menuItems[1])
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch({ type: 'click' }, matchProps)
-      onItemClick.should.have.been.calledOnce()
-      onItemClick.should.have.been.calledWithMatch({ type: 'click' }, matchProps)
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'click' }),
+        expect.objectContaining(matchProps),
+      )
+      expect(onItemClick).toHaveBeenCalledOnce()
+      expect(onItemClick).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'click' }),
+        expect.objectContaining(matchProps),
+      )
     })
   })
 })

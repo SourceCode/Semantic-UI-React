@@ -6,7 +6,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('CardHeader', () => {
   common.isConformant(CardHeader)
-  common.forwardsRef(CardHeader)
   common.rendersChildren(CardHeader)
 
   common.implementsTextAlignProp(CardHeader, _.without(SUI.TEXT_ALIGNMENTS, 'justified'))

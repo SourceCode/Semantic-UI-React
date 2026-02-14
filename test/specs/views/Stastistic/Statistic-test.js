@@ -1,6 +1,5 @@
-import faker from 'faker'
 import _ from 'lodash'
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import { SUI } from 'src/lib'
 import Statistic from 'src/views/Statistic/Statistic'
@@ -11,9 +10,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('Statistic', () => {
   common.isConformant(Statistic)
-  common.forwardsRef(Statistic)
-  common.forwardsRef(Statistic, { requiredProps: { children: <span /> } })
-  common.forwardsRef(Statistic, { requiredProps: { content: faker.lorem.word() } })
   common.implementsCreateMethod(Statistic)
   common.hasSubcomponents(Statistic, [StatisticGroup, StatisticLabel, StatisticValue])
   common.hasUIClassName(Statistic)
@@ -49,10 +45,10 @@ describe('Statistic', () => {
 
   describe('text', () => {
     it('passes value to StatisticValue', () => {
-      shallow(<Statistic text value='foo' />)
-        .find('StatisticValue')
-        .first()
-        .should.have.prop('text', true)
+      const { container } = render(<Statistic text value='foo' />)
+      const valueEl = container.querySelector('.value')
+
+      expect(valueEl).toHaveClass('text')
     })
   })
 })

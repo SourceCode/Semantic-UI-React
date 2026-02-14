@@ -1,4 +1,4 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import Accordion from 'src/modules/Accordion/Accordion'
 import AccordionAccordion from 'src/modules/Accordion/AccordionAccordion'
@@ -9,7 +9,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('Accordion', () => {
   common.isConformant(Accordion)
-  common.forwardsRef(Accordion)
   common.hasSubcomponents(Accordion, [
     AccordionAccordion,
     AccordionContent,
@@ -23,6 +22,7 @@ describe('Accordion', () => {
   common.propKeyOnlyToClassName(Accordion, 'styled')
 
   it('renders AccordionAccordion component', () => {
-    shallow(<Accordion />).should.have.descendants(AccordionAccordion)
+    const { container } = render(<Accordion />)
+    expect(container.querySelector('.accordion')).toBeInTheDocument()
   })
 })

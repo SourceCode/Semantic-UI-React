@@ -1,32 +1,14 @@
-import keyboardKey from 'keyboard-key'
 import _ from 'lodash'
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import Confirm from 'src/addons/Confirm/Confirm'
 import Modal from 'src/modules/Modal/Modal'
-import { assertBodyContains, domEvent, sandbox } from 'test/utils'
+import { assertBodyContains, domEvent } from 'test/utils'
 import * as common from 'test/specs/commonTests'
 
-// ----------------------------------------
-// Wrapper
-// ----------------------------------------
-let wrapper
-
-// we need to unmount the modal after every test to remove it from the document
-// wrap the render methods to update a global wrapper that is unmounted after each test
-const wrapperMount = (...args) => (wrapper = mount(...args))
-
 describe('Confirm', () => {
-  beforeEach(() => {
-    wrapper = undefined
-    document.body.innerHTML = ''
-  })
 
-  afterEach(() => {
-    if (wrapper && wrapper.unmount) wrapper.unmount()
-  })
-
-  common.isConformant(Confirm, { rendersPortal: true })
+  common.isConformant(Confirm, { rendersPortal: true, requiredProps: { open: true } })
 
   common.implementsShorthandProp(Confirm, {
     autoGenerateKey: false,
@@ -48,186 +30,211 @@ describe('Confirm', () => {
 
   describe('children', () => {
     it('renders a Modal', () => {
-      shallow(<Confirm />)
-        .type()
-        .should.equal(Modal)
+      const { unmount } = render(<Confirm open />)
+      // Confirm renders a Modal which renders with class "ui modal"
+      assertBodyContains('.ui.modal')
+      unmount()
     })
   })
 
   describe('size', () => {
     it('has "small" size by default', () => {
-      shallow(<Confirm />).should.have.prop('size', 'small')
+      const { unmount } = render(<Confirm open />)
+      assertBodyContains('.ui.small.modal')
+      unmount()
     })
 
     _.forEach(['mini', 'tiny', 'small', 'large', 'fullscreen'], (size) => {
       it(`applies ${size} size`, () => {
-        shallow(<Confirm size={size} />).should.have.prop('size', size)
+        const { unmount } = render(<Confirm open size={size} />)
+        assertBodyContains(`.ui.${size}.modal`)
+        unmount()
       })
     })
   })
 
   describe('cancelButton', () => {
     it('is "Cancel" by default', () => {
-      shallow(<Confirm />)
-        .find('Button')
-        .first()
-        .shallow()
-        .childAt(0)
-        .should.have.text('Cancel')
+      const { unmount } = render(<Confirm open />)
+      const actions = document.body.querySelector('.actions')
+      const buttons = actions.querySelectorAll('.ui.button')
+      // First button is Cancel
+      expect(buttons[0].textContent).toBe('Cancel')
+      unmount()
     })
+
     it('sets the cancel button text', () => {
-      shallow(<Confirm cancelButton='foo' />)
-        .find('Button')
-        .first()
-        .shallow()
-        .childAt(0)
-        .should.have.text('foo')
+      const { unmount } = render(<Confirm open cancelButton='foo' />)
+      const actions = document.body.querySelector('.actions')
+      const buttons = actions.querySelectorAll('.ui.button')
+      expect(buttons[0].textContent).toBe('foo')
+      unmount()
     })
   })
 
   describe('confirmButton', () => {
     it('is "OK" by default', () => {
-      shallow(<Confirm />)
-        .find('Button[primary]')
-        .shallow()
-        .childAt(0)
-        .should.have.text('OK')
+      const { unmount } = render(<Confirm open />)
+      const actions = document.body.querySelector('.actions')
+      const primaryButton = actions.querySelector('.ui.primary.button')
+      expect(primaryButton.textContent).toBe('OK')
+      unmount()
     })
+
     it('sets the confirm button text', () => {
-      shallow(<Confirm confirmButton='foo' />)
-        .find('Button[primary]')
-        .shallow()
-        .childAt(0)
-        .should.have.text('foo')
+      const { unmount } = render(<Confirm open confirmButton='foo' />)
+      const actions = document.body.querySelector('.actions')
+      const primaryButton = actions.querySelector('.ui.primary.button')
+      expect(primaryButton.textContent).toBe('foo')
+      unmount()
     })
   })
 
   describe('onCancel', () => {
-    let spy
-
-    beforeEach(() => {
-      spy = sandbox.spy()
-      wrapperMount(<Confirm onCancel={spy} defaultOpen />)
-    })
-
     it('omitted when not defined', () => {
-      const click = () =>
-        shallow(<Confirm />)
-          .find('Button')
-          .first()
-          .simulate('click')
+      const { unmount } = render(<Confirm open />)
+      const actions = document.body.querySelector('.actions')
+      const buttons = actions.querySelectorAll('.ui.button')
 
-      expect(click).to.not.throw()
+      expect(() => buttons[0].click()).not.toThrow()
+      unmount()
     })
 
     it('is called on Cancel button click', () => {
-      shallow(<Confirm onCancel={spy} />)
-        .find('Button')
-        .first()
-        .simulate('click')
+      const spy = vi.fn()
+      const { unmount } = render(<Confirm open onCancel={spy} />)
+      const actions = document.body.querySelector('.actions')
+      const cancelButton = actions.querySelectorAll('.ui.button')[0]
 
-      spy.should.have.been.calledOnce()
-    })
-
-    it('is passed to the Modal onClose prop', () => {
-      const func = () => null
-
-      shallow(<Confirm onCancel={func} />)
-        .find('Modal')
-        .prop('onClose', func)
+      cancelButton.click()
+      expect(spy).toHaveBeenCalledOnce()
+      unmount()
     })
 
     it('is called on dimmer click', () => {
+      const spy = vi.fn()
+      const { unmount } = render(<Confirm defaultOpen onCancel={spy} />)
+
       domEvent.click('.ui.dimmer')
-      spy.should.have.been.calledOnce()
+      expect(spy).toHaveBeenCalledOnce()
+      unmount()
     })
 
     it('is called on click outside of the modal', () => {
+      const spy = vi.fn()
+      const { unmount } = render(<Confirm defaultOpen onCancel={spy} />)
+
       domEvent.click(document.querySelector('.ui.modal').parentNode)
-      spy.should.have.been.calledOnce()
+      expect(spy).toHaveBeenCalledOnce()
+      unmount()
     })
 
     it('is not called on click inside of the modal', () => {
+      const spy = vi.fn()
+      const { unmount } = render(<Confirm defaultOpen onCancel={spy} />)
+
       domEvent.click(document.querySelector('.ui.modal'))
-      spy.should.not.have.been.calledOnce()
+      expect(spy).not.toHaveBeenCalled()
+      unmount()
     })
 
     it('is not called on body click', () => {
+      const spy = vi.fn()
+      const { unmount } = render(<Confirm defaultOpen onCancel={spy} />)
+
       domEvent.click('body')
-      spy.should.not.have.been.calledOnce()
+      expect(spy).not.toHaveBeenCalled()
+      unmount()
     })
 
     it('is called when pressing escape', () => {
+      const spy = vi.fn()
+      const { unmount } = render(<Confirm defaultOpen onCancel={spy} />)
+
       domEvent.keyDown(document, { key: 'Escape' })
-      spy.should.have.been.calledOnce()
+      expect(spy).toHaveBeenCalledOnce()
+      unmount()
     })
 
     it('is not called when pressing a key other than "Escape"', () => {
-      _.each(keyboardKey, (val, key) => {
-        // skip Escape key
-        if (val === keyboardKey.Escape) return
+      const spy = vi.fn()
+      const { unmount } = render(<Confirm defaultOpen onCancel={spy} />)
 
+      // Test representative non-Escape keys
+      ;['Enter', 'ArrowDown', 'ArrowUp', ' ', 'Tab', 'a'].forEach((key) => {
         domEvent.keyDown(document, { key })
-        spy.should.not.have.been.called(`onClose was called when pressing "${key}"`)
+        expect(spy).not.toHaveBeenCalled()
       })
+      unmount()
     })
 
     it('is not called when the open prop changes to false', () => {
-      wrapper.setProps({ open: false })
-      spy.should.not.have.been.called()
+      const spy = vi.fn()
+      const { rerender, unmount } = render(<Confirm open onCancel={spy} />)
+
+      rerender(<Confirm open={false} onCancel={spy} />)
+      expect(spy).not.toHaveBeenCalled()
+      unmount()
     })
   })
 
   describe('onConfirm', () => {
     it('omitted when not defined', () => {
-      const click = () =>
-        shallow(<Confirm />)
-          .find('Button[primary]')
-          .simulate('click')
+      const { unmount } = render(<Confirm open />)
+      const actions = document.body.querySelector('.actions')
+      const primaryButton = actions.querySelector('.ui.primary.button')
 
-      expect(click).to.not.throw()
+      expect(() => primaryButton.click()).not.toThrow()
+      unmount()
     })
 
     it('is called on OK button click', () => {
-      const spy = sandbox.spy()
-      shallow(<Confirm onConfirm={spy} />)
-        .find('Button[primary]')
-        .simulate('click')
+      const spy = vi.fn()
+      const { unmount } = render(<Confirm open onConfirm={spy} />)
+      const actions = document.body.querySelector('.actions')
+      const primaryButton = actions.querySelector('.ui.primary.button')
 
-      spy.should.have.been.calledOnce()
+      primaryButton.click()
+      expect(spy).toHaveBeenCalledOnce()
+      unmount()
     })
   })
 
   describe('open', () => {
     it('is not open by default', () => {
-      wrapperMount(<Confirm />)
+      const { unmount } = render(<Confirm />)
       assertBodyContains('.ui.modal.open', false)
+      unmount()
     })
 
     it('does not show the modal when false', () => {
-      wrapperMount(<Confirm open={false} />)
+      const { unmount } = render(<Confirm open={false} />)
       assertBodyContains('.ui.modal', false)
+      unmount()
     })
 
     it('shows the modal when true', () => {
-      wrapperMount(<Confirm open />)
+      const { unmount } = render(<Confirm open />)
       assertBodyContains('.ui.modal')
+      unmount()
     })
 
     it('shows the modal on changing from false to true', () => {
-      wrapperMount(<Confirm open={false} />)
+      const { rerender, unmount } = render(<Confirm open={false} />)
       assertBodyContains('.ui.modal', false)
 
-      wrapper.setProps({ open: true })
+      rerender(<Confirm open />)
       assertBodyContains('.ui.modal')
+      unmount()
     })
 
     it('hides the modal on changing from true to false', () => {
-      wrapperMount(<Confirm open />)
+      const { rerender, unmount } = render(<Confirm open />)
       assertBodyContains('.ui.modal')
 
-      wrapper.setProps({ open: false })
+      rerender(<Confirm open={false} />)
       assertBodyContains('.ui.modal', false)
+      unmount()
     })
   })
 })

@@ -50,8 +50,9 @@ export default [
       // React Compiler
       'react-compiler/react-compiler': 'error',
 
-      // React hooks
-      ...reactHooksPlugin.configs.recommended.rules,
+      // React hooks (explicit rules — v7 recommended config is now flat-config shaped)
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
 
       // React 19: Prevent deprecated Context.Provider pattern
       'no-restricted-syntax': [
@@ -68,12 +69,9 @@ export default [
       'consistent-return': 'off',
       'complexity': 'off',
       'func-names': 'off',
-      'lines-between-class-members': 'off',
       'no-console': 'error',
-      'no-multi-spaces': ['error', { ignoreEOLComments: true }],
       'no-return-assign': ['error', 'except-parens'],
       'no-underscore-dangle': 'off',
-      'padded-blocks': ['error', { blocks: 'never', switches: 'never', classes: 'never' }],
       'prefer-destructuring': 'off',
 
       // JSX a11y (relaxed)
@@ -162,20 +160,14 @@ export default [
     languageOptions: {
       globals: {
         ...globals.node,
-        ...globals.mocha,
-        // TODO(Phase-09): Remove Enzyme globals after RTL migration
-        enzyme: 'readonly',
-        expect: 'readonly',
-        mount: 'readonly',
-        shallow: 'readonly',
-        render: 'readonly',
-        // Vitest globals (will replace mocha globals)
+        // Vitest globals
         describe: 'readonly',
         it: 'readonly',
+        expect: 'readonly',
         beforeEach: 'readonly',
         afterEach: 'readonly',
-        before: 'readonly',
-        after: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
         vi: 'readonly',
       },
     },

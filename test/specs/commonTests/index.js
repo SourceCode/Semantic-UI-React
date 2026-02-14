@@ -1,7 +1,4 @@
-export forwardsRef from './forwardsRef'
-
 export hasSubcomponents from './hasSubcomponents'
-export hasValidTypings from './hasValidTypings'
 export hasUIClassName from './hasUIClassName'
 
 export * from './implementsClassNameProps'

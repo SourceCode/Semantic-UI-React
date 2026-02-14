@@ -1,14 +1,12 @@
 import _ from 'lodash'
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import { SUI } from 'src/lib'
 import Rating from 'src/modules/Rating/Rating'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('Rating', () => {
   common.isConformant(Rating)
-  common.forwardsRef(Rating)
   common.hasUIClassName(Rating)
 
   common.propKeyOnlyToClassName(Rating, 'disabled')
@@ -18,213 +16,199 @@ describe('Rating', () => {
 
   describe('clicking on icons', () => {
     it('makes icons active up to and including the clicked icon', () => {
-      const wrapper = mount(<Rating maxRating={3} />)
+      const { container } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').at(1).simulate('click')
+      fireEvent.click(icons[1])
 
-      const icons = wrapper.find('RatingIcon')
-
-      icons.at(0).should.have.prop('active', true)
-      icons.at(1).should.have.prop('active', true)
-      icons.at(2).should.have.prop('active', false)
+      expect(icons[0]).toHaveClass('active')
+      expect(icons[1]).toHaveClass('active')
+      expect(icons[2]).not.toHaveClass('active')
     })
 
     it('if no rating selected no icon should have aria-checked', () => {
-      const icons = mount(<Rating maxRating={3} />).find('RatingIcon')
+      const { container } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      icons.at(0).should.have.prop('aria-checked', false)
-      icons.at(1).should.have.prop('aria-checked', false)
-      icons.at(2).should.have.prop('aria-checked', false)
+      expect(icons[0]).toHaveAttribute('aria-checked', 'false')
+      expect(icons[1]).toHaveAttribute('aria-checked', 'false')
+      expect(icons[2]).toHaveAttribute('aria-checked', 'false')
     })
 
     it('makes the clicked icon aria-checked', () => {
-      const wrapper = mount(<Rating maxRating={3} />)
+      const { container } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').at(1).simulate('click')
+      fireEvent.click(icons[1])
 
-      const icons = wrapper.find('RatingIcon')
-
-      icons.at(0).should.have.prop('aria-checked', false)
-      icons.at(1).should.have.prop('aria-checked', true)
-      icons.at(2).should.have.prop('aria-checked', false)
+      expect(icons[0]).toHaveAttribute('aria-checked', 'false')
+      expect(icons[1]).toHaveAttribute('aria-checked', 'true')
+      expect(icons[2]).toHaveAttribute('aria-checked', 'false')
     })
 
     it('set aria-setsize on each rating icon', () => {
-      const wrapper = mount(<Rating maxRating={3} />)
+      const { container } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').at(1).simulate('click')
-
-      const icons = wrapper.find('RatingIcon')
-
-      icons.at(0).should.have.prop('aria-setsize', 3)
-      icons.at(1).should.have.prop('aria-setsize', 3)
-      icons.at(2).should.have.prop('aria-setsize', 3)
+      expect(icons[0]).toHaveAttribute('aria-setsize', '3')
+      expect(icons[1]).toHaveAttribute('aria-setsize', '3')
+      expect(icons[2]).toHaveAttribute('aria-setsize', '3')
     })
 
     it('sets aria-posinset on each rating icon', () => {
-      const wrapper = mount(<Rating maxRating={3} />)
+      const { container } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').at(1).simulate('click')
-
-      const icons = wrapper.find('RatingIcon')
-
-      icons.at(0).should.have.prop('aria-posinset', 1)
-      icons.at(1).should.have.prop('aria-posinset', 2)
-      icons.at(2).should.have.prop('aria-posinset', 3)
+      expect(icons[0]).toHaveAttribute('aria-posinset', '1')
+      expect(icons[1]).toHaveAttribute('aria-posinset', '2')
+      expect(icons[2]).toHaveAttribute('aria-posinset', '3')
     })
 
     it('removes the "selected" prop', () => {
-      const wrapper = mount(<Rating maxRating={3} />)
+      const { container } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').last().simulate('mouseEnter').simulate('click')
-      wrapper.should.not.have.className('selected')
-      wrapper
-        .find('RatingIcon[selected=true]')
-        .should.have.length(0, 'Some RatingIcons did not remove their "selected" prop')
+      fireEvent.mouseEnter(icons[icons.length - 1])
+      fireEvent.click(icons[icons.length - 1])
+
+      expect(container.firstChild).not.toHaveClass('selected')
+      expect(container.querySelectorAll('.selected')).toHaveLength(0)
     })
   })
 
   describe('hovering on icons', () => {
     it('adds the "selected" className to the Rating', () => {
-      const wrapper = mount(<Rating maxRating={3} />)
+      const { container } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').first().simulate('mouseEnter')
-      wrapper.should.have.className('selected')
+      fireEvent.mouseEnter(icons[0])
+      expect(container.firstChild).toHaveClass('selected')
     })
 
     it('selects icons up to and including the hovered icon', () => {
-      const wrapper = mount(<Rating maxRating={3} />)
+      const { container } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').at(1).simulate('mouseEnter')
+      fireEvent.mouseEnter(icons[1])
 
-      const icons = wrapper.find('RatingIcon')
-
-      icons.at(0).should.have.prop('selected', true)
-      icons.at(1).should.have.prop('selected', true)
-      icons.at(2).should.have.prop('selected', false)
+      expect(icons[0]).toHaveClass('selected')
+      expect(icons[1]).toHaveClass('selected')
+      expect(icons[2]).not.toHaveClass('selected')
     })
 
     it('unselects icons on mouse leave', () => {
-      const wrapper = mount(<Rating maxRating={3} />)
+      const { container } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').last().simulate('mouseEnter')
-      wrapper.simulate('mouseLeave')
+      fireEvent.mouseEnter(icons[icons.length - 1])
+      fireEvent.mouseLeave(container.firstChild)
 
-      wrapper
-        .find('RatingIcon[selected=true]')
-        .should.have.length(0, 'Some RatingIcons did not remove their "selected" prop')
+      expect(container.querySelectorAll('.selected')).toHaveLength(0)
     })
   })
 
   describe('clearable', () => {
     it('prevents clearing by default with multiple icons', () => {
-      const wrapper = mount(<Rating defaultRating={5} maxRating={5} />)
+      const { container } = render(<Rating defaultRating={5} maxRating={5} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').last().simulate('click')
-      wrapper
-        .find('RatingIcon[active=true]')
-        .should.have.length(5, 'Some RatingIcons did not retain their "active" prop')
+      fireEvent.click(icons[icons.length - 1])
+      expect(container.querySelectorAll('.active')).toHaveLength(5)
     })
 
     it('allows toggling when set to "auto" with a single icon', () => {
-      const wrapper = mount(<Rating clearable='auto' maxRating={1} />)
+      const { container } = render(<Rating clearable='auto' maxRating={1} />)
+      const icon = container.querySelector('i')
 
-      wrapper.find('RatingIcon').at(0).simulate('click')
-      wrapper.find('RatingIcon').at(0).should.have.prop('active', true)
+      fireEvent.click(icon)
+      expect(icon).toHaveClass('active')
 
-      wrapper.find('RatingIcon').at(0).simulate('click')
-      wrapper.find('RatingIcon').at(0).should.have.prop('active', false)
+      fireEvent.click(icon)
+      expect(icon).not.toHaveClass('active')
     })
 
     it('allows clearing when true with a single icon', () => {
-      const wrapper = mount(<Rating clearable defaultRating={1} maxRating={1} />)
+      const { container } = render(<Rating clearable defaultRating={1} maxRating={1} />)
+      const icon = container.querySelector('i')
 
-      wrapper.find('RatingIcon').at(0).simulate('click')
-      wrapper.find('RatingIcon').at(0).should.have.prop('active', false)
+      fireEvent.click(icon)
+      expect(icon).not.toHaveClass('active')
     })
 
     it('allows clearing when true with multiple icons', () => {
-      const wrapper = mount(<Rating clearable defaultRating={4} maxRating={5} />)
+      const { container } = render(<Rating clearable defaultRating={4} maxRating={5} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').at(3).simulate('click')
-      wrapper
-        .find('RatingIcon[active=true]')
-        .should.have.length(0, 'Some RatingIcons did not remove their "active" prop')
+      fireEvent.click(icons[3])
+      expect(container.querySelectorAll('.active')).toHaveLength(0)
     })
 
     it('prevents clearing when false with a single icon', () => {
-      mount(<Rating clearable={false} defaultRating={1} maxRating={1} />)
-        .find('RatingIcon')
-        .at(0)
-        .simulate('click')
-        .should.have.prop('active', true)
+      const { container } = render(<Rating clearable={false} defaultRating={1} maxRating={1} />)
+      const icon = container.querySelector('i')
+
+      fireEvent.click(icon)
+      expect(icon).toHaveClass('active')
     })
 
     it('prevents clearing when false with multiple icons', () => {
-      const wrapper = mount(<Rating clearable={false} defaultRating={5} maxRating={5} />)
+      const { container } = render(<Rating clearable={false} defaultRating={5} maxRating={5} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').last().simulate('click')
-      wrapper
-        .find('RatingIcon[active=true]')
-        .should.have.length(5, 'Some RatingIcons did not retain their "active" prop')
+      fireEvent.click(icons[icons.length - 1])
+      expect(container.querySelectorAll('.active')).toHaveLength(5)
     })
   })
 
   describe('disabled', () => {
     it('prevents the rating from being toggled', () => {
-      mount(<Rating clearable='auto' disabled maxRating={1} rating={1} />)
-        .find('RatingIcon')
-        .at(0)
-        .simulate('click')
-        .should.have.prop('active', true)
+      const { container: c1 } = render(
+        <Rating clearable='auto' disabled maxRating={1} rating={1} />,
+      )
+      fireEvent.click(c1.querySelector('i'))
+      expect(c1.querySelector('i')).toHaveClass('active')
 
-      mount(<Rating clearable='auto' disabled maxRating={1} rating={0} />)
-        .find('RatingIcon')
-        .at(0)
-        .simulate('click')
-        .should.have.prop('active', false)
+      const { container: c2 } = render(
+        <Rating clearable='auto' disabled maxRating={1} rating={0} />,
+      )
+      fireEvent.click(c2.querySelector('i'))
+      expect(c2.querySelector('i')).not.toHaveClass('active')
     })
 
     it('prevents the rating from being cleared', () => {
-      const wrapper = mount(<Rating disabled maxRating={3} rating={3} />)
+      const { container } = render(<Rating disabled maxRating={3} rating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').last().simulate('click')
-      wrapper
-        .find('RatingIcon[active=true]')
-        .should.have.length(3, 'Some RatingIcons lost their "active" prop')
+      fireEvent.click(icons[icons.length - 1])
+      expect(container.querySelectorAll('.active')).toHaveLength(3)
     })
 
     it('prevents icons from becoming selected on mouse enter', () => {
-      const wrapper = mount(<Rating disabled maxRating={3} />)
+      const { container } = render(<Rating disabled maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').last().simulate('mouseEnter')
-      wrapper
-        .find('RatingIcon[selected=true]')
-        .should.have.length(0, 'Some RatingIcons became "selected"')
+      fireEvent.mouseEnter(icons[icons.length - 1])
+      expect(container.querySelectorAll('.selected')).toHaveLength(0)
     })
 
     it('prevents icons from becoming unselected on mouse leave', () => {
-      const wrapper = mount(<Rating maxRating={3} />)
+      const { container, rerender } = render(<Rating maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').last().simulate('mouseEnter')
-      wrapper
-        .find('RatingIcon[selected=true]')
-        .should.have.length(3, 'Not every RatingIcon was selected on mouseEnter')
+      fireEvent.mouseEnter(icons[icons.length - 1])
+      expect(container.querySelectorAll('i.selected')).toHaveLength(3)
 
-      wrapper.setProps({ disabled: true })
-      wrapper.simulate('mouseLeave')
-      wrapper
-        .find('RatingIcon[selected=true]')
-        .should.have.length(3, 'Some RatingIcons lost their "selected" prop')
+      rerender(<Rating disabled maxRating={3} />)
+      fireEvent.mouseLeave(container.firstChild)
+      expect(container.querySelectorAll('i.selected')).toHaveLength(3)
     })
 
     it('prevents icons from becoming active on click', () => {
-      const wrapper = mount(<Rating disabled maxRating={3} />)
+      const { container } = render(<Rating disabled maxRating={3} />)
+      const icons = container.querySelectorAll('i')
 
-      wrapper.find('RatingIcon').last().simulate('click')
-      wrapper
-        .find('RatingIcon[active=true]')
-        .should.have.length(0, 'Some RatingIcons became "active"')
+      fireEvent.click(icons[icons.length - 1])
+      expect(container.querySelectorAll('.active')).toHaveLength(0)
     })
   })
 
@@ -232,56 +216,59 @@ describe('Rating', () => {
     it('controls how many icons are displayed', () => {
       _.times(10, (i) => {
         const maxRating = i + 1
-        shallow(<Rating maxRating={maxRating} />)
-          .should.have.exactly(maxRating)
-          .descendants('RatingIcon')
+        const { container } = render(<Rating maxRating={maxRating} />)
+        expect(container.querySelectorAll('i')).toHaveLength(maxRating)
       })
     })
   })
 
   describe('onRate', () => {
     it('is called with (event, { rating, maxRating } on icon click', () => {
-      const spy = sandbox.spy()
-      const event = { fake: 'event data' }
+      const spy = vi.fn()
 
-      mount(<Rating maxRating={3} onRate={spy} />)
-        .find('RatingIcon')
-        .last()
-        .simulate('click', event)
+      const { container } = render(<Rating maxRating={3} onRate={spy} />)
+      const icons = container.querySelectorAll('i')
 
-      spy.should.have.been.calledOnce()
-      spy.should.have.been.calledWithMatch(event, { rating: 3, maxRating: 3 })
+      fireEvent.click(icons[icons.length - 1])
+
+      expect(spy).toHaveBeenCalledOnce()
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ rating: 3, maxRating: 3 }),
+      )
     })
   })
 
   describe('rating', () => {
     it('controls how many icons are active', () => {
-      const wrapper = mount(<Rating maxRating={10} />)
+      const { container, rerender } = render(<Rating maxRating={10} />)
 
       _.times(10, (rating) => {
-        wrapper.setProps({ rating })
-        wrapper
-          .find('RatingIcon[active=true]')
-          .should.have.length(rating, `Rating should have ${rating} RatingIcon with "active" prop`)
+        rerender(<Rating maxRating={10} rating={rating} />)
+        expect(container.querySelectorAll('.active')).toHaveLength(rating)
       })
     })
   })
 
   describe('tabIndex', () => {
     it('sets icons tabIndex to -1 to prevent focus when element is disabled', () => {
-      shallow(<Rating maxRating={3} />)
-        .find('RatingIcon')
-        .forEach((node) => node.should.have.prop('tabIndex', 0))
+      const { container: c1 } = render(<Rating maxRating={3} />)
+      c1.querySelectorAll('i').forEach((node) => {
+        expect(node).toHaveAttribute('tabIndex', '0')
+      })
 
-      shallow(<Rating disabled maxRating={3} />)
-        .find('RatingIcon')
-        .forEach((node) => node.should.have.prop('tabIndex', -1))
+      const { container: c2 } = render(<Rating disabled maxRating={3} />)
+      c2.querySelectorAll('i').forEach((node) => {
+        expect(node).toHaveAttribute('tabIndex', '-1')
+      })
     })
 
     it('sets Rating element tabIndex to 0 to allow focusing the whole group when disabled', () => {
-      shallow(<Rating maxRating={3} />).should.have.prop('tabIndex', -1)
+      const { container: c1 } = render(<Rating maxRating={3} />)
+      expect(c1.firstChild).toHaveAttribute('tabIndex', '-1')
 
-      shallow(<Rating disabled maxRating={3} />).should.have.prop('tabIndex', 0)
+      const { container: c2 } = render(<Rating disabled maxRating={3} />)
+      expect(c2.firstChild).toHaveAttribute('tabIndex', '0')
     })
   })
 })

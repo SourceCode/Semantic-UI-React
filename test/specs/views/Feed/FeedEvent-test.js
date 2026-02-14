@@ -1,6 +1,6 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import _ from 'lodash'
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import FeedEvent from 'src/views/Feed/FeedEvent'
 import FeedLabel from 'src/views/Feed/FeedLabel'
@@ -8,7 +8,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('FeedEvent', () => {
   common.isConformant(FeedEvent)
-  common.forwardsRef(FeedEvent)
   common.rendersChildren(FeedEvent, {
     rendersContent: false,
   })
@@ -28,8 +27,9 @@ describe('FeedEvent', () => {
 
   describe('content props', () => {
     it('renders <FeedContent> with extraImages prop', () => {
-      const images = _.times(3, () => faker.image.imageUrl())
-      shallow(<FeedEvent extraImages={images} />).should.have.descendants('FeedContent')
+      const images = _.times(3, () => faker.image.url())
+      const { container } = render(<FeedEvent extraImages={images} />)
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
 
     it('renders <FeedContent> with other content props', () => {
@@ -37,7 +37,8 @@ describe('FeedEvent', () => {
 
       contentProps.forEach((propKey) => {
         const props = { [propKey]: faker.hacker.phrase() }
-        shallow(<FeedEvent {...props} />).should.have.descendants('FeedContent')
+        const { container } = render(<FeedEvent {...props} />)
+        expect(container.querySelector('.content')).toBeInTheDocument()
       })
     })
   })

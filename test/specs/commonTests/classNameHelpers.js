@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import { render } from '@testing-library/react'
 
 import { consoleUtil } from 'test/utils'
 
@@ -8,12 +9,12 @@ export const classNamePropValueBeforePropName = (Component, propKey, propValues,
 
   propValues.forEach((propVal) => {
     it(`adds "${propVal} ${className}" to className`, () => {
-      const wrapper = mount(
+      const { container } = render(
         React.createElement(Component, { ...requiredProps, [propKey]: propVal }),
       )
-      const elementClassName = wrapper.childAt(0).getDOMNode().className
+      const elementClassName = container.firstChild.className
 
-      expect(elementClassName).include(`${propVal} ${className}`)
+      expect(elementClassName).toContain(`${propVal} ${className}`)
     })
   })
 }
@@ -25,13 +26,16 @@ export const noClassNameFromBoolProps = (Component, propKey, propValues, options
     it(`does not add any className when ${bool}`, () => {
       consoleUtil.disableOnce()
 
-      const wrapper = mount(React.createElement(Component, { ...requiredProps, [propKey]: bool }))
+      const { container } = render(
+        React.createElement(Component, { ...requiredProps, [propKey]: bool }),
+      )
+      const el = container.firstChild
 
-      wrapper.should.not.have.className(className)
-      wrapper.should.not.have.className('true')
-      wrapper.should.not.have.className('false')
+      expect(el).not.toHaveClass(className)
+      expect(el).not.toHaveClass('true')
+      expect(el).not.toHaveClass('false')
 
-      propValues.forEach((propVal) => wrapper.should.not.have.className(propVal.toString()))
+      propValues.forEach((propVal) => expect(el).not.toHaveClass(propVal.toString()))
     }),
   )
 }
@@ -47,12 +51,13 @@ export const noDefaultClassNameFromProp = (Component, propKey, propValues, optio
 
   it('is not included in className when not defined', () => {
     consoleUtil.disableOnce()
-    const wrapper = mount(<Component {...requiredProps} />)
+    const { container } = render(<Component {...requiredProps} />)
+    const el = container.firstChild
 
-    wrapper.should.not.have.className(className)
+    expect(el).not.toHaveClass(className)
 
     // ensure that none of the prop option values are in className
     // SUI classes ought to be built up using a declarative component API
-    propValues.forEach((propValue) => wrapper.should.not.have.className(propValue.toString()))
+    propValues.forEach((propValue) => expect(el).not.toHaveClass(propValue.toString()))
   })
 }

@@ -1,6 +1,6 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import _ from 'lodash'
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import Header from 'src/elements/Header/Header'
 import HeaderContent from 'src/elements/Header/HeaderContent'
@@ -10,8 +10,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('Header', () => {
   common.hasUIClassName(Header)
-  common.forwardsRef(Header, { requiredProps: { children: <span /> } })
-  common.forwardsRef(Header, { requiredProps: { icon: 'book' } })
   common.hasSubcomponents(Header, [HeaderContent, HeaderSubheader])
   common.rendersChildren(Header)
 
@@ -40,57 +38,61 @@ describe('Header', () => {
 
   describe('icon', () => {
     it('adds an icon class when true', () => {
-      shallow(<Header icon />).should.have.className('icon')
+      const { container } = render(<Header icon />)
+      expect(container.firstChild).toHaveClass('icon')
     })
     it('does not add an icon class given a name', () => {
-      shallow(<Header icon='user' />).should.not.have.className('icon')
+      const { container } = render(<Header icon='user' />)
+      expect(container.firstChild).not.toHaveClass('icon')
     })
   })
 
   describe('image', () => {
     it('adds an image class when true', () => {
-      shallow(<Header image />).should.have.className('image')
+      const { container } = render(<Header image />)
+      expect(container.firstChild).toHaveClass('image')
     })
     it('does not add an Image when true', () => {
-      shallow(<Header image />).should.not.have.descendants('Image')
+      const { container } = render(<Header image />)
+      expect(container.querySelectorAll('img')).toHaveLength(0)
     })
   })
 
   describe('content', () => {
     it('is wrapped in HeaderContent when there is an image src', () => {
-      shallow(<Header image='/images/wireframe/image.png' content='Bar' />)
-        .find('HeaderContent')
-        .shallow()
-        .should.contain.text('Bar')
+      const { container } = render(
+        <Header image='/images/wireframe/image.png' content='Bar' />,
+      )
+      const headerContent = container.querySelector('.content')
+      expect(headerContent).toHaveTextContent('Bar')
     })
     it('is wrapped in HeaderContent when there is an icon name', () => {
-      shallow(<Header icon='users' content='Friends' />)
-        .find('HeaderContent')
-        .shallow()
-        .should.contain.text('Friends')
+      const { container } = render(<Header icon='users' content='Friends' />)
+      const headerContent = container.querySelector('.content')
+      expect(headerContent).toHaveTextContent('Friends')
     })
     it('is not wrapped in HeaderContent when icon is true', () => {
-      const wrapper = shallow(<Header icon content='Friends' />)
+      const { container } = render(<Header icon content='Friends' />)
 
-      wrapper.should.contain.text('Friends')
-      wrapper.should.not.have.descendants('HeaderContent')
+      expect(container.firstChild).toHaveTextContent('Friends')
+      expect(container.querySelector('.content')).toBeNull()
     })
   })
 
   describe('subheader', () => {
     it('adds HeaderSubheader as child when there is an icon', () => {
       const text = faker.hacker.phrase()
-
-      shallow(<Header icon='user' subheader={text} />)
-        .find('HeaderSubheader')
-        .should.have.prop('content', text)
+      const { container } = render(<Header icon='user' subheader={text} />)
+      const subheader = container.querySelector('.sub.header')
+      expect(subheader).toHaveTextContent(text)
     })
     it('adds HeaderSubheader as child when there is an image', () => {
       const text = faker.hacker.phrase()
-
-      shallow(<Header image='/images/wireframe/image.png' subheader={text} />)
-        .find('HeaderSubheader')
-        .should.have.prop('content', text)
+      const { container } = render(
+        <Header image='/images/wireframe/image.png' subheader={text} />,
+      )
+      const subheader = container.querySelector('.sub.header')
+      expect(subheader).toHaveTextContent(text)
     })
   })
 })

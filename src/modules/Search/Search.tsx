@@ -1,9 +1,7 @@
 import cx from 'clsx'
-import keyboardKey from 'keyboard-key'
 import _ from 'lodash'
 import * as React from 'react'
-// @ts-expect-error – no types for shallowequal
-import shallowEqual from 'shallowequal'
+import shallowEqual from '../../lib/shallowEqual'
 
 import {
   getComponentType,
@@ -314,10 +312,10 @@ function Search(props: SearchProps & { ref?: React.Ref<HTMLDivElement> }) {
     if (onResultSelect) onResultSelect(e, { ...propsWithDefaults, result })
   }
 
-  function handleSelectionChange(e: any) {
+  function handleSelectionChange(e: any, index?: number) {
     debug('handleSelectionChange()')
 
-    const result = getSelectedResult()
+    const result = getSelectedResult(index !== undefined ? index : selectedIndex)
     if (onSelectionChange) onSelectionChange(e, { ...propsWithDefaults, result })
   }
 
@@ -396,25 +394,25 @@ function Search(props: SearchProps & { ref?: React.Ref<HTMLDivElement> }) {
 
     setSelectedIndex(nextIndex)
     scrollSelectedItemIntoView()
-    handleSelectionChange(e)
+    handleSelectionChange(e, nextIndex)
   }
 
   // Stable references for document event listeners
   const closeOnEscape = useEventCallback((e: KeyboardEvent) => {
-    if (keyboardKey.getCode(e) !== keyboardKey.Escape) return
+    if (e.key !== 'Escape') return
     e.preventDefault()
     closeSearch()
   })
 
   const moveSelectionOnKeyDown = useEventCallback((e: KeyboardEvent) => {
     debug('moveSelectionOnKeyDown()')
-    debug(keyboardKey.getKey(e))
-    switch (keyboardKey.getCode(e)) {
-      case keyboardKey.ArrowDown:
+    debug(e.key)
+    switch (e.key) {
+      case 'ArrowDown':
         e.preventDefault()
         moveSelectionBy(e, 1)
         break
-      case keyboardKey.ArrowUp:
+      case 'ArrowUp':
         e.preventDefault()
         moveSelectionBy(e, -1)
         break
@@ -425,8 +423,8 @@ function Search(props: SearchProps & { ref?: React.Ref<HTMLDivElement> }) {
 
   const selectItemOnEnter = useEventCallback((e: KeyboardEvent) => {
     debug('selectItemOnEnter()')
-    debug(keyboardKey.getKey(e))
-    if (keyboardKey.getCode(e) !== keyboardKey.Enter) return
+    debug(e.key)
+    if (e.key !== 'Enter') return
 
     const result = getSelectedResult()
 
@@ -659,8 +657,8 @@ function Search(props: SearchProps & { ref?: React.Ref<HTMLDivElement> }) {
     let count = 0
 
     return _.map(results as any, ({ childKey, ...categoryItem }: any) => {
+      const categoryKey = childKey ?? categoryItem.name
       const categoryProps = {
-        key: childKey ?? categoryItem.name,
         active: _.inRange(selectedIndex, count, count + categoryItem.results.length),
         layoutRenderer: categoryLayoutRenderer,
         renderer: categoryRenderer,
@@ -671,7 +669,7 @@ function Search(props: SearchProps & { ref?: React.Ref<HTMLDivElement> }) {
       count += categoryItem.results.length
 
       return (
-        <SearchCategory {...categoryProps}>{categoryItem.results.map(renderFn)}</SearchCategory>
+        <SearchCategory key={categoryKey} {...categoryProps}>{categoryItem.results.map(renderFn)}</SearchCategory>
       )
     })
   }

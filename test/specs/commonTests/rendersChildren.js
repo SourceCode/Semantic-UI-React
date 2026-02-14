@@ -1,5 +1,6 @@
-import faker from 'faker'
-import React, { createElement } from 'react'
+import { faker } from '@faker-js/faker'
+import { createElement } from 'react'
+import { render } from '@testing-library/react'
 
 import helpers from './commonHelpers'
 
@@ -7,12 +8,11 @@ import helpers from './commonHelpers'
  * Assert a component renders children somewhere in the tree.
  * @param {React.Component|Function} Component A component that should render children.
  * @param {Object} [options={}]
- * @param {Number} [options.nestingLevel=0] The nesting level of the component.
  * @param {Object} [options.rendersContent] Assert that component also renders `content` prop.
  * @param {Object} [options.requiredProps={}] Props required to render the component.
  */
 export default (Component, options = {}) => {
-  const { nestingLevel = 0, rendersContent = true, requiredProps = {} } = options
+  const { rendersContent = true, requiredProps = {} } = options
   const { assertRequired } = helpers('rendersChildren', Component)
 
   assertRequired(Component, 'a `Component`')
@@ -20,25 +20,20 @@ export default (Component, options = {}) => {
   describe('children (common)', () => {
     it('renders child text', () => {
       const text = faker.hacker.phrase()
-      shallow(createElement(Component, requiredProps, text), {
-        autoNesting: true,
-        nestingLevel,
-      }).should.contain.text(text)
+      const { getByText } = render(createElement(Component, requiredProps, text))
+      expect(getByText(text)).toBeInTheDocument()
     })
 
     it('renders child components', () => {
-      const child = <div data-child={faker.hacker.noun()} />
-      shallow(createElement(Component, requiredProps, child), {
-        autoNesting: true,
-        nestingLevel,
-      }).should.contain(child)
+      const testId = faker.hacker.noun()
+      const child = <div data-testid={testId} />
+      const { getByTestId } = render(createElement(Component, requiredProps, child))
+      expect(getByTestId(testId)).toBeInTheDocument()
     })
 
     it('renders child number with 0 value', () => {
-      shallow(createElement(Component, requiredProps, 0), {
-        autoNesting: true,
-        nestingLevel,
-      }).should.contain.text('0')
+      const { container } = render(createElement(Component, requiredProps, 0))
+      expect(container.textContent).toContain('0')
     })
   })
 
@@ -46,25 +41,24 @@ export default (Component, options = {}) => {
     describe('content (common)', () => {
       it('renders child text', () => {
         const text = faker.hacker.phrase()
-        shallow(createElement(Component, { ...requiredProps, content: text }), {
-          autoNesting: true,
-          nestingLevel,
-        }).should.contain.text(text)
+        const { getByText } = render(createElement(Component, { ...requiredProps, content: text }))
+        expect(getByText(text)).toBeInTheDocument()
       })
 
       it('renders child components', () => {
-        const child = <div data-child={faker.hacker.noun()} />
-        shallow(createElement(Component, { ...requiredProps, content: child }), {
-          autoNesting: true,
-          nestingLevel,
-        }).should.contain(child)
+        const testId = faker.hacker.noun()
+        const child = <div data-testid={testId} />
+        const { getByTestId } = render(
+          createElement(Component, { ...requiredProps, content: child }),
+        )
+        expect(getByTestId(testId)).toBeInTheDocument()
       })
 
       it('renders child number with 0 value', () => {
-        shallow(createElement(Component, { ...requiredProps, content: 0 }), {
-          autoNesting: true,
-          nestingLevel,
-        }).should.contain.text('0')
+        const { container } = render(
+          createElement(Component, { ...requiredProps, content: 0 }),
+        )
+        expect(container.textContent).toContain('0')
       })
     })
   }

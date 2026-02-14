@@ -1,12 +1,10 @@
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import AccordionTitle from 'src/modules/Accordion/AccordionTitle'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('AccordionTitle', () => {
   common.isConformant(AccordionTitle)
-  common.forwardsRef(AccordionTitle)
   common.rendersChildren(AccordionTitle)
 
   common.implementsCreateMethod(AccordionTitle)
@@ -19,14 +17,17 @@ describe('AccordionTitle', () => {
 
   describe('onClick', () => {
     it('is called with (e, { name, index }) when clicked', () => {
-      const onClick = sandbox.spy()
-      const event = { target: null }
+      const onClick = vi.fn()
       const props = { content: 'title', index: 0 }
 
-      mount(<AccordionTitle onClick={onClick} {...props} />).simulate('click', event)
+      const { container } = render(<AccordionTitle onClick={onClick} {...props} />)
+      fireEvent.click(container.firstChild)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch(event, props)
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining(props),
+      )
     })
   })
 })

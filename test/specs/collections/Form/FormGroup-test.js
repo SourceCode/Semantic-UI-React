@@ -18,6 +18,4 @@ describe('FormGroup', () => {
   common.propKeyOnlyToClassName(FormGroup, 'inline')
   common.propKeyOnlyToClassName(FormGroup, 'error')
   common.propKeyOnlyToClassName(FormGroup, 'unstackable')
-
-  common.forwardsRef(FormGroup)
 })

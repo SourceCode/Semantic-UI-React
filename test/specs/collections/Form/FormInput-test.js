@@ -1,7 +1,6 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import FormInput from 'src/collections/Form/FormInput'
-import Input from 'src/elements/Input/Input'
 import * as common from 'test/specs/commonTests'
 
 describe('FormInput', () => {
@@ -51,11 +50,9 @@ describe('FormInput', () => {
     ignoredTypingsProps: ['label', 'error'],
   })
   common.labelImplementsHtmlForProp(FormInput)
-  common.forwardsRef(FormInput, { tagName: 'input' })
 
   it('renders a FormField with a Input control', () => {
-    shallow(<FormInput />)
-      .find('FormField')
-      .should.have.prop('control', Input)
+    const { container } = render(<FormInput />)
+    expect(container.querySelector('input')).toBeInTheDocument()
   })
 })

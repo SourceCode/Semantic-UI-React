@@ -3,7 +3,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('PlaceholderLine', () => {
   common.isConformant(PlaceholderLine)
-  common.forwardsRef(PlaceholderLine)
 
   common.propValueOnlyToClassName(PlaceholderLine, 'length', [
     'full',

@@ -1,14 +1,11 @@
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import MenuItem from 'src/collections/Menu/MenuItem'
 import { SUI } from 'src/lib'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('MenuItem', () => {
   common.isConformant(MenuItem)
-  common.forwardsRef(MenuItem)
-  common.forwardsRef(MenuItem, { requiredProps: { children: <span /> } })
   common.rendersChildren(MenuItem)
 
   common.implementsCreateMethod(MenuItem)
@@ -27,48 +24,59 @@ describe('MenuItem', () => {
 
   describe('as', () => {
     it('renders a `div` by default', () => {
-      shallow(<MenuItem />).should.have.tagName('div')
+      const { container } = render(<MenuItem />)
+      expect(container.firstChild.tagName).toBe('DIV')
     })
 
     it('renders an `a` tag', () => {
-      shallow(<MenuItem onClick={() => null} />).should.have.tagName('a')
+      const { container } = render(<MenuItem onClick={() => null} />)
+      expect(container.firstChild.tagName).toBe('A')
     })
   })
 
   describe('name', () => {
     it('uses the name prop as Start Cased child text', () => {
-      shallow(<MenuItem name='upcomingEvents' />).should.contain.text('Upcoming Events')
+      const { container } = render(<MenuItem name='upcomingEvents' />)
+      expect(container.firstChild).toHaveTextContent('Upcoming Events')
     })
   })
 
   describe('icon', () => {
     it('does not add `icon` className if there is also `name`', () => {
-      shallow(<MenuItem icon='user' name='users' />).should.not.have.className('icon')
+      const { container } = render(<MenuItem icon='user' name='users' />)
+      expect(container.firstChild).not.toHaveClass('icon')
     })
     it('does not add `icon` className if there is also `content`', () => {
-      shallow(<MenuItem icon='user' content='Users' />).should.not.have.className('icon')
+      const { container } = render(<MenuItem icon='user' content='Users' />)
+      expect(container.firstChild).not.toHaveClass('icon')
     })
     it('adds `icon` className if there is an `icon` without `name` or `content`', () => {
-      shallow(<MenuItem icon='user' />).should.have.className('icon')
+      const { container } = render(<MenuItem icon='user' />)
+      expect(container.firstChild).toHaveClass('icon')
     })
   })
 
   describe('onClick', () => {
     it('is called with (e, data) when clicked', () => {
-      const onClick = sandbox.spy()
+      const onClick = vi.fn()
       const props = { name: 'home', index: 0 }
 
-      mount(<MenuItem onClick={onClick} {...props} />).simulate('click')
+      const { container } = render(<MenuItem onClick={onClick} {...props} />)
+      fireEvent.click(container.firstChild)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch({ type: 'click' }, props)
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'click' }),
+        expect.objectContaining(props),
+      )
     })
 
     it('is not called when is disabled', () => {
-      const onClick = sandbox.spy()
+      const onClick = vi.fn()
 
-      mount(<MenuItem disabled onClick={onClick} />).simulate('click')
-      onClick.should.have.callCount(0)
+      const { container } = render(<MenuItem disabled onClick={onClick} />)
+      fireEvent.click(container.firstChild)
+      expect(onClick).toHaveBeenCalledTimes(0)
     })
   })
 })

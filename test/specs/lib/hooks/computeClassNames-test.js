@@ -4,20 +4,22 @@ describe('computeClassNames', () => {
   it('accepts Set as value', () => {
     const classNames = computeClassNames(new Set())
 
-    classNames.should.be.an('array')
-    classNames.should.have.length(0)
+    expect(Array.isArray(classNames)).toBe(true)
+    expect(classNames).toHaveLength(0)
   })
 
   it('combines classNames', () => {
     const map = new Set([{ current: 'foo' }, { current: 'bar' }])
 
-    computeClassNames(map).should.have.members(['foo', 'bar'])
+    expect(computeClassNames(map)).toEqual(expect.arrayContaining(['foo', 'bar']))
   })
 
   it('combines only unique classNames', () => {
     const map = new Set([{ current: 'foo' }, { current: 'bar' }, { current: 'foo bar baz' }])
 
-    computeClassNames(map).should.have.members(['foo', 'bar', 'baz'])
+    const result = computeClassNames(map)
+    expect(result).toEqual(expect.arrayContaining(['foo', 'bar', 'baz']))
+    expect(result).toHaveLength(3)
   })
 
   it('omits false, undefined and null classNames', () => {
@@ -31,16 +33,20 @@ describe('computeClassNames', () => {
       { current: 'false' },
     ])
 
-    computeClassNames(map).should.have.members(['foo', '0', 'false'])
+    const result = computeClassNames(map)
+    expect(result).toEqual(expect.arrayContaining(['foo', '0', 'false']))
+    expect(result).toHaveLength(3)
   })
 
   it('trims classNames', () => {
     const map = new Set([{ current: ' foo     bar ' }, { current: '    baz qux' }])
 
-    computeClassNames(map).should.have.members(['foo', 'bar', 'baz', 'qux'])
+    const result = computeClassNames(map)
+    expect(result).toEqual(expect.arrayContaining(['foo', 'bar', 'baz', 'qux']))
+    expect(result).toHaveLength(4)
   })
 
   it('skips "undefined" as input', () => {
-    computeClassNames([]).should.have.length(0)
+    expect(computeClassNames([])).toHaveLength(0)
   })
 })

@@ -1,25 +1,25 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import ItemImage from 'src/views/Item/ItemImage'
 import * as common from 'test/specs/commonTests'
 
 describe('ItemImage', () => {
   common.isConformant(ItemImage, { rendersChildren: false })
-  common.forwardsRef(ItemImage, { tagName: 'img' })
   common.implementsCreateMethod(ItemImage)
 
   it('renders Image component', () => {
-    shallow(<ItemImage />).should.have.descendants('Image')
+    const { container } = render(<ItemImage />)
+    expect(container.querySelector('img')).toBeInTheDocument()
   })
 
   it('is wrapped without ui', () => {
-    const wrapper = shallow(<ItemImage />)
+    const { container } = render(<ItemImage />)
 
-    wrapper.should.have.prop('wrapped', true)
-    wrapper.should.have.prop('ui', false)
+    expect(container.firstChild).not.toHaveClass('ui')
   })
 
   it('has ui with size prop', () => {
-    shallow(<ItemImage size='small' />).should.have.prop('ui', true)
+    const { container } = render(<ItemImage size='small' />)
+    expect(container.firstChild).toHaveClass('ui')
   })
 })

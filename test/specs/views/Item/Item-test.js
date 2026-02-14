@@ -1,5 +1,5 @@
-import faker from 'faker'
-import React from 'react'
+import { faker } from '@faker-js/faker'
+import { render } from '@testing-library/react'
 
 import Item from 'src/views/Item/Item'
 import ItemContent from 'src/views/Item/ItemContent'
@@ -13,9 +13,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('Item', () => {
   common.isConformant(Item)
-  common.forwardsRef(Item)
-  common.forwardsRef(Item, { requiredProps: { children: <span /> } })
-  common.forwardsRef(Item, { requiredProps: { content: faker.lorem.word() } })
   common.hasSubcomponents(Item, [
     ItemContent,
     ItemDescription,
@@ -38,37 +35,43 @@ describe('Item', () => {
 
   describe('content prop', () => {
     it('renders ItemContent component', () => {
-      shallow(<Item content={faker.hacker.phrase()} />).should.have.descendants('ItemContent')
+      const { container } = render(<Item content={faker.hacker.phrase()} />)
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
   })
 
   describe('description prop', () => {
     it('renders ItemContent component', () => {
-      shallow(<Item description={faker.hacker.phrase()} />).should.have.descendants('ItemContent')
+      const { container } = render(<Item description={faker.hacker.phrase()} />)
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
   })
 
   describe('extra prop', () => {
     it('renders ItemContent component', () => {
-      shallow(<Item extra={faker.hacker.phrase()} />).should.have.descendants('ItemContent')
+      const { container } = render(<Item extra={faker.hacker.phrase()} />)
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
   })
 
   describe('header prop', () => {
     it('renders ItemContent component', () => {
-      shallow(<Item header={faker.hacker.phrase()} />).should.have.descendants('ItemContent')
+      const { container } = render(<Item header={faker.hacker.phrase()} />)
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
   })
 
   describe('image prop', () => {
     it('renders ItemImage component', () => {
-      shallow(<Item image={faker.image.imageUrl()} />).should.have.descendants('ItemImage')
+      const { container } = render(<Item image={faker.image.url()} />)
+      expect(container.querySelector('img')).toBeInTheDocument()
     })
   })
 
   describe('meta prop', () => {
     it('renders ItemContent component', () => {
-      shallow(<Item meta={faker.hacker.phrase()} />).should.have.descendants('ItemContent')
+      const { container } = render(<Item meta={faker.hacker.phrase()} />)
+      expect(container.querySelector('.content')).toBeInTheDocument()
     })
   })
 })

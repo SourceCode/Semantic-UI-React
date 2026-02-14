@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import type { Placement } from '@popperjs/core'
+import type { Placement } from '@floating-ui/react-dom'
 
 type PopupPosition =
   | 'top center'

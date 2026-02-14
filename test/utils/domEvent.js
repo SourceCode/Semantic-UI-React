@@ -2,9 +2,30 @@
  * DOM Event utilities for dispatching native DOM events in tests.
  * Replaces simulant with native DOM event creation.
  *
+ * Events are wrapped in React's act() to ensure state updates are flushed.
+ *
  * For user-level interactions (click, type, etc.), prefer
  * @testing-library/user-event instead of these low-level helpers.
  */
+
+import { act } from 'react'
+
+// Map event types to their proper Event constructor
+const eventConstructors = {
+  click: MouseEvent,
+  mousedown: MouseEvent,
+  mouseup: MouseEvent,
+  mouseover: MouseEvent,
+  mouseenter: MouseEvent,
+  mouseleave: MouseEvent,
+  keydown: KeyboardEvent,
+  keyup: KeyboardEvent,
+  keypress: KeyboardEvent,
+  focus: FocusEvent,
+  blur: FocusEvent,
+  scroll: Event,
+  resize: Event,
+}
 
 /**
  * Generic method for dispatching an event on a DOM node.
@@ -16,10 +37,26 @@
 export const fire = (node, eventType, data = {}) => {
   const DOMNode = typeof node === 'string' ? document.querySelector(node) : node
 
-  const event = new Event(eventType, { bubbles: true, cancelable: true, ...data })
-  Object.assign(event, data)
+  const EventConstructor = eventConstructors[eventType] || Event
+  const event = new EventConstructor(eventType, { bubbles: true, cancelable: true, ...data })
 
-  DOMNode.dispatchEvent(event)
+  // For properties that can't be set via constructor (e.g., custom data),
+  // try to define them. Skip read-only properties that are already set by the constructor.
+  Object.keys(data).forEach((key) => {
+    try {
+      const descriptor = Object.getOwnPropertyDescriptor(event, key) ||
+        Object.getOwnPropertyDescriptor(Object.getPrototypeOf(event), key)
+      if (!descriptor || descriptor.writable || descriptor.set) {
+        event[key] = data[key]
+      }
+    } catch {
+      // Skip read-only properties
+    }
+  })
+
+  act(() => {
+    DOMNode.dispatchEvent(event)
+  })
   return event
 }
 

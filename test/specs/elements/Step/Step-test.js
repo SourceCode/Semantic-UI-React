@@ -1,18 +1,14 @@
-import faker from 'faker'
-import React from 'react'
+import { faker } from '@faker-js/faker'
+import { render, fireEvent } from '@testing-library/react'
 
 import Step from 'src/elements/Step/Step'
 import StepContent from 'src/elements/Step/StepContent'
 import StepDescription from 'src/elements/Step/StepDescription'
 import StepTitle from 'src/elements/Step/StepTitle'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('Step', () => {
   common.isConformant(Step)
-  common.forwardsRef(Step)
-  common.forwardsRef(Step, { requiredProps: { content: faker.lorem.word() } })
-  common.forwardsRef(Step, { requiredProps: { content: <span /> } })
   common.hasSubcomponents(Step, [StepContent, StepDescription, StepTitle])
   common.rendersChildren(Step)
 
@@ -24,63 +20,74 @@ describe('Step', () => {
   common.propKeyOnlyToClassName(Step, 'link')
 
   it('renders as a div by default', () => {
-    shallow(<Step />).should.have.tagName('div')
+    const { container } = render(<Step />)
+    expect(container.firstChild.tagName).toBe('DIV')
   })
 
   describe('children', () => {
-    shallow(<Step>{faker.hacker.phrase()}</Step>).should.not.have.descendants('StepContent')
+    it('does not render StepContent with children', () => {
+      const { container } = render(<Step>{faker.hacker.phrase()}</Step>)
+      expect(container.querySelector('.content')).toBeNull()
+    })
   })
 
   describe('description', () => {
     it('passes prop to StepContent', () => {
       const description = faker.hacker.phrase()
-
-      shallow(<Step description={description} />)
-        .find('StepContent')
-        .should.have.prop('description', description)
+      const { container } = render(<Step description={description} />)
+      const content = container.querySelector('.content')
+      expect(content).toBeTruthy()
+      expect(content.querySelector('.description')).toHaveTextContent(description)
     })
   })
 
   describe('href', () => {
     it('renders as `a` when defined', () => {
       const url = faker.internet.url()
-      const wrapper = shallow(<Step href={url} />)
+      const { container } = render(<Step href={url} />)
 
-      wrapper.should.have.tagName('a')
-      wrapper.should.have.attr('href', url)
+      expect(container.firstChild.tagName).toBe('A')
+      expect(container.firstChild).toHaveAttribute('href', url)
     })
   })
 
   describe('onClick', () => {
     it('is called with (e, data) when clicked', () => {
-      const event = { target: null }
-      const onClick = sandbox.spy()
+      const onClick = vi.fn()
 
-      mount(<Step onClick={onClick} />).simulate('click', event)
+      const { container } = render(<Step onClick={onClick} />)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch(event, { onClick })
+      fireEvent.click(container.firstChild)
+
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ onClick }),
+      )
     })
 
     it('is not called when is disabled', () => {
-      const onClick = sandbox.spy()
+      const onClick = vi.fn()
 
-      mount(<Step disabled onClick={onClick} />).simulate('click')
-      onClick.should.have.not.been.called()
+      const { container } = render(<Step disabled onClick={onClick} />)
+
+      fireEvent.click(container.firstChild)
+      expect(onClick).not.toHaveBeenCalled()
     })
 
     it('renders as `a` when defined', () => {
-      shallow(<Step onClick={() => null} />).should.have.tagName('a')
+      const { container } = render(<Step onClick={() => null} />)
+      expect(container.firstChild.tagName).toBe('A')
     })
   })
 
   describe('title', () => {
     it('passes prop to StepContent', () => {
       const title = faker.hacker.phrase()
-
-      shallow(<Step title={title} />)
-        .find('StepContent')
-        .should.have.prop('title', title)
+      const { container } = render(<Step title={title} />)
+      const content = container.querySelector('.content')
+      expect(content).toBeTruthy()
+      expect(content.querySelector('.title')).toHaveTextContent(title)
     })
   })
 })

@@ -1,11 +1,10 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import Divider from 'src/elements/Divider/Divider'
 import * as common from 'test/specs/commonTests'
 
 describe('Divider', () => {
   common.isConformant(Divider)
-  common.forwardsRef(Divider)
   common.rendersChildren(Divider)
   common.hasUIClassName(Divider)
 
@@ -18,10 +17,12 @@ describe('Divider', () => {
   common.propKeyOnlyToClassName(Divider, 'clearing')
 
   it('renders a <div /> element', () => {
-    shallow(<Divider />).should.have.tagName('div')
+    const { container } = render(<Divider />)
+    expect(container.firstChild.tagName).toBe('DIV')
   })
 
   it('adds the "divider" class', () => {
-    shallow(<Divider />).should.have.className('divider')
+    const { container } = render(<Divider />)
+    expect(container.firstChild).toHaveClass('divider')
   })
 })

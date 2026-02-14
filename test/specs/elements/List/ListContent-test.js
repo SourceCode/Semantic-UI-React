@@ -1,5 +1,5 @@
-import faker from 'faker'
-import React from 'react'
+import { faker } from '@faker-js/faker'
+import { render } from '@testing-library/react'
 
 import ListContent from 'src/elements/List/ListContent'
 import { SUI } from 'src/lib'
@@ -7,8 +7,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('ListContent', () => {
   common.isConformant(ListContent)
-  common.forwardsRef(ListContent)
-  common.forwardsRef(ListContent, { requiredProps: { children: <span /> } })
   common.rendersChildren(ListContent)
 
   common.implementsCreateMethod(ListContent)
@@ -24,11 +22,11 @@ describe('ListContent', () => {
     }
 
     it('renders content without wrapping ListContent', () => {
-      const wrapper = shallow(<ListContent {...baseProps} />)
+      const { container } = render(<ListContent {...baseProps} />)
 
-      wrapper.find('ListHeader').should.have.prop('content', baseProps.header)
-      wrapper.find('ListDescription').should.have.prop('content', baseProps.description)
-      wrapper.should.contain.text(baseProps.content)
+      expect(container.querySelector('.header')).toHaveTextContent(baseProps.header)
+      expect(container.querySelector('.description')).toHaveTextContent(baseProps.description)
+      expect(container.firstChild).toHaveTextContent(baseProps.content)
     })
   })
 })

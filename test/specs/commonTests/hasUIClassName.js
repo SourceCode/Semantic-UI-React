@@ -1,4 +1,5 @@
-import React from 'react'
+import { render } from '@testing-library/react'
+
 import helpers from './commonHelpers'
 
 /**
@@ -13,8 +14,8 @@ export default (Component, options = {}) => {
 
   it('has the "ui" className', () => {
     assertRequired(Component, 'a `Component`')
-    const wrapper = mount(<Component {...requiredProps} />)
+    const { container } = render(<Component {...requiredProps} />)
 
-    wrapper.should.have.className('ui')
+    expect(container.firstChild).toHaveClass('ui')
   })
 }

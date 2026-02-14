@@ -1,30 +1,79 @@
-import { createInnerPrefix, createInnerSuffix } from 'src/lib/createPaginationItems/suffixFactories'
-import { sandbox } from 'test/utils'
+import {
+  isSimplePagination,
+  typifyOptions,
+} from 'src/lib/createPaginationItems/paginationUtils'
 
-describe('suffixFactories', () => {
-  describe('createInnerPrefix', () => {
-    it('returns ellipsisItem when is outside innerGroup', () => {
-      createInnerPrefix(5, 10, () => {}).should.have.property('type', 'ellipsisItem')
+describe('paginationUtils', () => {
+  describe('isSimplePagination', () => {
+    it('returns true when total pages fit in the range', () => {
+      expect(
+        isSimplePagination({
+          boundaryRange: 2,
+          hideEllipsis: false,
+          siblingRange: 2,
+          totalPages: 3,
+        }),
+      ).toBe(true)
     })
 
-    it('calls pageFactory when position matches border of a group', () => {
-      const pageFactory = sandbox.spy()
-      createInnerPrefix(5, 7, pageFactory)
+    it('returns false when total pages exceed the range', () => {
+      expect(
+        isSimplePagination({
+          boundaryRange: 1,
+          hideEllipsis: false,
+          siblingRange: 1,
+          totalPages: 20,
+        }),
+      ).toBe(false)
+    })
 
-      pageFactory.should.have.been.calledOnce()
+    it('accounts for hideEllipsis', () => {
+      expect(
+        isSimplePagination({
+          boundaryRange: 1,
+          hideEllipsis: true,
+          siblingRange: 1,
+          totalPages: 5,
+        }),
+      ).toBe(true)
     })
   })
 
-  describe('createInnerSuffix', () => {
-    it('returns ellipsisItem when is outside innerGroup', () => {
-      createInnerSuffix(5, 10, () => {}).should.have.property('type', 'ellipsisItem')
+  describe('typifyOptions', () => {
+    it('converts string values to numbers and booleans', () => {
+      expect(
+        typifyOptions({
+          activePage: '5',
+          boundaryRange: '2',
+          hideEllipsis: '',
+          siblingRange: '1',
+          totalPages: '10',
+        }),
+      ).toEqual({
+        activePage: 5,
+        boundaryRange: 2,
+        hideEllipsis: false,
+        siblingRange: 1,
+        totalPages: 10,
+      })
     })
 
-    it('calls pageFactory when position matches border of a group', () => {
-      const pageFactory = sandbox.spy()
-      createInnerSuffix(5, 7, pageFactory)
-
-      pageFactory.should.have.been.calledOnce()
+    it('preserves correct types', () => {
+      expect(
+        typifyOptions({
+          activePage: 3,
+          boundaryRange: 1,
+          hideEllipsis: true,
+          siblingRange: 2,
+          totalPages: 15,
+        }),
+      ).toEqual({
+        activePage: 3,
+        boundaryRange: 1,
+        hideEllipsis: true,
+        siblingRange: 2,
+        totalPages: 15,
+      })
     })
   })
 })

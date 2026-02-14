@@ -70,12 +70,6 @@ export declare function isRefObject(obj: any): boolean
 // makeDebugger
 export declare function makeDebugger(name: string): (...args: any[]) => void
 
-// eventStack
-export declare const eventStack: {
-  sub(name: string, handler: (...args: any[]) => void, options?: Record<string, any>): void
-  unsub(name: string, handler: (...args: any[]) => void, options?: Record<string, any>): void
-}
-
 // Hooks
 export declare function useAutoControlledValue(options: {
   state?: any

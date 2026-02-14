@@ -152,6 +152,15 @@ function TransitionGroup({ ref, ...props }: TransitionGroupProps & { ref?: React
   const ElementType = getComponentType(props, { defaultAs: React.Fragment })
   const rest = getUnhandledProps(TransitionGroup, props)
 
+  // React.Fragment does not accept ref prop
+  if (ElementType === React.Fragment) {
+    return (
+      <React.Fragment>
+        {_.values(children)}
+      </React.Fragment>
+    )
+  }
+
   return (
     <ElementType {...rest} ref={ref}>
       {_.values(children)}

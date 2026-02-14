@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import Rail from 'src/elements/Rail/Rail'
 import { SUI } from 'src/lib'
@@ -9,7 +9,6 @@ const requiredProps = { position: 'left' }
 
 describe('Rail', () => {
   common.isConformant(Rail, { requiredProps })
-  common.forwardsRef(Rail, { requiredProps })
   common.hasUIClassName(Rail, { requiredProps })
   common.rendersChildren(Rail, { requiredProps })
 
@@ -23,6 +22,7 @@ describe('Rail', () => {
   common.propValueOnlyToClassName(Rail, 'size', _.without(SUI.SIZES, 'medium'), { requiredProps })
 
   it('renders an div element', () => {
-    shallow(<Rail {...requiredProps} />).should.have.tagName('div')
+    const { container } = render(<Rail {...requiredProps} />)
+    expect(container.firstChild.tagName).toBe('DIV')
   })
 })

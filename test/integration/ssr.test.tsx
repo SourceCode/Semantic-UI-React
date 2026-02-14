@@ -23,7 +23,7 @@ const ssrComponents: Array<[string, () => React.ReactElement]> = [
   ['Form', () => <Form><Form.Input label="Name" /></Form>],
   ['Grid', () => <Grid><GridColumn>Col</GridColumn></Grid>],
   ['Menu', () => <Menu><MenuItem>Home</MenuItem></Menu>],
-  ['Modal', () => <Modal open={false}>Content</Modal>],
+  ['Modal', () => <Modal trigger={<button>Open</button>}>Content</Modal>],
   ['Table', () => <Table><TableBody><TableRow><TableCell>Cell</TableCell></TableRow></TableBody></Table>],
 ]
 

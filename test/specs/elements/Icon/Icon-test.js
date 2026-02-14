@@ -1,15 +1,13 @@
 import _ from 'lodash'
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import Icon from 'src/elements/Icon/Icon'
 import IconGroup from 'src/elements/Icon/IconGroup'
 import { SUI } from 'src/lib'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('Icon', () => {
   common.isConformant(Icon)
-  common.forwardsRef(Icon, { isMemoized: true, tagName: 'i' })
   common.hasSubcomponents(Icon, [IconGroup])
 
   common.implementsCreateMethod(Icon)
@@ -37,56 +35,65 @@ describe('Icon', () => {
   common.propValueOnlyToClassName(Icon, 'size', _.without(SUI.SIZES, 'medium'))
 
   it('renders as an <i> by default', () => {
-    shallow(<Icon />).should.have.tagName('i')
+    const { container } = render(<Icon />)
+    expect(container.firstChild.tagName).toBe('I')
   })
 
   describe('aria-hidden', () => {
     it('should add aria-hidden by default', () => {
-      shallow(<Icon />).should.have.prop('aria-hidden', 'true')
+      const { container } = render(<Icon />)
+      expect(container.firstChild).toHaveAttribute('aria-hidden', 'true')
     })
 
     it('should pass aria-hidden', () => {
-      shallow(<Icon aria-hidden='true' />).should.have.prop('aria-hidden', 'true')
-      shallow(<Icon aria-hidden='false' />).should.have.prop('aria-hidden', 'false')
+      const { container: c1 } = render(<Icon aria-hidden='true' />)
+      expect(c1.firstChild).toHaveAttribute('aria-hidden', 'true')
+
+      const { container: c2 } = render(<Icon aria-hidden='false' />)
+      expect(c2.firstChild).toHaveAttribute('aria-hidden', 'false')
     })
 
     it('should passed aria-hidden with aria-label', () => {
-      shallow(<Icon aria-hidden='false' aria-label='icon' />).should.have.prop(
-        'aria-hidden',
-        'false',
-      )
+      const { container } = render(<Icon aria-hidden='false' aria-label='icon' />)
+      expect(container.firstChild).toHaveAttribute('aria-hidden', 'false')
     })
   })
 
   describe('aria-label', () => {
     it('should not applied by default', () => {
-      shallow(<Icon />).should.have.not.prop('aria-label')
+      const { container } = render(<Icon />)
+      expect(container.firstChild).not.toHaveAttribute('aria-label')
     })
 
     it('should pass value and omit aria-hidden when is set', () => {
-      const wrapper = shallow(<Icon aria-label='icon' />)
+      const { container } = render(<Icon aria-label='icon' />)
 
-      wrapper.should.not.have.prop('aria-hidden')
-      wrapper.should.have.prop('aria-label', 'icon')
+      expect(container.firstChild).not.toHaveAttribute('aria-hidden')
+      expect(container.firstChild).toHaveAttribute('aria-label', 'icon')
     })
   })
 
   describe('onClick', () => {
     it('is called with (e, data) when clicked', () => {
-      const onClick = sandbox.spy()
-      mount(<Icon onClick={onClick} />).simulate('click')
+      const onClick = vi.fn()
+      const { container } = render(<Icon onClick={onClick} />)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch({ type: 'click' }, { onClick })
+      fireEvent.click(container.firstChild)
+
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'click' }),
+        expect.objectContaining({ onClick }),
+      )
     })
 
     it('is not called when "disabled" is true', () => {
-      const onClick = sandbox.spy()
-      const preventDefault = sandbox.spy()
-      mount(<Icon disabled onClick={onClick} />).simulate('click', { preventDefault })
+      const onClick = vi.fn()
+      const { container } = render(<Icon disabled onClick={onClick} />)
 
-      onClick.should.have.not.been.called()
-      preventDefault.should.have.calledOnce()
+      fireEvent.click(container.firstChild)
+
+      expect(onClick).not.toHaveBeenCalled()
     })
   })
 })

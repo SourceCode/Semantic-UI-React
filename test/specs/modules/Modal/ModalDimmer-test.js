@@ -1,90 +1,88 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import ModalDimmer from 'src/modules/Modal/ModalDimmer'
 import * as common from 'test/specs/commonTests'
 
 describe('ModalDimmer', () => {
   common.isConformant(ModalDimmer)
-  common.forwardsRef(ModalDimmer)
   common.hasUIClassName(ModalDimmer)
   common.rendersChildren(ModalDimmer)
 
   common.propKeyOnlyToClassName(ModalDimmer, 'inverted')
 
   it('has required classes', () => {
-    const wrapper = mount(<ModalDimmer mountNode={null} />)
+    const { container } = render(<ModalDimmer mountNode={null} />)
+    const el = container.firstChild
 
-    expect(wrapper).to.have.className('page')
-    expect(wrapper).to.have.className('modals')
-    expect(wrapper).to.have.className('dimmer')
-    expect(wrapper).to.have.className('transition')
-    expect(wrapper).to.have.className('visible')
-    expect(wrapper).to.have.className('active')
+    expect(el).toHaveClass('page')
+    expect(el).toHaveClass('modals')
+    expect(el).toHaveClass('dimmer')
+    expect(el).toHaveClass('transition')
+    expect(el).toHaveClass('visible')
+    expect(el).toHaveClass('active')
   })
 
   describe('children', () => {
     it('adds classes to "mountNode"', () => {
       const element = document.createElement('div')
-      mount(<ModalDimmer mountNode={element} />)
+      render(<ModalDimmer mountNode={element} />)
 
-      element.className.should.contain('dimmable')
-      element.className.should.contain('dimmed')
+      expect(element.className).toContain('dimmable')
+      expect(element.className).toContain('dimmed')
     })
   })
 
   describe('blurring', () => {
     it('adds nothing "mountNode" by default', () => {
       const element = document.createElement('div')
-      mount(<ModalDimmer mountNode={element} />)
+      render(<ModalDimmer mountNode={element} />)
 
-      element.className.should.not.contain('blurring')
+      expect(element.className).not.toContain('blurring')
     })
 
     it('adds a class to "MountNode" when is "true"', () => {
       const element = document.createElement('div')
-      mount(<ModalDimmer blurring mountNode={element} />)
+      render(<ModalDimmer blurring mountNode={element} />)
 
-      element.className.should.contain('blurring')
+      expect(element.className).toContain('blurring')
     })
   })
 
   describe('centered', () => {
     it('adds "top aligned" to "className" by default', () => {
-      shallow(<ModalDimmer />)
-        .find('.dimmer')
-        .should.have.className('top aligned')
+      const { container } = render(<ModalDimmer />)
+      expect(container.querySelector('.dimmer')).toHaveClass('top aligned')
     })
 
     it('adds nothing to "className" when is "true"', () => {
-      shallow(<ModalDimmer centered />)
-        .find('.dimmer')
-        .should.have.not.className('top aligned')
+      const { container } = render(<ModalDimmer centered />)
+      expect(container.querySelector('.dimmer')).not.toHaveClass('top aligned')
     })
   })
 
   describe('scrolling', () => {
     it('adds nothing "MountNode" by default', () => {
       const element = document.createElement('div')
-      mount(<ModalDimmer mountNode={element} />)
+      render(<ModalDimmer mountNode={element} />)
 
-      element.className.should.not.contain('scrolling')
+      expect(element.className).not.toContain('scrolling')
     })
 
     it('adds "className" to "MountNode"', () => {
       const element = document.createElement('div')
-      mount(<ModalDimmer mountNode={element} scrolling />)
+      render(<ModalDimmer mountNode={element} scrolling />)
 
-      element.className.should.contain('scrolling')
+      expect(element.className).toContain('scrolling')
     })
   })
 
   describe('style', () => {
     it('adds "display: flex" with "important"', () => {
-      const wrapper = mount(<ModalDimmer />)
-      const style = wrapper.getDOMNode().style
+      const { container } = render(<ModalDimmer />)
+      const style = container.firstChild.style
 
-      style.getPropertyValue('display').should.equal('flex')
-      style.getPropertyPriority('display').should.equal('important')
+      expect(style.getPropertyValue('display')).toBe('flex')
+      expect(style.getPropertyPriority('display')).toBe('important')
     })
   })
 })

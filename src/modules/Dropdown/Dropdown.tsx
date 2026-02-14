@@ -1,9 +1,7 @@
 import cx from 'clsx'
-import keyboardKey from 'keyboard-key'
 import _ from 'lodash'
 import * as React from 'react'
-// @ts-expect-error – no types for shallowequal
-import shallowEqual from 'shallowequal'
+import shallowEqual from '../../lib/shallowEqual'
 
 import {
   childrenUtils,
@@ -665,7 +663,7 @@ function Dropdown({ ref, ...props }: DropdownProps & { ref?: React.Ref<HTMLDivEl
   // Stable reference for document event listener
   const handleCloseOnEscape = useEventCallback((e: KeyboardEvent) => {
     if (!closeOnEscapeProp) return
-    if (keyboardKey.getCode(e) !== keyboardKey.Escape) return
+    if (e.key !== 'Escape') return
     e.preventDefault()
 
     debug('closeOnEscape()')
@@ -674,9 +672,9 @@ function Dropdown({ ref, ...props }: DropdownProps & { ref?: React.Ref<HTMLDivEl
 
   // Stable reference for document event listener
   const removeItemOnBackspace = useEventCallback((e: KeyboardEvent) => {
-    debug('removeItemOnBackspace()', keyboardKey.getKey(e))
+    debug('removeItemOnBackspace()', e.key)
 
-    if (keyboardKey.getCode(e) !== keyboardKey.Backspace) return
+    if (e.key !== 'Backspace') return
     if (searchQuery || !search || !multiple || _.isEmpty(value)) return
     e.preventDefault()
 
@@ -726,17 +724,17 @@ function Dropdown({ ref, ...props }: DropdownProps & { ref?: React.Ref<HTMLDivEl
   // ----------------------------------------
 
   function moveSelectionOnKeyDown(e: React.KeyboardEvent<HTMLElement>) {
-    debug('moveSelectionOnKeyDown()', keyboardKey.getKey(e))
+    debug('moveSelectionOnKeyDown()', e.key)
 
     if (!open) {
       return
     }
 
-    const moves: Record<number, number> = {
-      [keyboardKey.ArrowDown]: 1,
-      [keyboardKey.ArrowUp]: -1,
+    const moves: Record<string, number> = {
+      ArrowDown: 1,
+      ArrowUp: -1,
     }
-    const move = moves[keyboardKey.getCode(e) as number]
+    const move = moves[e.key]
 
     if (move === undefined) {
       return
@@ -756,7 +754,7 @@ function Dropdown({ ref, ...props }: DropdownProps & { ref?: React.Ref<HTMLDivEl
     debug('openOnSpace()')
 
     const shouldHandleEvent =
-      focus && !open && keyboardKey.getCode(e) === keyboardKey.Spacebar
+      focus && !open && e.key === ' '
     const shouldPreventDefault =
       (e.target as HTMLElement)?.tagName !== 'INPUT' &&
       (e.target as HTMLElement)?.tagName !== 'TEXTAREA' &&
@@ -775,9 +773,7 @@ function Dropdown({ ref, ...props }: DropdownProps & { ref?: React.Ref<HTMLDivEl
     debug('openOnArrow()')
 
     if (focus && !open) {
-      const code = keyboardKey.getCode(e)
-
-      if (code === keyboardKey.ArrowDown || code === keyboardKey.ArrowUp) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault()
         openDropdown(e)
       }
@@ -816,16 +812,16 @@ function Dropdown({ ref, ...props }: DropdownProps & { ref?: React.Ref<HTMLDivEl
   }
 
   function selectItemOnEnter(e: React.KeyboardEvent<HTMLElement>) {
-    debug('selectItemOnEnter()', keyboardKey.getKey(e))
+    debug('selectItemOnEnter()', e.key)
 
     if (!open) {
       return
     }
 
     const shouldSelect =
-      keyboardKey.getCode(e) === keyboardKey.Enter ||
+      e.key === 'Enter' ||
       // https://github.com/Semantic-Org/Semantic-UI-React/pull/3766
-      (!search && keyboardKey.getCode(e) === keyboardKey.Spacebar)
+      (!search && e.key === ' ')
 
     if (!shouldSelect) {
       return

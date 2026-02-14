@@ -1,5 +1,4 @@
-import _ from 'lodash'
-import { numberToWord } from 'src/lib'
+import { numberToWord } from 'src/lib/numberToWord'
 
 const words = [
   'one',
@@ -22,19 +21,21 @@ const words = [
 
 describe('numberToWord', () => {
   it('returns words for numbers 1-16', () => {
-    _.times(16, (n) => numberToWord(n + 1).should.equal(words[n]))
+    for (let n = 0; n < 16; n++) {
+      expect(numberToWord(n + 1)).toBe(words[n])
+    }
   })
 
   it('returns word if input is word', () => {
-    words.forEach((word) => numberToWord(word).should.equal(word))
+    words.forEach((word) => expect(numberToWord(word)).toBe(word))
   })
 
   it('returns an empty string for boolean inputs', () => {
-    numberToWord(true).should.equal('')
-    numberToWord(false).should.equal('')
+    expect(numberToWord(true)).toBe('')
+    expect(numberToWord(false)).toBe('')
   })
 
   it('returns an empty string for null', () => {
-    numberToWord(null).should.equal('')
+    expect(numberToWord(null)).toBe('')
   })
 })

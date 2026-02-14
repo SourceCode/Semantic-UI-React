@@ -11,7 +11,6 @@ CONTRIBUTING
   - [Commands](#commands)
 - [Workflow](#workflow)
   - [Create a Component](#create-a-component)
-  - [Using propTypes](#using-proptypes)
   - [Conformance Test](#conformance-test)
   - [Open A PR](#open-a-pr)
   - [Spec out the API](#spec-out-the-api)
@@ -29,9 +28,6 @@ CONTRIBUTING
   - [Common Tests](#common-tests)
     - [Usage](#usage)
     - [isConformant (required)](#isconformant-required)
-  - [Visual testing](#visual-testing)
-- [State](#state)
-  - [AutoControlledComponent](#autocontrolledcomponent)
 - [Documentation](#documentation)
   - [Website](#website)
   - [Components](#components)
@@ -43,25 +39,26 @@ CONTRIBUTING
 
 ## Getting Started
 
-Make sure you have at least [Node.js v6][11]:
+Make sure you have [Node.js 20+][11] and [Corepack](https://nodejs.org/api/corepack.html) enabled:
 
 ```sh
 node -v
+# v20.x.x or later
 
-v6.2.1
+corepack enable
 ```
 
 ### Fork, Clone & Install
 
-Start by [forking Semantic UI React][12] to your GitHub account.  Then clone your fork and install dependencies:
+Start by [forking Semantic UI React][12] to your GitHub account. Then clone your fork and install dependencies:
 
 ```sh
 git clone git@github.com:<your-user>/Semantic-UI-React.git
 cd Semantic-UI-React
-yarn
+yarn install
 ```
 
->Note: we use `yarn` and advise you do too while contributing. Get it [here](https://yarnpkg.com/). You can use `npm install / npm ci` but we don't include a `package-lock.json` in the repository, so you may end up with slightly out of sync dependencies.
+> We use Yarn 4 (Berry) via Corepack. The `packageManager` field in `package.json` ensures the correct version is used automatically.
 
 Add our repo as a git remote so you can pull/rebase your fork with our latest updates:
 
@@ -75,26 +72,24 @@ Please follow the [Angular Git Commit Guidelines][8] format.
 
 ### Commands
 
->This list is not updated, you should run `yarn run` to see all scripts.
+> Run `yarn run` to see all available scripts.
 
 ```sh
-yarn start                 // run doc site
+yarn start                 # run doc site (Astro)
 
-yarn ci                    // run all checks CI runs
+yarn ci                    # run all checks CI runs (tsd, lint, test)
 
-yarn test                  // test once
-yarn test:watch            // test on file change
+yarn test                  # test once (Vitest)
+yarn test:watch            # test on file change
 
-yarn build                 // build everything
-yarn build:dist            // build dist
-yarn build:docs            // build docs
-yarn build:docs-toc        // build toc for markdown files
+yarn build                 # build everything (Rollup)
+yarn build:dist            # build dist (CJS, ESM, browser ESM)
 
-yarn deploy:docs           // deploy gh-pages doc site
+yarn lint                  # lint once (ESLint 9 flat config)
+yarn lint:fix              # lint and attempt to fix
 
-yarn lint                  // lint once
-yarn lint:fix              // lint and attempt to fix
-yarn lint:watch            // lint on file change
+yarn tsd:test              # TypeScript type checking
+yarn type-check            # TypeScript type checking (alias)
 ```
 
 ## Workflow
@@ -106,52 +101,47 @@ yarn lint:watch            // lint on file change
 
 ### Create a Component
 
-Create components in `src`.  The directory structure follows SUI naming conventions.  If you're updating a component, push a small change so you can open a PR early.
+Create components in `src`. The directory structure follows SUI naming conventions. If you're updating a component, push a small change so you can open a PR early.
 
-Stateless components should be written as a `function`:
+All components are function components written in TypeScript:
 
-```js
-function Button(props) {
+```tsx
+function Button({ ref, ...props }: ButtonProps & { ref?: React.Ref<HTMLButtonElement> }) {
   // ...
 }
+
+Button.displayName = 'Button'
 ```
 
-Stateful components should be classes:
+Components use TypeScript interfaces instead of PropTypes:
 
-```js
-import { AutoControlledComponent as Component } from '../../lib'
+```tsx
+export interface StrictButtonProps {
+  /** An element type to render as (string or function). */
+  as?: any
 
-class Dropdown extends Component {
-  // ...
+  /** A button can show it is currently the active user selection. */
+  active?: boolean
+
+  /** Primary content. */
+  children?: React.ReactNode
+
+  /** Additional classes. */
+  className?: string
+}
+
+export interface ButtonProps extends StrictButtonProps {
+  [key: string]: any
 }
 ```
-
->You probably need to extend our [`AutoControlledComponent`](#autocontrolledcomponent) to support both [controlled][2] and [uncontrolled][3] component patterns.
-
-### Using propTypes
-
-Every component must have fully described `propTypes`.
- 
- ```js
- import React, { PropTypes } from 'react'
- 
- function MyComponent(props) {
-   return <div className={props.position}>{props.children}</div>
- }
- 
- MyComponent.propTypes = {
-   children: PropTypes.node,
-   position: PropTypes.oneOf(['left', 'right']),
- }
- ```
 
 ### Conformance Test
 
-Review [common tests](#common-tests) below.  You should now add the [`isConformant()`](#isconformant-required) common test and get it to pass.  This will validate the `_meta` and help you get your component off the ground.
+Review [common tests](#common-tests) below. You should now add the [`isConformant()`](#isconformant-required) common test and get it to pass. This will validate the component structure and help you get your component off the ground.
 
 ### Open A PR
 
-This is a good time to open your PR.  The component has been created, but the API and internals are not yet coded.  We prefer to collaborate on these things to minimize rework.
+This is a good time to open your PR. The component has been created, but the API and internals are not yet coded. We prefer to collaborate on these things to minimize rework.
 
 This will also help with getting early feedback and smaller faster iterations on your component.
 
@@ -168,22 +158,22 @@ The primary areas of focus when designing a component API are:
 1. [SUI HTML Classes](#sui-html-classes)
 1. [SUI HTML Markup](#sui-html-markup)
 
-Our goal is to map these to a declarative component API.  We map HTML classes to component props.  We map markup to sub components (and sometimes props).
+Our goal is to map these to a declarative component API. We map HTML classes to component props. We map markup to sub components (and sometimes props).
 
 ### SUI HTML Classes
 
-SUI component definitions (style and behavior) are defined by HTML classes.  These classes can be split into 4 groups:
+SUI component definitions (style and behavior) are defined by HTML classes. These classes can be split into 4 groups:
 
 1. Standalone &mdash; `basic` `compact` `fluid`
 1. Pairs &mdash; `left floated` `right floated`
 1. Mixed &mdash; `corner` `top corner`, `padded` `very padded`
 1. Groups &mdash; sizes: `tiny` `small` `big`, colors: `red` `green` `blue`
 
-Each group has an API pattern and prop util for building up the `className` and a [Common test](#commont-tests).
+Each group has an API pattern and prop util for building up the `className` and a [Common test](#common-tests).
 
 #### API Patterns
 
-```js
+```jsx
 <Segment basic />                     // standalone
 <Segment floated='left' />            // pairs
 <Segment padded />                    // mixed
@@ -201,20 +191,20 @@ Each group has an API pattern and prop util for building up the `className` and 
 
 #### Building className
 
-Use [`classNameBuilders`][4] to extract the prop values and build up the `className`.  Grouped classes like `color` and `size` simply use the prop value as the `className`.
+Use the className helper functions from `src/lib` to extract the prop values and build up the `className`. Grouped classes like `color` and `size` simply use the prop value as the `className`.
 
-```js
+```tsx
 import cx from 'clsx'
-import { useKeyOnly, useValueAndKey, useKeyOrValueAndKey } from '../../lib'
+import { getKeyOnly, getValueAndKey, getKeyOrValueAndKey } from '../../lib'
 
-function Segment({ size, color, basic, floated, padded }) {
+function Segment({ size, color, basic, floated, padded }: SegmentProps) {
   const classes = cx(
     'ui',
     size,
     color,
-    useKeyOnly(basic, 'basic'),
-    useValueAndKey(floated, 'floated'),
-    useKeyOrValueAndKey(padded, 'padded'),
+    getKeyOnly(basic, 'basic'),
+    getValueAndKey(floated, 'floated'),
+    getKeyOrValueAndKey(padded, 'padded'),
     'segment'
   )
 
@@ -224,7 +214,7 @@ function Segment({ size, color, basic, floated, padded }) {
 
 #### Testing className
 
-Use [`commonTests`](#common-tests) to test the `className` build up for each prop.  These tests will run your component through all the possible usage permutations:
+Use [`commonTests`](#common-tests) to test the `className` build up for each prop. These tests will run your component through all the possible usage permutations:
 
 ```js
 import * as common from 'test/specs/commonTests'
@@ -243,15 +233,15 @@ describe('Segment', () => {
 
 #### SUI Components vs Component Parts
 
-It is important to first differentiate between *components* and *component parts* in SUI.  Per the [SUI Glossary][9] for `ui`:
+It is important to first differentiate between *components* and *component parts* in SUI. Per the [SUI Glossary][9] for `ui`:
 
 >`ui` is a special class name used to distinguish parts of components from components.
 >
 >For example, a list will receive the class `ui list` because it has a corresponding definition, however a list item, will receive just the class `item`.
 
-The `ui header` *component* is not the same as a `header` *component part*.  They share the same name but do not support the same features.
+The `ui header` *component* is not the same as a `header` *component part*. They share the same name but do not support the same features.
 
-A [`ui header`][5] accepts a size class.  The `ui modal` has a *component part* called `header`.  However, the size class is not valid on the `header` *component part*.  You size the `ui modal` *component* instead.
+A [`ui header`][5] accepts a size class. The `ui modal` has a *component part* called `header`. However, the size class is not valid on the `header` *component part*. You size the `ui modal` *component* instead.
 
 **Header Component**
 
@@ -269,13 +259,13 @@ A [`ui header`][5] accepts a size class.  The `ui modal` has a *component part* 
 
 #### React Components & Sub Components
 
-Top level Semantic UI React components correspond to SUI *components*.  Stardust sub components correspond to SUI *component parts*.
+Top level Semantic UI React components correspond to SUI *components*. Sub components correspond to SUI *component parts*.
 
-This allows us to provide accurate `propTypes` validation.  It also separates concerns, isolating features and tests.
+This allows us to provide accurate TypeScript validation. It also separates concerns, isolating features and tests.
 
 Use sub components to design *component part* markup.
 
-```js
+```jsx
 <List>
   <List.Item>Apples</List.Item>
   <List.Item>Oranges</List.Item>
@@ -285,35 +275,27 @@ Use sub components to design *component part* markup.
 
 Create the sub component as a separate component in the parent component's directory:
 
-```js
-function  ListItem() {
+```tsx
+function ListItem(props: ListItemProps) {
   // ...
 }
 ```
 
 Attach it to the parent via static properties:
 
-```js
+```tsx
 import ListItem from './ListItem'
 
-function List() {
+function List(props: ListProps) {
   // ...
 }
 
 List.Item = ListItem
 ```
 
-```js
-import ListItem from './ListItem'
-
-class List {
-  static Item = ListItem
-}
-```
-
 #### Component Part Props
 
-Sometimes it is convenient to use props to generate markup.  Example, the [Label][10] markup is minimal.  One configuration includes an image and detail:
+Sometimes it is convenient to use props to generate markup. Example, the [Label][10] markup is minimal. One configuration includes an image and detail:
 
 ```html
 <a class="ui image label">
@@ -333,38 +315,34 @@ We allow props to define these minimal *component parts*:
 />
 ```
 
-When props are used for component markup generation, children are not allowed in order to prevent conflicts.  See [this response][14] for more.
+When props are used for component markup generation, children are not allowed in order to prevent conflicts. See [this response][14] for more.
 
 See [`src/factories`][13] for special methods to convert props values into ReactElements for this purpose.
 
 ## Testing
 
-Run tests during development with `yarn test:watch` to re-run tests on file changes.
+We use [Vitest](https://vitest.dev/) with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for all tests. Run tests during development with `yarn test:watch` to re-run tests on file changes.
 
 ### Coverage
 
 All PRs must meet or exceed test coverage limits before they can be merged.
 
-Every time tests run, `/coverage` information is updated.  Open `coverage/lcov/index.html` to inspect test coverage.  This interactive report will reveal areas lacking test coverage.  You can then write tests for these areas and increase coverage.
+Every time tests run, `/coverage` information is updated. Open `coverage/lcov/index.html` to inspect test coverage. This interactive report will reveal areas lacking test coverage. You can then write tests for these areas and increase coverage.
 
 ### Common Tests
 
-There are many common things to test for.  Because of this, we have [`test/specs/commonTests.js`][1].
+There are many common things to test for. Because of this, we have [`test/specs/commonTests`][1].
 
->This list is not updated, check the [source][1] for current tests and inline documentation.
+> This list is not updated, check the [source][1] for current tests and inline documentation.
 
 ```js
 common.isConformant()
 common.hasUIClassName()
 common.hasSubcomponents()
-common.isTabbable()
 common.rendersChildren()
 
-common.implementsIconProp()
-common.implementsImageProp()
-common.implementsTextAlignProp()
-common.implementsVerticalAlignProp()
-common.implementsWidthProp()
+common.implementsShorthandProp()
+common.implementsCreateMethod()
 
 common.propKeyOnlyToClassName()
 common.propValueOnlyToClassName()
@@ -377,7 +355,6 @@ common.propKeyOrValueAndKeyToClassName()
 Every common test receives your component as its first argument.
 
 ```js
-import React from 'react'
 import * as common from 'test/specs/commonTests'
 import Menu from 'src/collections/Menu/Menu'
 import MenuItem from 'src/collections/Menu/MenuItem'
@@ -390,7 +367,7 @@ describe('Menu', () => {
 })
 ```
 
-The last argument to a common test is always `options`.  You can configure the test here. For example, if your component requires certain props to render, you can pass in `requiredProps`:
+The last argument to a common test is always `options`. You can configure the test here. For example, if your component requires certain props to render, you can pass in `requiredProps`:
 
 ```js
 import * as common from 'test/specs/commonTests'
@@ -407,55 +384,15 @@ describe('Select', () => {
 
 #### isConformant (required)
 
-This is the only required test.  It ensures a consistent baseline for the framework. It also helps you get your component off the ground.  You should add this test to new components right away.
+This is the only required test. It ensures a consistent baseline for the framework. It also helps you get your component off the ground. You should add this test to new components right away.
 
->This list is not updated, check the [source][1] for the latest assertions.
+> This list is not updated, check the [source][1] for the latest assertions.
 
 1. Component and filename are correct
 1. Events are properly handled
 1. Extra `props` are spread
 1. Base `className`s are applied
 1. Component is exported if public / hidden if private
-
-### Visual testing
-
-We are using [Percy](https://percy.io/) and [Cypress](https://www.cypress.io/) to perform visual testing of our components. To create a new visual
-test there should an example in our docs that can be served by Cypress and a corresponding Cypress test, for example:
-- `cypress/integration/Popup/Popup.visual.js` contains visual tests
-- `docs/src/examples/modules/Popup/Visual/PopupVisualInsideModal.js` contains an example that will be used for visual 
-tests
-
-
-
-## State
-
-Strive to use stateless functional components when possible:
-
-```js
-function MyComponent(props) {
-  return <div {...props} />
-}
-```
-
-If your component requires event handlers, it is a stateful class component. Want to know [why][15]?
-
-```js
-class MyComponent extends Component {
-  handleClick = (e) => {
-    console.log('Clicked my component!')
-  }
-
-  render() {
-    return <div onClick={this.handleClick} />
-  }
-}
-```
-
-### AutoControlledComponent
-
-TODO
-
->For now, you should reference Dropdown as an example implementation. You can also consult the comments in AutoControlledComponent.js for more background.
 
 ## Documentation
 
@@ -464,11 +401,11 @@ TODO
 - [Props](#props)
 - [Examples](#examples)
 
-Our docs are generated from docblock comments, `propTypes`, and hand-written examples.
+Our docs are generated from docblock comments, TypeScript interfaces, and hand-written examples.
 
 ### Website
 
-Developing against the doc site is a good way to try your component as you build it. Run the doc site with:
+The documentation site is built with [Astro](https://astro.build/) and React. Develop against the doc site to try your component as you build it:
 
 ```sh
 yarn start
@@ -476,78 +413,68 @@ yarn start
 
 ### Components
 
-A docblock should appear above a component class or function to describe it:
+A docblock should appear above a component function to describe it:
 
-```js
+```tsx
 /**
  * A <Select /> is sugar for <Dropdown selection />.
  * @see Dropdown
  */
-function Select(props) {
+function Select(props: SelectProps) {
   return <Dropdown {...props} selection />
 }
 ```
 
 ### Props
 
-A docblock should appear above each prop in `propTypes` to describe them:
+Document props via TSDoc comments on the TypeScript interface:
 
->Limited props shown for brevity.
-
-```js
-Label.propTypes = {
+```tsx
+export interface StrictLabelProps {
   /** An element type to render as (string or function). */
-  as: PropTypes.elementType,
+  as?: any
 
   /** A label can reduce its complexity. */
-  basic: PropTypes.bool,
+  basic?: boolean
 
   /** Primary content. */
-  children: PropTypes.node,
+  children?: React.ReactNode
 
   /** Additional classes. */
-  className: PropTypes.string,
+  className?: string
 
   /** Color of the label. */
-  color: PropTypes.oneOf(Label._meta.props.color),
+  color?: SemanticCOLORS
 
-  /** Place the label in one of the upper corners . */
-  corner: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.oneOf(['left', 'right']),
-  ]),
+  /** Place the label in one of the upper corners. */
+  corner?: boolean | 'left' | 'right'
 
-  /** Add an icon by icon className or pass an <Icon /> */
-  icon: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.element,
-  ]),
+  /** Add an icon by icon className or pass an <Icon />. */
+  icon?: SemanticShorthandItem<IconProps>
 }
 ```
 
 ### Examples
 
->This section is lacking in instruction as the docs are set to be overhauled (PRs welcome!).
+> This section is lacking in instruction as the docs are set to be overhauled (PRs welcome!).
 
-Usage examples for a component live in `docs/src/examples`.  The examples follow the SUI doc site examples.
+Usage examples for a component live in `docs/src/examples`. The examples follow the SUI doc site examples.
 
-Adding documentation for new components is a bit tedious.  The best way to do this (for now) is to copy an existing component's and update them.
+Adding documentation for new components is a bit tedious. The best way to do this (for now) is to copy an existing component's examples and update them.
 
 ## Releasing
 
 On the latest clean `master`:
 
 ```sh
-npm run release:<major|minor|patch>
+yarn prerelease   # runs lint, type-check, tests, and build
+yarn release      # uses release-it for versioning and publishing
 ```
-> :warning: `npm` must be used. At the time of writing`yarn` does not properly handle the credentials.
 
-Releasing will update the changelog which requires [github_changelog_generator][15].
-
-[1]: https://github.com/Semantic-Org/Semantic-UI-React/blob/master/test/specs/commonTests.js
-[2]: https://facebook.github.io/react/docs/forms.html#controlled-components
-[3]: https://facebook.github.io/react/docs/forms.html#uncontrolled-components
-[4]: https://github.com/Semantic-Org/Semantic-UI-React/blob/master/src/lib/classNameBuilders.js
+[1]: https://github.com/Semantic-Org/Semantic-UI-React/blob/master/test/specs/commonTests
+[2]: https://react.dev/reference/react-dom/components/input#controlling-an-input-with-a-state-variable
+[3]: https://react.dev/reference/react-dom/components/input#providing-an-initial-value-for-an-input
+[4]: https://github.com/Semantic-Org/Semantic-UI-React/blob/master/src/lib
 [5]: https://semantic-ui.com/elements/header
 [6]: https://semantic-ui.com/views/item
 [7]: https://github.com/Semantic-Org/Semantic-UI-React/pull/281#issuecomment-228663527
@@ -558,5 +485,3 @@ Releasing will update the changelog which requires [github_changelog_generator][
 [12]: https://github.com/Semantic-Org/Semantic-UI-React#fork-destination-box
 [13]: https://github.com/Semantic-Org/Semantic-UI-React/blob/master/src/factories
 [14]: https://github.com/Semantic-Org/Semantic-UI-React/pull/335#issuecomment-238960895
-[15]: https://github.com/Semantic-Org/Semantic-UI-React/issues/607
-[16]: https://yarnpkg.com/en/docs/getting-started

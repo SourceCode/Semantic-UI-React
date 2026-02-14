@@ -12,8 +12,6 @@ export {
   getWidthProp,
 } from './classNameBuilders'
 
-export eventStack from './eventStack'
-
 export * from './factories'
 export getComponentType from './getComponentType'
 export getUnhandledProps from './getUnhandledProps'

@@ -1,75 +1,86 @@
-import faker from 'faker'
-import React from 'react'
+import { faker } from '@faker-js/faker'
+import { render, fireEvent } from '@testing-library/react'
 
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 import DropdownSearchInput from 'src/modules/Dropdown/DropdownSearchInput'
 
 describe('DropdownSearchInput', () => {
   common.isConformant(DropdownSearchInput)
-  common.forwardsRef(DropdownSearchInput, { tagName: 'input' })
 
   describe('aria', () => {
     it('should have aria-autocomplete', () => {
-      shallow(<DropdownSearchInput />).should.have.prop('aria-autocomplete', 'list')
+      const { container } = render(<DropdownSearchInput />)
+      expect(container.querySelector('input')).toHaveAttribute('aria-autocomplete', 'list')
     })
   })
 
   describe('autoComplete', () => {
     it('should have autoComplete by default', () => {
-      shallow(<DropdownSearchInput />).should.have.prop('autoComplete', 'off')
+      const { container } = render(<DropdownSearchInput />)
+      expect(container.querySelector('input')).toHaveAttribute('autoComplete', 'off')
     })
 
     it('should pass a defined value', () => {
-      shallow(<DropdownSearchInput autoComplete='on' />).should.have.prop('autoComplete', 'on')
+      const { container } = render(<DropdownSearchInput autoComplete='on' />)
+      expect(container.querySelector('input')).toHaveAttribute('autoComplete', 'on')
     })
   })
 
   describe('onChange', () => {
     it('is called with (e, data) on change', () => {
-      const onChange = sandbox.spy()
-      const e = { target: { value: 'value' } }
+      const onChange = vi.fn()
 
-      shallow(<DropdownSearchInput onChange={onChange} />)
-        .find('input')
-        .simulate('change', e)
+      const { container } = render(<DropdownSearchInput onChange={onChange} />)
+      const input = container.querySelector('input')
 
-      onChange.should.have.been.calledOnce()
-      onChange.should.have.been.calledWithMatch(e, { value: e.target.value })
+      fireEvent.change(input, { target: { value: 'value' } })
+
+      expect(onChange).toHaveBeenCalledOnce()
+      expect(onChange).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ value: 'value' }),
+      )
     })
   })
 
   describe('tabIndex', () => {
     it('is not set by default', () => {
-      shallow(<DropdownSearchInput />).should.not.have.prop('tabIndex')
+      const { container } = render(<DropdownSearchInput />)
+      expect(container.querySelector('input')).not.toHaveAttribute('tabIndex')
     })
 
     it('can be set explicitly', () => {
-      shallow(<DropdownSearchInput tabIndex={123} />).should.have.prop('tabIndex', 123)
+      const { container } = render(<DropdownSearchInput tabIndex={123} />)
+      expect(container.querySelector('input')).toHaveAttribute('tabIndex', '123')
     })
   })
 
   describe('type', () => {
     it('should have text by default', () => {
-      shallow(<DropdownSearchInput />).should.have.prop('type', 'text')
+      const { container } = render(<DropdownSearchInput />)
+      expect(container.querySelector('input')).toHaveAttribute('type', 'text')
     })
 
     it('can be set explicitly', () => {
-      const type = faker.random.word()
+      const type = faker.lorem.word()
 
-      shallow(<DropdownSearchInput type={type} />).should.have.prop('type', type)
+      const { container } = render(<DropdownSearchInput type={type} />)
+      expect(container.querySelector('input')).toHaveAttribute('type', type)
     })
   })
 
   describe('value', () => {
     it('is not set by default', () => {
-      shallow(<DropdownSearchInput />).should.not.have.prop('value')
+      const { container } = render(<DropdownSearchInput />)
+      // value is an empty string by default for input elements
+      expect(container.querySelector('input').value).toBeFalsy()
     })
 
     it('can be set explicitly', () => {
-      const value = faker.random.word()
+      const value = faker.lorem.word()
 
-      shallow(<DropdownSearchInput value={value} />).should.have.prop('value', value)
+      const { container } = render(<DropdownSearchInput value={value} onChange={() => {}} />)
+      expect(container.querySelector('input').value).toBe(value)
     })
   })
 })

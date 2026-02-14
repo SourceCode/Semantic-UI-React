@@ -1,6 +1,5 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
-import Icon from 'src/elements/Icon/Icon'
 import ListIcon from 'src/elements/List/ListIcon'
 import * as common from 'test/specs/commonTests'
 
@@ -9,6 +8,7 @@ describe('ListIcon', () => {
   common.implementsVerticalAlignProp(ListIcon)
 
   it('returns Icon component', () => {
-    shallow(<ListIcon />).should.have.descendants(Icon)
+    const { container } = render(<ListIcon />)
+    expect(container.querySelector('i.icon')).toBeTruthy()
   })
 })

@@ -1,248 +1,262 @@
 import _ from 'lodash'
-import PropTypes from 'prop-types'
 import React from 'react'
 import { act } from 'react'
+import { render, fireEvent, waitFor } from '@testing-library/react'
 
 import * as common from 'test/specs/commonTests'
-import { domEvent, sandbox } from 'test/utils'
+import { domEvent } from 'test/utils'
 import Portal from 'src/addons/Portal/Portal'
 import PortalInner from 'src/addons/Portal/PortalInner'
 import wait from 'test/utils/wait'
 
-let wrapper
-
-const createHandlingComponent = (eventName) =>
-  class HandlingComponent extends React.Component {
-    handleEvent = (e) => this.props.handler(e, this.props)
-
-    render() {
-      const buttonProps = { [eventName]: this.handleEvent }
-
-      return <button {...buttonProps} />
-    }
-  }
-
-const wrapperMount = (node, opts) => {
-  wrapper = mount(node, opts)
-  return wrapper
-}
-
 describe('Portal', () => {
-  afterEach(() => {
-    if (wrapper && wrapper.unmount) {
-      try {
-        wrapper.unmount()
-        // eslint-disable-next-line no-empty
-      } catch (e) {}
-    }
-  })
 
   common.hasSubcomponents(Portal, [PortalInner])
-  common.hasValidTypings(Portal, { forwardsRef: false })
-
-  it('propTypes.children should be required', () => {
-    Portal.propTypes.children.should.equal(PropTypes.node.isRequired)
-  })
-
-  it('does not call this.setState() if portal is unmounted', () => {
-    wrapperMount(
-      <Portal open>
-        <p />
-      </Portal>,
-    )
-
-    const setState = sandbox.spy(wrapper, 'setState')
-    wrapper.unmount()
-    setState.should.not.have.been.called()
-  })
 
   describe('open', () => {
     it('opens the portal when toggled from false to true', () => {
-      wrapperMount(
+      const { rerender } = render(
         <Portal open={false}>
           <p />
         </Portal>,
       )
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('[data-suir-portal]')).not.toBeInTheDocument()
 
-      // Enzyme docs say it merges previous props but without children, react complains
-      wrapper.setProps({ open: true, children: <p /> })
-      wrapper.should.have.descendants(PortalInner)
-    })
-
-    it('closes the portal when toggled from true to false ', () => {
-      wrapperMount(
+      rerender(
         <Portal open>
           <p />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('p')).toBeInTheDocument()
+    })
 
-      wrapper.setProps({ open: false, children: <p /> })
-      wrapper.should.not.have.descendants(PortalInner)
+    it('closes the portal when toggled from true to false', () => {
+      const { rerender } = render(
+        <Portal open>
+          <p />
+        </Portal>,
+      )
+      expect(document.body.querySelector('p')).toBeInTheDocument()
+
+      rerender(
+        <Portal open={false}>
+          <p />
+        </Portal>,
+      )
+      expect(document.body.querySelector('p')).not.toBeInTheDocument()
     })
   })
 
   describe('onMount', () => {
     it('called when portal opens', () => {
-      const props = { open: false, onMount: sandbox.spy() }
-      wrapperMount(
-        <Portal {...props}>
+      const onMount = vi.fn()
+      const { rerender } = render(
+        <Portal open={false} onMount={onMount}>
           <p />
         </Portal>,
       )
 
-      wrapper.setProps({ open: true, children: <p /> })
-      props.onMount.should.have.been.calledOnce()
+      rerender(
+        <Portal open onMount={onMount}>
+          <p />
+        </Portal>,
+      )
+      expect(onMount).toHaveBeenCalledOnce()
     })
 
     it('is not called when portal receives props', () => {
-      const props = { open: false, onMount: sandbox.spy() }
-      wrapperMount(
-        <Portal {...props}>
+      const onMount = vi.fn()
+      const { rerender } = render(
+        <Portal open={false} onMount={onMount}>
           <p />
         </Portal>,
       )
 
-      wrapper.setProps({ open: true, children: <p />, className: 'old' })
-      props.onMount.should.have.been.calledOnce()
+      rerender(
+        <Portal open onMount={onMount} className='old'>
+          <p />
+        </Portal>,
+      )
+      expect(onMount).toHaveBeenCalledOnce()
 
-      wrapper.setProps({ open: true, children: <p />, className: 'new' })
-      props.onMount.should.have.been.calledOnce()
+      rerender(
+        <Portal open onMount={onMount} className='new'>
+          <p />
+        </Portal>,
+      )
+      expect(onMount).toHaveBeenCalledOnce()
     })
   })
 
   describe('onUnmount', () => {
     it('is called when portal closes', () => {
-      const props = { open: true, onUnmount: sandbox.spy() }
-      wrapperMount(
-        <Portal {...props}>
+      const onUnmount = vi.fn()
+      const { rerender } = render(
+        <Portal open onUnmount={onUnmount}>
           <p />
         </Portal>,
       )
 
-      wrapper.setProps({ open: false, children: <p /> })
-      props.onUnmount.should.have.been.calledOnce()
+      rerender(
+        <Portal open={false} onUnmount={onUnmount}>
+          <p />
+        </Portal>,
+      )
+      expect(onUnmount).toHaveBeenCalledOnce()
     })
 
     it('is not called when portal receives props', () => {
-      const props = { open: true, onUnmount: sandbox.spy() }
-      wrapperMount(
-        <Portal {...props}>
+      const onUnmount = vi.fn()
+      const { rerender } = render(
+        <Portal open onUnmount={onUnmount}>
           <p />
         </Portal>,
       )
 
-      wrapper.setProps({ open: false, children: <p />, className: 'old' })
-      props.onUnmount.should.have.been.calledOnce()
+      rerender(
+        <Portal open={false} onUnmount={onUnmount} className='old'>
+          <p />
+        </Portal>,
+      )
+      expect(onUnmount).toHaveBeenCalledOnce()
 
-      wrapper.setProps({ open: false, children: <p />, className: 'new' })
-      props.onUnmount.should.have.been.calledOnce()
+      rerender(
+        <Portal open={false} onUnmount={onUnmount} className='new'>
+          <p />
+        </Portal>,
+      )
+      expect(onUnmount).toHaveBeenCalledOnce()
     })
 
     it('is called only once when portal closes and then is unmounted', () => {
-      const onUnmount = sandbox.spy()
-      wrapperMount(
+      const onUnmount = vi.fn()
+      const { rerender, unmount } = render(
         <Portal onUnmount={onUnmount} open>
           <p />
         </Portal>,
       )
 
-      wrapper.setProps({ open: false, children: <p /> })
+      rerender(
+        <Portal onUnmount={onUnmount} open={false}>
+          <p />
+        </Portal>,
+      )
       act(() => {
-        wrapper.unmount()
+        unmount()
       })
-      onUnmount.should.have.been.calledOnce()
+      expect(onUnmount).toHaveBeenCalledOnce()
     })
 
     it('is called only once when directly unmounting', () => {
-      const onUnmount = sandbox.spy()
-      wrapperMount(
+      const onUnmount = vi.fn()
+      const { unmount } = render(
         <Portal onUnmount={onUnmount} open>
           <p />
         </Portal>,
       )
 
       act(() => {
-        wrapper.unmount()
+        unmount()
       })
-      onUnmount.should.have.been.calledOnce()
+      expect(onUnmount).toHaveBeenCalledOnce()
     })
   })
 
   describe('onOpen', () => {
     it('is called on trigger click', () => {
-      const onOpen = sandbox.spy()
-      wrapperMount(
+      const onOpen = vi.fn()
+      const { container } = render(
         <Portal onOpen={onOpen} trigger={<div id='trigger' />}>
           <p />
         </Portal>,
       )
 
-      wrapper.find('#trigger').simulate('click')
-      onOpen.should.have.been.calledOnce()
-      onOpen.should.have.been.calledWithMatch({}, { open: true })
+      fireEvent.click(container.querySelector('#trigger'))
+      expect(onOpen).toHaveBeenCalledOnce()
+      expect(onOpen).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ open: true }),
+      )
     })
   })
 
   describe('onClose', () => {
     it('is called on body click', () => {
-      const onClose = sandbox.spy()
-      wrapperMount(
+      const onClose = vi.fn()
+      render(
         <Portal defaultOpen onClose={onClose} trigger={<div />}>
           <p />
         </Portal>,
       )
 
       domEvent.click(document.body)
-      onClose.should.have.been.called()
-      onClose.should.have.been.calledWithMatch({}, { open: false })
+      expect(onClose).toHaveBeenCalled()
+      expect(onClose).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining({ open: false }),
+      )
     })
   })
 
   describe('trigger', () => {
     it('renders null when not set', () => {
-      wrapperMount(
+      const { container } = render(
         <Portal>
           <p />
         </Portal>,
       )
 
-      expect(wrapper.html()).to.equal(null)
+      expect(container.innerHTML).toBe('')
     })
 
     it('renders the trigger when set', () => {
       const text = 'open by click on me'
       const trigger = <button>{text}</button>
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={trigger}>
           <p />
         </Portal>,
       )
 
-      wrapper.text().should.equal(text)
+      expect(container.textContent).toBe(text)
     })
 
     _.forEach(['onBlur', 'onClick', 'onFocus', 'onMouseLeave', 'onMouseEnter'], (handlerName) => {
       it(`handles ${handlerName} on trigger and passes all arguments`, () => {
-        const event = { target: null }
-        const handler = sandbox.spy()
-        const Trigger = createHandlingComponent(handlerName)
+        const handler = vi.fn()
+
+        // Create a trigger component that calls the handler with props
+        // eslint-disable-next-line no-unused-vars
+        const Trigger = React.forwardRef(({ color, handler: handlerProp, ...rest }, ref) => {
+          const handleEvent = (e) => handlerProp(e, { handler: handlerProp, color })
+          const buttonProps = { [handlerName]: handleEvent }
+
+          return <button {...buttonProps} ref={ref} />
+        })
+        Trigger.displayName = 'Trigger'
+
         const trigger = <Trigger color='blue' handler={handler} />
 
-        wrapperMount(
+        const { container } = render(
           <Portal trigger={trigger}>
             <p />
           </Portal>,
         )
-          .find('button')
-          .simulate(_.toLower(handlerName.substring(2)), event)
 
-        handler.should.have.been.calledOnce()
-        handler.should.have.been.calledWithMatch(event, {
-          handler,
-          color: 'blue',
-        })
+        const button = container.querySelector('button')
+        // Convert onMouseLeave -> mouseLeave (camelCase for fireEvent)
+        const rawName = handlerName.substring(2) // MouseLeave
+        const eventName = rawName.charAt(0).toLowerCase() + rawName.slice(1) // mouseLeave
+        fireEvent[eventName](button)
+
+        expect(handler).toHaveBeenCalledOnce()
+        expect(handler).toHaveBeenCalledWith(
+          expect.objectContaining({}),
+          expect.objectContaining({
+            handler,
+            color: 'blue',
+          }),
+        )
       })
     })
   })
@@ -252,137 +266,143 @@ describe('Portal', () => {
       const elementRef = React.createRef()
       const triggerRef = React.createRef()
 
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<div id='trigger' ref={elementRef} />} triggerRef={triggerRef}>
           <p />
         </Portal>,
       )
-      const element = wrapper.getDOMNode()
 
-      expect(element.tagName).to.equal('DIV')
+      // Portal wraps trigger in a span with display:contents
+      const triggerSpan = container.querySelector('span')
+      expect(triggerSpan).toBeInTheDocument()
 
-      expect(elementRef.current).to.equal(element)
-      expect(triggerRef.current).to.equal(element)
+      expect(triggerRef.current).toBe(triggerSpan)
+      // The original ref on the div goes to the div itself
+      const triggerDiv = container.querySelector('#trigger')
+      expect(elementRef.current).toBe(triggerDiv)
     })
   })
 
   describe('mountNode', () => {
-    it('passed to PortalInner', () => {
+    it('renders portal content into the mountNode', () => {
       const mountNode = document.createElement('div')
-      wrapperMount(
+      document.body.appendChild(mountNode)
+
+      const { unmount } = render(
         <Portal mountNode={mountNode} open>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
 
-      wrapper.find(PortalInner).should.have.prop('mountNode', mountNode)
+      expect(mountNode.querySelector('#inner')).toBeInTheDocument()
+      unmount()
+      document.body.removeChild(mountNode)
     })
   })
 
   describe('openOnTriggerClick', () => {
     it('defaults to true', () => {
-      const onTriggerClick = sandbox.spy()
+      const onTriggerClick = vi.fn()
       const trigger = <button onClick={onTriggerClick}>button</button>
 
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={trigger}>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
 
-      wrapper.find('button').simulate('click')
-      wrapper.should.have.descendants(PortalInner)
-      onTriggerClick.should.have.been.calledOnce()
+      fireEvent.click(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
+      expect(onTriggerClick).toHaveBeenCalledOnce()
     })
 
     it('does not open the portal on trigger click when false', () => {
-      const spy = sandbox.spy()
+      const spy = vi.fn()
       const trigger = <button onClick={spy}>button</button>
 
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={trigger} openOnTriggerClick={false}>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
 
-      wrapper.find('button').simulate('click')
-      wrapper.should.not.have.descendants(PortalInner)
-      spy.should.have.been.calledOnce()
+      fireEvent.click(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
+      expect(spy).toHaveBeenCalledOnce()
     })
 
     it('opens the portal on trigger click when true', () => {
-      const spy = sandbox.spy()
+      const spy = vi.fn()
       const trigger = <button onClick={spy}>button</button>
 
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={trigger} openOnTriggerClick>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
 
-      wrapper.find('button').simulate('click')
-      wrapper.should.have.descendants(PortalInner)
-      spy.should.have.been.calledOnce()
+      fireEvent.click(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
+      expect(spy).toHaveBeenCalledOnce()
     })
   })
 
   describe('closeOnTriggerClick', () => {
     it('does not close the portal on click', () => {
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<button />} defaultOpen>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
-      wrapper.find('button').simulate('click')
-      wrapper.should.have.descendants(PortalInner)
+      fireEvent.click(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
 
     it('closes the portal on click when set', () => {
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<button />} defaultOpen closeOnTriggerClick>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
-      wrapper.find('button').simulate('click')
-      wrapper.should.not.have.descendants(PortalInner)
+      fireEvent.click(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
     })
   })
 
   describe('openOnTriggerMouseEnter', () => {
     it('does not open the portal on mouseenter when not set', () => {
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<button />}>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
 
-      wrapper.find('button').simulate('mouseenter')
-      wrapper.should.not.have.descendants(PortalInner)
+      fireEvent.mouseEnter(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
     })
 
-    it('opens the portal on mouseenter when set', (done) => {
-      wrapperMount(
+    it('opens the portal on mouseenter when set', async () => {
+      const { container } = render(
         <Portal trigger={<button />} openOnTriggerMouseEnter mouseEnterDelay={0}>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
 
-      wrapper.find('button').simulate('mouseenter')
-      setTimeout(() => {
-        wrapper.update()
-        wrapper.should.have.descendants(PortalInner)
-
-        done()
-      }, 1)
+      // mouseenter doesn't bubble, so fire on the wrapper span (which has the handler)
+      const triggerSpan = container.querySelector('span')
+      fireEvent.mouseEnter(triggerSpan)
+      await waitFor(() => {
+        expect(document.body.querySelector('#inner')).toBeInTheDocument()
+      })
     })
 
     /**
@@ -396,61 +416,52 @@ describe('Portal', () => {
       const DELAY = 20
       const BEFORE_DELAY = 10
 
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<button />} openOnTriggerMouseEnter mouseEnterDelay={DELAY}>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
 
-      wrapper.should.not.have.descendants(PortalInner)
-      wrapper.find('button').simulate('mouseenter')
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
+      fireEvent.mouseEnter(container.querySelector('button'))
 
       await wait(BEFORE_DELAY)
 
-      wrapper.update()
-      wrapper.should.not.have.descendants(PortalInner)
-      wrapper.find('button').simulate('mouseleave')
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
+      fireEvent.mouseLeave(container.querySelector('span'))
 
       await wait(DELAY)
 
-      wrapper.update()
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
     })
   })
 
   describe('closeOnTriggerMouseLeave', () => {
-    it('does not close the portal on mouseleave when not set', (done) => {
-      wrapperMount(
+    it('does not close the portal on mouseleave when not set', async () => {
+      const { container } = render(
         <Portal trigger={<button />} defaultOpen mouseLeaveDelay={0}>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
-      wrapper.find('button').simulate('mouseleave')
-      setTimeout(() => {
-        wrapper.update()
-        wrapper.should.have.descendants(PortalInner)
-
-        done()
-      }, 1)
+      fireEvent.mouseLeave(container.querySelector('span'))
+      await wait(1)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
 
-    it('closes the portal on mouseleave when set', (done) => {
-      wrapperMount(
+    it('closes the portal on mouseleave when set', async () => {
+      const { container } = render(
         <Portal trigger={<button />} defaultOpen closeOnTriggerMouseLeave mouseLeaveDelay={0}>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
-      wrapper.find('button').simulate('mouseleave')
-      setTimeout(() => {
-        wrapper.update()
-        wrapper.should.not.have.descendants(PortalInner)
-
-        done()
-      }, 1)
+      fireEvent.mouseLeave(container.querySelector('span'))
+      await waitFor(() => {
+        expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
+      })
     })
 
     /**
@@ -463,125 +474,108 @@ describe('Portal', () => {
      */
     it('does not close the portal when reenter before delay', async () => {
       const DELAY = 20
-      const BEFORE_DELAY = 10
 
-      wrapperMount(
+      const { container } = render(
         <Portal
           trigger={<button />}
           openOnTriggerMouseEnter
           closeOnTriggerMouseLeave
           mouseLeaveDelay={DELAY}
         >
-          <p />
+          <p id='inner' />
         </Portal>,
       )
 
-      wrapper.should.not.have.descendants(PortalInner)
-      wrapper.find('button').simulate('mouseenter')
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
+      fireEvent.mouseEnter(container.querySelector('span'))
 
-      await wait(BEFORE_DELAY)
+      await waitFor(() => {
+        expect(document.body.querySelector('#inner')).toBeInTheDocument()
+      })
+      fireEvent.mouseLeave(container.querySelector('span'))
 
-      wrapper.update()
-      wrapper.should.have.descendants(PortalInner)
-      wrapper.find('button').simulate('mouseleave')
+      // Re-enter before the delay expires
+      await wait(DELAY / 2)
 
-      await wait(BEFORE_DELAY)
-
-      wrapper.update()
-      wrapper.should.have.descendants(PortalInner)
-      wrapper.find('button').simulate('mouseenter')
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
+      fireEvent.mouseEnter(container.querySelector('span'))
 
       await wait(DELAY)
 
-      wrapper.update()
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
   })
 
   describe('closeOnPortalMouseLeave', () => {
-    it('does not close the portal on mouseleave of portal when not set', (done) => {
-      wrapperMount(
+    it('does not close the portal on mouseleave of portal when not set', async () => {
+      render(
         <Portal trigger={<button />} defaultOpen mouseLeaveDelay={0}>
           <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
       domEvent.mouseLeave('#inner')
-      setTimeout(() => {
-        wrapper.update()
-        wrapper.should.have.descendants(PortalInner)
-
-        done()
-      }, 1)
+      await wait(1)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
 
-    it('closes the portal on mouseleave of portal when set', (done) => {
-      wrapperMount(
+    it('closes the portal on mouseleave of portal when set', async () => {
+      render(
         <Portal closeOnPortalMouseLeave defaultOpen mouseLeaveDelay={0} trigger={<button />}>
           <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
-      domEvent.mouseLeave('#inner')
-      setTimeout(() => {
-        wrapper.update()
-        wrapper.should.not.have.descendants(PortalInner)
-
-        done()
-      }, 1)
+      // Fire mouseleave on the portal wrapper (which has the event listener)
+      domEvent.mouseLeave('[data-suir-portal]')
+      await waitFor(() => {
+        expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
+      })
     })
 
-    it("does not close the portal on mouseleave triggered by the portal's children", (done) => {
-      wrapperMount(
+    it("does not close the portal on mouseleave triggered by the portal's children", async () => {
+      render(
         <Portal closeOnPortalMouseLeave defaultOpen mouseLeaveDelay={0} trigger={<button />}>
           <div>
             <p id='child' />
           </div>
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#child')).toBeInTheDocument()
 
       domEvent.mouseLeave('#child')
-      setTimeout(() => {
-        wrapper.update()
-        wrapper.should.have.descendants(PortalInner)
-
-        done()
-      }, 1)
+      await wait(1)
+      expect(document.body.querySelector('#child')).toBeInTheDocument()
     })
   })
 
   describe('closeOnTriggerMouseLeave + closeOnPortalMouseLeave', () => {
-    it('closes the portal on trigger mouseleave even when portal receives mouseenter within limit', (done) => {
+    it('closes the portal on trigger mouseleave even when portal receives mouseenter within limit', async () => {
       const delay = 10
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<button />} defaultOpen closeOnTriggerMouseLeave mouseLeaveDelay={delay}>
           <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
-      wrapper.find('button').simulate('mouseleave')
+      fireEvent.mouseLeave(container.querySelector('span'))
 
       // Fire a mouseEnter on the portal within the time limit
-      setTimeout(() => {
-        domEvent.mouseEnter('#inner')
-      }, delay - 1)
+      await wait(delay - 1)
+      domEvent.mouseEnter('[data-suir-portal]')
 
       // The portal should close because closeOnPortalMouseLeave not set
-      setTimeout(() => {
-        wrapper.update()
-        wrapper.should.not.have.descendants(PortalInner)
-
-        done()
-      }, delay + 1)
+      await waitFor(() => {
+        expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
+      })
     })
 
-    it('does not close the portal on trigger mouseleave when portal receives mouseenter within limit', (done) => {
+    it('does not close the portal on trigger mouseleave when portal receives mouseenter within limit', async () => {
       const delay = 10
-      wrapperMount(
+      const { container } = render(
         <Portal
           trigger={<button />}
           defaultOpen
@@ -592,144 +586,134 @@ describe('Portal', () => {
           <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
-      wrapper.find('button').simulate('mouseleave')
+      fireEvent.mouseLeave(container.querySelector('span'))
 
-      // Fire a mouseEnter on the portal within the time limit
-      setTimeout(() => {
-        domEvent.mouseEnter('#inner')
-      }, delay - 1)
+      // Fire a mouseEnter on the portal wrapper (which has the event listener)
+      await wait(delay - 1)
+      domEvent.mouseEnter('[data-suir-portal]')
 
       // The portal should not have closed
-      setTimeout(() => {
-        wrapper.update()
-        wrapper.should.have.descendants(PortalInner)
-
-        done()
-      }, delay + 1)
+      await wait(delay + 5)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
   })
 
   describe('openOnTriggerFocus', () => {
     it('does not open the portal on focus when not set', () => {
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<button />}>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
 
-      wrapper.find('button').simulate('focus')
-      wrapper.should.not.have.descendants(PortalInner)
+      fireEvent.focus(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
     })
 
     it('opens the portal on focus when set', () => {
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<button />} openOnTriggerFocus>
           <p id='inner' />
         </Portal>,
       )
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
 
-      wrapper.find('button').simulate('focus')
-      wrapper.should.have.descendants(PortalInner)
+      fireEvent.focus(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
   })
 
   describe('closeOnTriggerBlur', () => {
     it('does not close the portal on blur when not set', () => {
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<button />} defaultOpen>
           <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
-      wrapper.find('button').simulate('blur')
-      wrapper.should.have.descendants(PortalInner)
+      fireEvent.blur(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
 
     it('closes the portal on blur when set', () => {
-      wrapperMount(
+      const { container } = render(
         <Portal trigger={<button />} defaultOpen closeOnTriggerBlur>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
-      wrapper.find('button').simulate('blur')
-      wrapper.should.not.have.descendants(PortalInner)
+      fireEvent.blur(container.querySelector('button'))
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
     })
   })
 
   describe('closeOnEscape', () => {
     it('closes the portal on escape', () => {
-      wrapperMount(
+      render(
         <Portal closeOnEscape defaultOpen>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
       domEvent.keyDown(document, { key: 'Escape' })
-      wrapper.update()
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
     })
 
     it('does not close the portal on escape when false', () => {
-      wrapperMount(
+      render(
         <Portal closeOnEscape={false} defaultOpen>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
       domEvent.keyDown(document, { key: 'Escape' })
-      wrapper.update()
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
   })
 
   describe('closeOnDocumentClick', () => {
     it('closes the portal on document click', () => {
-      wrapperMount(
+      render(
         <Portal closeOnDocumentClick defaultOpen>
-          <p />
+          <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
       domEvent.click(document)
-      wrapper.update()
-      wrapper.should.not.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).not.toBeInTheDocument()
     })
 
     it('does not close on click inside', () => {
-      wrapperMount(
+      render(
         <Portal closeOnDocumentClick defaultOpen>
           <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
       domEvent.click('#inner')
-      wrapper.update()
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
 
     it('does not close on mousedown inside and mouseup outside', () => {
-      wrapperMount(
+      render(
         <Portal closeOnDocumentClick defaultOpen>
           <p id='inner' />
         </Portal>,
       )
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
 
       domEvent.mouseDown('#inner')
       domEvent.click(document)
-      wrapper.update()
-      wrapper.should.have.descendants(PortalInner)
+      expect(document.body.querySelector('#inner')).toBeInTheDocument()
     })
   })
 
@@ -738,69 +722,71 @@ describe('Portal', () => {
   // One by one, these auto set/remove focus features were removed and the assertions negated.
   // Leave these tests here to ensure we aren't ever stealing focus.
   describe('focus', () => {
-    it('does not take focus onMount', (done) => {
-      wrapperMount(
+    it('does not take focus onMount', async () => {
+      render(
         <Portal defaultOpen>
           <p id='inner' />
         </Portal>,
       )
 
-      setTimeout(() => {
-        document.activeElement.should.not.equal(document.getElementById('inner'))
-        done()
-      }, 0)
+      await wait(0)
+      expect(document.activeElement).not.toBe(document.getElementById('inner'))
     })
 
-    it('does not take focus on unMount', (done) => {
+    it('does not take focus on unMount', async () => {
       const input = document.createElement('input')
       document.body.appendChild(input)
 
       input.focus()
-      document.activeElement.should.equal(input)
+      expect(document.activeElement).toBe(input)
 
-      wrapperMount(
+      const { rerender, unmount } = render(
         <Portal open>
           <p />
         </Portal>,
       )
-      document.activeElement.should.equal(input)
+      expect(document.activeElement).toBe(input)
 
-      setTimeout(() => {
-        document.activeElement.should.equal(input)
+      await wait(0)
+      expect(document.activeElement).toBe(input)
 
-        wrapper.setProps({ open: false })
-        wrapper.unmount()
+      rerender(
+        <Portal open={false}>
+          <p />
+        </Portal>,
+      )
+      unmount()
 
-        document.activeElement.should.equal(input)
+      expect(document.activeElement).toBe(input)
 
-        document.body.removeChild(input)
-        done()
-      }, 0)
+      document.body.removeChild(input)
     })
 
-    it('does not take focus on re-render', (done) => {
+    it('does not take focus on re-render', async () => {
       const input = document.createElement('input')
       document.body.appendChild(input)
 
       input.focus()
-      document.activeElement.should.equal(input)
+      expect(document.activeElement).toBe(input)
 
-      wrapperMount(
+      const { rerender } = render(
         <Portal defaultOpen>
           <p />
         </Portal>,
       )
-      document.activeElement.should.equal(input)
+      expect(document.activeElement).toBe(input)
 
-      setTimeout(() => {
-        document.activeElement.should.equal(input)
+      await wait(0)
+      expect(document.activeElement).toBe(input)
 
-        wrapper.render()
-        document.activeElement.should.equal(input)
+      rerender(
+        <Portal defaultOpen>
+          <p />
+        </Portal>,
+      )
+      expect(document.activeElement).toBe(input)
 
-        document.body.removeChild(input)
-        done()
-      }, 0)
+      document.body.removeChild(input)
     })
   })
 })

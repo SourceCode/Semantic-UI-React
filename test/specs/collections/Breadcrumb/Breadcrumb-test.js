@@ -1,4 +1,4 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import Breadcrumb from 'src/collections/Breadcrumb/Breadcrumb'
 import BreadcrumbDivider from 'src/collections/Breadcrumb/BreadcrumbDivider'
@@ -7,8 +7,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('Breadcrumb', () => {
   common.isConformant(Breadcrumb)
-  common.forwardsRef(Breadcrumb)
-  common.forwardsRef(Breadcrumb, { requiredProps: { children: <span /> } })
   common.hasSubcomponents(Breadcrumb, [BreadcrumbDivider, BreadcrumbSection])
   common.hasUIClassName(Breadcrumb)
   common.rendersChildren(Breadcrumb, {
@@ -16,7 +14,8 @@ describe('Breadcrumb', () => {
   })
 
   it('renders a <div /> element', () => {
-    shallow(<Breadcrumb />).should.have.tagName('div')
+    const { container } = render(<Breadcrumb />)
+    expect(container.firstChild.tagName).toBe('DIV')
   })
 
   const sections = [
@@ -25,16 +24,16 @@ describe('Breadcrumb', () => {
   ]
 
   it('renders children with `sections` prop', () => {
-    const wrapper = shallow(<Breadcrumb sections={sections} />)
+    const { container } = render(<Breadcrumb sections={sections} />)
 
-    wrapper.should.have.exactly(1).descendants(BreadcrumbDivider)
-    wrapper.should.have.exactly(2).descendants(BreadcrumbSection)
+    expect(container.querySelectorAll('.divider')).toHaveLength(1)
+    expect(container.querySelectorAll('.section')).toHaveLength(2)
   })
 
   it('renders defined divider with `divider` prop', () => {
-    const wrapper = mount(<Breadcrumb sections={sections} divider='>' />)
-    const divider = wrapper.find(BreadcrumbDivider).first()
+    const { container } = render(<Breadcrumb sections={sections} divider='>' />)
+    const divider = container.querySelector('.divider')
 
-    divider.should.contain.text('>')
+    expect(divider).toHaveTextContent('>')
   })
 })

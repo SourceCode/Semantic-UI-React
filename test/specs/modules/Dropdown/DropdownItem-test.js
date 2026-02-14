@@ -1,14 +1,12 @@
-import faker from 'faker'
-import React from 'react'
+import { faker } from '@faker-js/faker'
+import { render, fireEvent } from '@testing-library/react'
 
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 import DropdownItem from 'src/modules/Dropdown/DropdownItem'
 import Flag from 'src/elements/Flag'
 
 describe('DropdownItem', () => {
   common.isConformant(DropdownItem)
-  common.forwardsRef(DropdownItem)
   common.rendersChildren(DropdownItem, {
     rendersContent: false,
   })
@@ -47,84 +45,85 @@ describe('DropdownItem', () => {
 
   describe('aria', () => {
     it('should render DropdownItem as role=option', () => {
-      const wrapper = shallow(<DropdownItem />)
-      wrapper.should.have.prop('role', 'option')
+      const { container } = render(<DropdownItem />)
+      expect(container.firstChild).toHaveAttribute('role', 'option')
     })
     it('should render DropdownItem with children as role=option', () => {
-      const wrapper = shallow(<DropdownItem>Text</DropdownItem>)
-      wrapper.should.have.prop('role', 'option')
+      const { container } = render(<DropdownItem>Text</DropdownItem>)
+      expect(container.firstChild).toHaveAttribute('role', 'option')
     })
     it('should render DropdownItem with description as role=option', () => {
-      const wrapper = shallow(<DropdownItem description='Text' />)
-      wrapper.should.have.prop('role', 'option')
+      const { container } = render(<DropdownItem description='Text' />)
+      expect(container.firstChild).toHaveAttribute('role', 'option')
     })
     it('should render disabled DropdownItem with aria-disabled', () => {
-      const wrapper = shallow(<DropdownItem disabled />)
-      wrapper.should.have.prop('aria-disabled', true)
+      const { container } = render(<DropdownItem disabled />)
+      expect(container.firstChild).toHaveAttribute('aria-disabled', 'true')
     })
     it('should render normal DropdownItem without aria-disabled', () => {
-      const wrapper = shallow(<DropdownItem />)
-      wrapper.should.not.have.prop('aria-disabled')
+      const { container } = render(<DropdownItem />)
+      expect(container.firstChild).not.toHaveAttribute('aria-disabled')
     })
     it('should render active DropdownItem with aria-checked', () => {
-      const wrapper = shallow(<DropdownItem active />)
-      wrapper.should.have.prop('aria-checked', true)
+      const { container } = render(<DropdownItem active />)
+      expect(container.firstChild).toHaveAttribute('aria-checked', 'true')
     })
-    it('should render normal DropdownItem without aria-disabled', () => {
-      const wrapper = shallow(<DropdownItem />)
-      wrapper.should.not.have.prop('aria-checked')
+    it('should render normal DropdownItem without aria-checked', () => {
+      const { container } = render(<DropdownItem />)
+      expect(container.firstChild).not.toHaveAttribute('aria-checked')
     })
     it('should render selected DropdownItem with aria-selected', () => {
-      const wrapper = shallow(<DropdownItem selected />)
-      wrapper.should.have.prop('aria-selected', true)
+      const { container } = render(<DropdownItem selected />)
+      expect(container.firstChild).toHaveAttribute('aria-selected', 'true')
     })
     it('should render normal DropdownItem without aria-selected', () => {
-      const wrapper = shallow(<DropdownItem />)
-      wrapper.should.not.have.prop('aria-selected')
+      const { container } = render(<DropdownItem />)
+      expect(container.firstChild).not.toHaveAttribute('aria-selected')
     })
   })
 
   describe('description', () => {
     it('adds className="description" to element shorthand', () => {
-      shallow(<DropdownItem description={<strong />} />).should.have.descendants(
-        'strong.description',
-      )
+      const { container } = render(<DropdownItem description={<strong />} />)
+      expect(container.querySelector('strong.description')).toBeInTheDocument()
     })
   })
 
   describe('text', () => {
     it('adds className="text" to element shorthand', () => {
-      shallow(<DropdownItem text={<strong />} />).should.have.descendants('strong.text')
+      const { container } = render(<DropdownItem text={<strong />} />)
+      expect(container.querySelector('strong.text')).toBeInTheDocument()
     })
   })
 
   describe('content', () => {
     it('renders text if no content', () => {
-      const wrapper = shallow(<DropdownItem text='hey' />)
-
-      wrapper.text().should.include('hey')
+      const { container } = render(<DropdownItem text='hey' />)
+      expect(container.textContent).toContain('hey')
     })
 
     it('renders content if present', () => {
-      const wrapper = shallow(<DropdownItem text='hey' content='you' />)
-
-      wrapper.text().should.not.include('hey')
-      wrapper.text().should.include('you')
+      const { container } = render(<DropdownItem text='hey' content='you' />)
+      expect(container.textContent).not.toContain('hey')
+      expect(container.textContent).toContain('you')
     })
   })
 
   describe('onClick', () => {
     it('is called with (e, props) when clicked', () => {
-      const onClick = sandbox.spy()
+      const onClick = vi.fn()
 
       const value = faker.hacker.phrase()
-      const event = { target: null }
       const props = { value, 'data-foo': 'bar' }
 
-      shallow(<DropdownItem onClick={onClick} {...props} />).simulate('click', event)
+      const { container } = render(<DropdownItem onClick={onClick} {...props} />)
+      fireEvent.click(container.firstChild)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch(event, props)
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining(props),
+      )
     })
   })
 })

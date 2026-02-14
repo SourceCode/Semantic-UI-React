@@ -3,7 +3,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('DimmerDimmable', () => {
   common.isConformant(DimmerDimmable)
-  common.forwardsRef(DimmerDimmable)
   common.rendersChildren(DimmerDimmable)
 
   common.propKeyOnlyToClassName(DimmerDimmable, 'blurring')

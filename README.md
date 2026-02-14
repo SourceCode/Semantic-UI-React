@@ -12,14 +12,14 @@
 
 <!-- Badges -->
 <p align="center">
-  <a href="https://circleci.com/gh/Semantic-Org/Semantic-UI-React/tree/master">
-    <img alt="Circle" src="https://img.shields.io/circleci/project/github/Semantic-Org/Semantic-UI-React/master.svg?style=flat-square" />
-  </a>
-  <a href="https://codecov.io/gh/Semantic-Org/Semantic-UI-React">
-    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/Semantic-Org/Semantic-UI-React/master.svg?style=flat-square" />
-  </a>
   <a href="https://www.npmjs.com/package/semantic-ui-react">
     <img alt="npm" src="https://img.shields.io/npm/v/semantic-ui-react.svg?style=flat-square" />
+  </a>
+  <a href="https://www.npmjs.com/package/semantic-ui-react">
+    <img alt="npm downloads" src="https://img.shields.io/npm/dm/semantic-ui-react.svg?style=flat-square" />
+  </a>
+  <a href="https://github.com/Semantic-Org/Semantic-UI-React/blob/master/LICENSE.md">
+    <img alt="MIT License" src="https://img.shields.io/github/license/Semantic-Org/Semantic-UI-React?style=flat-square" />
   </a>
 </p>
 
@@ -75,6 +75,7 @@ function App() {
 - **TypeScript**: Written in TypeScript with full type safety
 - **Accessible**: Built with ARIA attributes and keyboard navigation
 - **Tree-Shakeable**: Import only what you use
+- **Minimal Dependencies**: Only 6 runtime deps (`@floating-ui/react-dom`, `clsx`, `lodash`, `lodash-es`, `react-is`, `@babel/runtime`)
 
 ## Theming
 

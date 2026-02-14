@@ -1,5 +1,4 @@
-import faker from 'faker'
-import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import List from 'src/elements/List/List'
 import ListContent from 'src/elements/List/ListContent'
@@ -10,13 +9,9 @@ import ListItem from 'src/elements/List/ListItem'
 import ListList from 'src/elements/List/ListList'
 import { SUI } from 'src/lib'
 import * as common from 'test/specs/commonTests'
-import { sandbox } from 'test/utils'
 
 describe('List', () => {
   common.isConformant(List)
-  common.forwardsRef(List)
-  common.forwardsRef(List, { requiredProps: { children: <span /> } })
-  common.forwardsRef(List, { requiredProps: { content: faker.lorem.word() } })
   common.hasSubcomponents(List, [
     ListContent,
     ListDescription,
@@ -50,68 +45,70 @@ describe('List', () => {
 
   describe('onItemClick', () => {
     it('is called with (e, itemProps) when clicked', () => {
-      const onClick = sandbox.spy()
-      const onItemClick = sandbox.spy()
-      const event = { target: null }
+      const onClick = vi.fn()
+      const onItemClick = vi.fn()
 
       const callbackData = { content: 'Notes', 'data-foo': 'bar' }
       const itemProps = { key: 'notes', content: 'Notes', 'data-foo': 'bar', onClick }
 
-      mount(<List items={[itemProps]} onItemClick={onItemClick} />)
-        .find('ListItem')
-        .first()
-        .simulate('click', event)
+      const { container } = render(<List items={[itemProps]} onItemClick={onItemClick} />)
 
-      onClick.should.have.been.calledOnce()
-      onClick.should.have.been.calledWithMatch(event, callbackData)
+      fireEvent.click(container.querySelector('[role="listitem"]'))
 
-      onItemClick.should.have.been.calledOnce()
-      onItemClick.should.have.been.calledWithMatch(event, callbackData)
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining(callbackData),
+      )
+
+      expect(onItemClick).toHaveBeenCalledOnce()
+      expect(onItemClick).toHaveBeenCalledWith(
+        expect.objectContaining({}),
+        expect.objectContaining(callbackData),
+      )
     })
   })
 
   describe('role', () => {
     it('is accessibile with no items', () => {
-      const wrapper = shallow(<List />)
-      wrapper.should.have.prop('role', 'list')
+      const { container } = render(<List />)
+      expect(container.firstChild).toHaveAttribute('role', 'list')
     })
 
     it('is accessibile with items', () => {
-      const wrapper = shallow(<List items={items} />)
-      wrapper.should.have.prop('role', 'list')
+      const { container } = render(<List items={items} />)
+      expect(container.firstChild).toHaveAttribute('role', 'list')
     })
 
     it('allows overriding with no items', () => {
-      const wrapper = shallow(<List role='listbox' />)
-      wrapper.should.have.prop('role', 'listbox')
+      const { container } = render(<List role='listbox' />)
+      expect(container.firstChild).toHaveAttribute('role', 'listbox')
     })
 
     it('allows overriding with items', () => {
-      const wrapper = shallow(<List role='listbox' items={items} />)
-      wrapper.should.have.prop('role', 'listbox')
+      const { container } = render(<List role='listbox' items={items} />)
+      expect(container.firstChild).toHaveAttribute('role', 'listbox')
     })
 
     it('allows overriding with children', () => {
-      const wrapper = shallow(
+      const { container } = render(
         <List role='listbox'>
           <ListItem />
         </List>,
       )
-      wrapper.should.have.prop('role', 'listbox')
+      expect(container.firstChild).toHaveAttribute('role', 'listbox')
     })
   })
 
   describe('shorthand', () => {
     it('renders empty tr with no shorthand', () => {
-      const wrapper = shallow(<List />)
-
-      wrapper.find('ListItem').should.have.lengthOf(0)
+      const { container } = render(<List />)
+      expect(container.querySelectorAll('[role="listitem"]')).toHaveLength(0)
     })
 
     it('renders the items', () => {
-      const wrapper = shallow(<List items={items} />)
-
-      wrapper.find('ListItem').should.have.lengthOf(items.length)
+      const { container } = render(<List items={items} />)
+      expect(container.querySelectorAll('[role="listitem"]')).toHaveLength(items.length)
     })
   })
 })

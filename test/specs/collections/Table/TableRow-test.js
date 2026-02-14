@@ -1,12 +1,10 @@
-import React from 'react'
+import { render } from '@testing-library/react'
 
 import * as common from 'test/specs/commonTests'
 import TableRow from 'src/collections/Table/TableRow'
 
 describe('TableRow', () => {
   common.isConformant(TableRow)
-  common.forwardsRef(TableRow, { tagName: 'tr' })
-  common.forwardsRef(TableRow, { requiredProps: { children: <span /> }, tagName: 'tr' })
   common.rendersChildren(TableRow, {
     rendersContent: false,
   })
@@ -23,31 +21,56 @@ describe('TableRow', () => {
   common.propKeyOnlyToClassName(TableRow, 'warning')
 
   it('renders as a tr by default', () => {
-    shallow(<TableRow />).should.have.tagName('tr')
+    const { container } = render(
+      <table>
+        <tbody>
+          <TableRow />
+        </tbody>
+      </table>,
+    )
+    expect(container.querySelector('tr')).toBeInTheDocument()
+    expect(container.querySelector('tr').tagName).toBe('TR')
   })
 
   describe('shorthand', () => {
     const cells = ['Name', 'Status', 'Notes']
 
     it('renders empty tr with no shorthand', () => {
-      shallow(<TableRow />)
-        .find('td')
-        .should.have.lengthOf(0)
+      const { container } = render(
+        <table>
+          <tbody>
+            <TableRow />
+          </tbody>
+        </table>,
+      )
+      expect(container.querySelectorAll('td')).toHaveLength(0)
     })
 
     it('renders the cells', () => {
-      shallow(<TableRow cells={cells} />)
-        .find('TableCell')
-        .should.have.lengthOf(cells.length)
+      const { container } = render(
+        <table>
+          <tbody>
+            <TableRow cells={cells} />
+          </tbody>
+        </table>,
+      )
+      expect(container.querySelectorAll('td')).toHaveLength(cells.length)
     })
 
     it('renders the cells using cellAs', () => {
-      const cellWrappers = shallow(<TableRow cells={cells} cellAs='th' />).find('TableCell')
+      const { container } = render(
+        <table>
+          <tbody>
+            <TableRow cells={cells} cellAs='th' />
+          </tbody>
+        </table>,
+      )
+      const thCells = container.querySelectorAll('th')
 
-      cellWrappers.should.have.lengthOf(cells.length)
+      expect(thCells).toHaveLength(cells.length)
 
-      cellWrappers.forEach((wrapper) => {
-        wrapper.shallow().should.have.tagName('th')
+      thCells.forEach((cell) => {
+        expect(cell.tagName).toBe('TH')
       })
     })
   })

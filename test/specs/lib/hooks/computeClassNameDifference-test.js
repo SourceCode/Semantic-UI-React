@@ -24,10 +24,8 @@ const fixtures = [
 describe('computeClassNamesDifference', () => {
   it('computes className difference', () => {
     fixtures.forEach((fixture) => {
-      computeClassNamesDifference(
-        fixture.prevClasses,
-        fixture.currentClasses,
-      ).should.have.deep.members([fixture.forAdd, fixture.forRemoval])
+      const result = computeClassNamesDifference(fixture.prevClasses, fixture.currentClasses)
+      expect(result).toEqual([fixture.forAdd, fixture.forRemoval])
     })
   })
 })

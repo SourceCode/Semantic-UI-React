@@ -1,4 +1,5 @@
-import React from 'react'
+import { render } from '@testing-library/react'
+
 import FeedSummary from 'src/views/Feed/FeedSummary'
 import FeedDate from 'src/views/Feed/FeedDate'
 import FeedUser from 'src/views/Feed/FeedUser'
@@ -6,8 +7,6 @@ import * as common from 'test/specs/commonTests'
 
 describe('FeedSummary', () => {
   common.isConformant(FeedSummary)
-  common.forwardsRef(FeedSummary)
-  common.forwardsRef(FeedSummary, { requiredProps: { children: <span /> } })
   common.rendersChildren(FeedSummary)
 
   common.implementsShorthandProp(FeedSummary, {
@@ -25,7 +24,10 @@ describe('FeedSummary', () => {
 
   describe('content', () => {
     it('inserts whitespace on both sides of the content', () => {
-      shallow(<FeedSummary content='test' />).should.contain.text(' test ')
+      const { container } = render(<FeedSummary content='test' />)
+      // The component wraps content with whitespace: {content && ' '}{content}{content && ' '}
+      // toHaveTextContent normalizes whitespace, so check the raw textContent
+      expect(container.firstChild.textContent).toContain(' test ')
     })
   })
 })

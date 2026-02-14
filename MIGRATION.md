@@ -84,7 +84,58 @@ If you loaded Semantic UI React via a `<script>` tag from a CDN:
 </script>
 ```
 
-## Step 5: Adopt New Features (Optional)
+## Step 5: Update Popup Usage (if needed)
+
+### `popperModifiers` prop
+
+The `Popup` component now uses [Floating UI](https://floating-ui.com/) instead of Popper.js for positioning. If you pass custom `popperModifiers`, update them from Popper.js modifiers to Floating UI middleware:
+
+**Before (v3):**
+
+```jsx
+import { Popup } from 'semantic-ui-react'
+
+<Popup
+  popperModifiers={[
+    { name: 'preventOverflow', options: { padding: 10 } },
+    { name: 'flip', options: { fallbackPlacements: ['bottom'] } },
+  ]}
+/>
+```
+
+**After (v4):**
+
+```jsx
+import { Popup } from 'semantic-ui-react'
+import { shift, flip } from '@floating-ui/react-dom'
+
+<Popup
+  popperModifiers={[
+    shift({ padding: 10 }),
+    flip({ fallbackPlacements: ['bottom'] }),
+  ]}
+/>
+```
+
+### `offset` prop
+
+The array format `[skidding, distance]` is unchanged:
+
+```jsx
+<Popup offset={[0, 10]} />
+```
+
+The function form now receives Floating UI types (structurally identical to Popper.js):
+
+```jsx
+<Popup offset={({ popper, reference, placement }) => [0, 10]} />
+```
+
+### Other Popup props
+
+The `position`, `positionFixed`, `eventsEnabled`, `pinned`, and `popper` props work exactly the same as before. No changes needed.
+
+## Step 6: Adopt New Features (Optional)
 
 ### Theming with CSS Custom Properties
 
