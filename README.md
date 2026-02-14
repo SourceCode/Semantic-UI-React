@@ -85,7 +85,7 @@ import 'semantic-ui-react/styles/themes/dark.css'
 
 function App() {
   return (
-    <ThemeProvider theme="dark">
+    <ThemeProvider theme='dark'>
       <YourApp />
     </ThemeProvider>
   )
@@ -105,20 +105,77 @@ function MyForm() {
   const [state, formAction, isPending] = useFormAction(submitAction, {})
   return (
     <Form action={formAction} loading={isPending}>
-      <Form.Input name="email" label="Email" />
-      <Form.Button type="submit">Submit</Form.Button>
+      <Form.Input name='email' label='Email' />
+      <Form.Button type='submit'>Submit</Form.Button>
     </Form>
   )
 }
 ```
 
+## Architecture
+
+```mermaid
+graph LR
+  A["src/ (Components)"] --> B["Rollup Build"]
+  B --> C["dist/commonjs/ (CJS)"]
+  B --> D["dist/es/ (ESM)"]
+  B --> E["dist/esm/ (Browser)"]
+  F["src/styles/"] --> G["dist/styles/ (CSS)"]
+```
+
+Components are organized into five categories: **Addons**, **Collections**, **Elements**, **Modules**, and **Views**. Shared utilities live in `src/lib/` including className builders, component factories, hooks, and type definitions.
+
+See [docs/engineering/implementation.md](docs/engineering/implementation.md) for the full architecture guide.
+
+## Tech Stack
+
+| Layer           | Technology                      | Version         |
+| --------------- | ------------------------------- | --------------- |
+| Language        | JavaScript + TypeScript         | ES2021 / TS 5.9 |
+| Framework       | React                           | 19.x            |
+| Build           | Rollup                          | 4.x             |
+| Tests           | Vitest + React Testing Library  | 3.x / 16.x      |
+| Lint            | ESLint (flat config) + Prettier | 9.x / 3.x       |
+| Docs            | Astro                           | —               |
+| Package Manager | Yarn (Berry)                    | 4.6.0           |
+| CI              | GitHub Actions                  | Node 20         |
+
 ## Migration from v3
 
 See [MIGRATION.md](./MIGRATION.md) for detailed upgrade instructions.
 
+## Testing
+
+```bash
+yarn test            # Watch mode
+yarn test -- --run   # Single run (CI)
+yarn test -- --run --coverage  # With coverage
+```
+
+Coverage threshold: **80% patch** (new code), monitored via Codecov. See [docs/engineering/testing.md](docs/engineering/testing.md) and [docs/engineering/coverage.md](docs/engineering/coverage.md).
+
 ## Documentation
 
-See the [**Documentation**](https://react.semantic-ui.com) for full API reference, examples, and guides.
+**Live Docs**: [react.semantic-ui.com](https://react.semantic-ui.com) — Full API reference, examples, and guides.
+
+### Engineering Documentation
+
+| Document                                               | Description                         |
+| ------------------------------------------------------ | ----------------------------------- |
+| [Install](docs/engineering/install.md)                 | Prerequisites and installation      |
+| [Setup](docs/engineering/setup.md)                     | Environment configuration           |
+| [First Run](docs/engineering/first-run.md)             | Clone-to-running golden path        |
+| [Functionality](docs/engineering/functionality.md)     | Component categories and features   |
+| [Schema](docs/engineering/schema.md)                   | TypeScript type system              |
+| [API](docs/engineering/api.md)                         | Component API conventions and hooks |
+| [Implementation](docs/engineering/implementation.md)   | Architecture and build pipeline     |
+| [Integrations](docs/engineering/integrations.md)       | Dependencies and tooling            |
+| [Testing](docs/engineering/testing.md)                 | Test strategy and patterns          |
+| [Coverage](docs/engineering/coverage.md)               | Coverage tools and thresholds       |
+| [Troubleshooting](docs/engineering/troubleshooting.md) | Common issues and debugging         |
+| [Security](docs/engineering/security.md)               | Dependency and coding safety        |
+| [Contributing](docs/engineering/contributing.md)       | PR workflow and code style          |
+| [Changelog](docs/engineering/changelog.md)             | Release history                     |
 
 ## Contributing
 
